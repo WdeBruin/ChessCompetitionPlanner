@@ -1,13 +1,14 @@
 import { Action } from '@ngrx/store';
+import { Player } from '../../shared/player';
 
-export enum PlayerActionTypes {
+export enum PlayersActionTypes {
     ADD_PLAYER = '[Players] Add player'
-  }
-
-export class AddPlayer implements Action {
-    readonly type = PlayerActionTypes.ADD_PLAYER;
-
-    constructor(public name: string) {}
 }
 
-export type PlayerActionsUnion = AddPlayer;
+export class AddPlayer implements Action {
+    readonly type = PlayersActionTypes.ADD_PLAYER;
+
+    constructor(public player: Player) { }
+}
+
+export type PlayersActionsUnion = AddPlayer;

@@ -1,5 +1,6 @@
-import { Players } from './players/players.interface'
+import { PlayerState } from './players/player.interface'
 
 export interface AppState {
-    players: Players
+    players: PlayerState[],
+    //competitions: CompetitionState[]
 }

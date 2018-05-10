@@ -3,7 +3,6 @@ import { Store} from '@ngrx/store';
 import { Observable, pipe } from 'rxjs';
 
 import { AppState } from './store/appstate.interface';
-import { Players } from './store/players/players.interface';
 
 @Component({
   selector: 'app-root',

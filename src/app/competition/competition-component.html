@@ -1,0 +1,10 @@
+<a mat-button routerLink="/competition">Competitie</a>
+<a mat-button routerLink="/players">Spelers</a>
+<mat-card>    
+    <button mat-button class="custombutton" (click)="generateRound(players)">Genereer</button>
+    <mat-selection-list #players>
+        <mat-list-option *ngFor="let player of players$ | async" (click)="toggle(player.id)">
+            {{player.firstName}} {{player.lastName}}
+        </mat-list-option>
+    </mat-selection-list>
+</mat-card>
