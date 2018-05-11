@@ -1,4 +1,5 @@
-<mat-card *ngIf="selectedRound?.roundStatus == roundStatus.PlayerSelect">        
+<mat-card *ngIf="selectedRound?.roundStatus == roundStatus.PlayerSelect">   
+    <h3>Ronde {{selectedRound.roundNumber}}</h3>     
     <mat-selection-list #players>
         <mat-list-option *ngFor="let player of players$ | async" (click)="toggle(player.id)">
             {{player.firstName}} {{player.lastName}}

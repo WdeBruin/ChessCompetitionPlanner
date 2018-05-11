@@ -17,6 +17,7 @@ import { RoundStatus } from 'src/app/store/round/round-status.enum';
 })
 export class CompetitionComponent implements OnInit {
     public competitions$: Observable<fromCompetition.Competition[]>;    
+    public rounds: Round[];
     public selectedCompetition: fromCompetition.Competition;
 
     constructor(private store: Store<AppState>) { }
@@ -26,6 +27,7 @@ export class CompetitionComponent implements OnInit {
         this.competitions$.subscribe(c => 
             this.selectedCompetition =  c.find(x => x.isSelected) || undefined
         )
+        this.store.select(fromRound.selectAll).subscribe(x => this.rounds = x.filter(f => f.competitionId == this.selectedCompetition.id));
     }
 
     createRound(): void {
