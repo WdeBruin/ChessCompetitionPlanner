@@ -1,31 +1,34 @@
 import { Component, OnInit, Input } from '@angular/core' ;
 import { Observable } from 'rxjs/Observable';
+import { first } from 'rxjs/operators';
 // import { PlayerState } from '../store/players/player.interface';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/appstate.interface';
 import { debug } from 'util';
 import { MatSelectionList } from '@angular/material';
-import { RoundState } from 'src/app/store/rounds/round.interface';
-import { RoundStatus } from 'src/app/store/rounds/round-status.enum';
+import { Round } from 'src/app/store/round/round.interface';
+import { RoundStatus } from 'src/app/store/round/round-status.enum';
+import * as fromPlayer from '../store/player/player.reducer';
+import * as fromRound from '../store/round/round.reducer';
 
 @Component({
     selector: 'round-component',
     templateUrl: "round-component.html"
 })
 export class RoundComponent implements OnInit {
-    // players$: Observable<PlayerState[]>;
-    showPlayerSelect: boolean = true;
-    round$: Observable<RoundState>;
+    players$: Observable<fromPlayer.Player[]>;    
+    selectedRound: Round;
+    rounds$: Observable<Round[]>;
 
     public roundStatus = RoundStatus;
 
     constructor(private store: Store<AppState>) { }
 
     ngOnInit(): void {
-        // this.players$ = this.store.select(s => s.players);        
-        // this.round$ = this.store.select(s => s.competitions.find(c => c.isSelected)
-        // .rounds.find(r => r.isSelected));
-        // do something with selectedcompetition and round, in state?
+        this.players$ = this.store.select(fromPlayer.selectAll);        
+        this.rounds$ = this.store.select(fromRound.selectAll);
+        this.rounds$.subscribe(r => 
+            this.selectedRound =  r.find(x => x.isSelected) || undefined);        
     }
 
     generateRound(players: MatSelectionList): void {                        

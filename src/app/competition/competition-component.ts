@@ -1,30 +1,49 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-// import { PlayerState } from '../store/players/player.interface';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/appstate.interface';
 import 'rxjs/add/operator/map';
-import { MatSelectionList } from '@angular/material';
-import { CompetitionState } from 'src/app/store/competitions/competition.interface';
-import { RoundState } from 'src/app/store/rounds/round.interface';
+
+import * as competitionActions from '../store/competition/competition.actions';
+import * as roundActions from '../store/round/round.actions';
+import * as fromPlayer from '../store/player/player.reducer';
+import * as fromCompetition from '../store/competition/competition.reducer';
+import * as fromRound from '../store/round/round.reducer';
+import { Round } from 'src/app/store/round/round.interface';
+import { RoundStatus } from 'src/app/store/round/round-status.enum';
 
 @Component({
     templateUrl: "competition-component.html"
 })
 export class CompetitionComponent implements OnInit {
-    public competitions$: Observable<CompetitionState[]>;
-    public selectedCompetition: CompetitionState;
+    public competitions$: Observable<fromCompetition.Competition[]>;    
+    public selectedCompetition: fromCompetition.Competition;
 
     constructor(private store: Store<AppState>) { }
 
     ngOnInit(): void {
-        // this.competitions$ = this.store.select(s => s.competitions);     
-        // this.competitions$.subscribe(c => 
-        //     this.selectedCompetition =  c.find(x => x.isSelected) || undefined
-        // )
+        this.competitions$ = this.store.select(fromCompetition.selectAll);     
+        this.competitions$.subscribe(c => 
+            this.selectedCompetition =  c.find(x => x.isSelected) || undefined
+        )
     }
 
-    selectRound(round: RoundState): void {
-        //this.selectedRound = round;
+    createRound(): void {
+        const round: Round = {            
+            id: undefined,            
+            roundNumber: undefined,
+            isSelected: true,
+            playersInRoundIds: [],            
+            roundStatus: RoundStatus.PlayerSelect,
+            competitionId: this.selectedCompetition.id,
+        }
+
+        this.store.dispatch(
+            new roundActions.Create(round)
+        )
+    }
+
+    selectRound(roundId: number): void {
+        // select
     }
 }

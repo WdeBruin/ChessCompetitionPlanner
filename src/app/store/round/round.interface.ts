@@ -1,6 +1,6 @@
-import { RoundStatus } from "src/app/store/rounds/round-status.enum";
+import { RoundStatus } from "./round-status.enum";
 
-export interface RoundState {
+export interface Round {
     id: number;
     competitionId: number;
     roundNumber: number;

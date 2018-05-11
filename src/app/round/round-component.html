@@ -1,4 +1,4 @@
-<mat-card *ngIf="round$.roundStatus == roundStatus.PlayerSelect">        
+<mat-card *ngIf="selectedRound?.roundStatus == roundStatus.PlayerSelect">        
     <mat-selection-list #players>
         <mat-list-option *ngFor="let player of players$ | async" (click)="toggle(player.id)">
             {{player.firstName}} {{player.lastName}}
@@ -7,11 +7,11 @@
     <button mat-button class="custombutton" (click)="generateRound(players)">Genereer</button>
 </mat-card>
 
-<mat-card *ngIf="round$.roundStatus == roundStatus.Generated">
+<mat-card *ngIf="selectedRound?.roundStatus == roundStatus.Generated">
 
 </mat-card>
 
-<mat-card *ngIf="round$.roundStatus == roundStatus.Done">
+<mat-card *ngIf="selectedRound?.roundStatus == roundStatus.Done">
 
 </mat-card>
 

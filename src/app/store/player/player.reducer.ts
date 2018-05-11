@@ -44,23 +44,23 @@ export function PlayerReducer(
   action: actions.PlayerActions) {
 
   switch (action.type) {
-      
-      case actions.CREATE:
-          action.player.id = state.ids.length;
-          return playerAdapter.addOne(action.player, state);
 
-      case actions.UPDATE:
-          return playerAdapter.updateOne({
-              id: action.id,
-              changes: action.changes,
-          }, state);
-      
-      case actions.DELETE:
-          return playerAdapter.removeOne(action.id, state)
+    case actions.CREATE_PLAYER:
+      action.player.id = state.ids.length;
+      return playerAdapter.addOne(action.player, state);
 
-      default:
-          return state;
-      }
+    case actions.UPDATE_PLAYER:
+      return playerAdapter.updateOne({
+        id: action.id,
+        changes: action.changes,
+      }, state);
+
+    case actions.DELETE_PLAYER:
+      return playerAdapter.removeOne(action.id, state)
+
+    default:
+      return state;
+  }
 }
 
 // Create the default selectors
@@ -68,7 +68,7 @@ export const getPlayerState = createFeatureSelector<State>('player');
 
 export const {
     selectIds,
-    selectEntities,
-    selectAll,
-    selectTotal,
+  selectEntities,
+  selectAll,
+  selectTotal,
   } = playerAdapter.getSelectors(getPlayerState);

@@ -2,12 +2,12 @@
 <a mat-button routerLink="/players">Spelers</a>
 <mat-card>
     <h3>{{selectedCompetition.name}}</h3>
-    <span *ngFor="let round of selectedCompetition.rounds">        
+    <!-- <span *ngFor="let round of rounds">        
         <button (click)=selectRound(round) mat-mini-fab color="accent" class="roundButton">{{round.roundNumber}}</button>
-    </span>
+    </span> -->
     <span>
-        <button mat-mini-fab color="accent" class="roundButton">+</button>
+        <button (click)="createRound()" mat-mini-fab color="accent" class="roundButton">+</button>
     </span>
     <br />    
 </mat-card>
-<round-component round="selectedRound"></round-component>
+<round-component></round-component>
