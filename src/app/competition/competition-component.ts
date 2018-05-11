@@ -1,29 +1,30 @@
-import { Component, OnInit } from '@angular/core' ;
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { PlayerState } from '../store/players/player.interface';
+// import { PlayerState } from '../store/players/player.interface';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/appstate.interface';
-import { debug } from 'util';
+import 'rxjs/add/operator/map';
 import { MatSelectionList } from '@angular/material';
+import { CompetitionState } from 'src/app/store/competitions/competition.interface';
+import { RoundState } from 'src/app/store/rounds/round.interface';
 
 @Component({
     templateUrl: "competition-component.html"
 })
 export class CompetitionComponent implements OnInit {
-    players$: Observable<PlayerState[]>
+    public competitions$: Observable<CompetitionState[]>;
+    public selectedCompetition: CompetitionState;
 
     constructor(private store: Store<AppState>) { }
 
     ngOnInit(): void {
-        this.players$ = this.store.select(s => s.players);
+        // this.competitions$ = this.store.select(s => s.competitions);     
+        // this.competitions$.subscribe(c => 
+        //     this.selectedCompetition =  c.find(x => x.isSelected) || undefined
+        // )
     }
 
-    generateRound(players: MatSelectionList): void {                
-        // here action for generating round based on round state        
-    }
-
-    toggle(playerId: number) {
-        // here action for adding a player to the round
-        console.log(playerId);
+    selectRound(round: RoundState): void {
+        //this.selectedRound = round;
     }
 }

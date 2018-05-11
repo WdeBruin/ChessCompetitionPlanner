@@ -10,6 +10,7 @@ import { MatMenuModule, MatIconModule, MatButtonModule, MatCardModule
  , MatInputModule, MatListModule} from '@angular/material';
 import { DashboardComponent } from './dashboard/dashboard-component';
 import { PlayersComponent } from './players/players-component';
+import { RoundComponent } from './round/round-component';
 import { CompetitionComponent } from './competition/competition-component';
 import { appReducer } from './store/appstate.reducer';
 import { PlayerFormComponent } from './players/player-form/player-form.component';
@@ -20,6 +21,7 @@ import { PlayerFormComponent } from './players/player-form/player-form.component
     DashboardComponent,
     PlayersComponent,
     PlayerFormComponent,
+    RoundComponent,
     CompetitionComponent
   ],
   imports: [
