@@ -23,8 +23,7 @@ export function RoundReducer(
   action: actions.RoundActions) {
 
   switch (action.type) {
-    case actions.CREATE_ROUND:
-      action.round.id = state.ids.length;
+    case actions.CREATE_ROUND:      
       action.round.roundNumber = getRoundNumber(state, action.round.competitionId)
       return roundAdapter.addOne(action.round, state);
 
@@ -47,14 +46,14 @@ export const getRoundState = createFeatureSelector<State>('round');
 
 export const {
     selectIds,
-    selectEntities,
-    selectAll,
-    selectTotal,
+  selectEntities,
+  selectAll,
+  selectTotal,
   } = roundAdapter.getSelectors(getRoundState);
 
 function getRoundNumber(state: State, competitionId: number): number {
   let counter = 1;
-  for(let i = 0; i < state.ids.length; i += 1) {
+  for (let i = 0; i < state.ids.length; i += 1) {
     if (state.entities[i].competitionId === competitionId)
       counter += 1;
   }

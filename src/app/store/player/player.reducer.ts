@@ -1,13 +1,7 @@
 import * as actions from './player.actions';
 import { EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeatureSelector } from '@ngrx/store';
-
-// Main data interface
-export interface Player {
-  id: number;
-  firstName: string;
-  lastName: string;
-}
+import { Player } from 'src/app/store/player/player.interface';
 
 // Entity adapter
 export const playerAdapter = createEntityAdapter<Player>();
@@ -15,22 +9,31 @@ export interface State extends EntityState<Player> { }
 
 // Default data / initial state
 const defaultPlayer = {
-  ids: [0, 1, 2],
+  ids: [0, 1, 2, 3],
   entities: {
     0: {
       id: 0,
       firstName: "Jan",
-      lastName: "Steen"
+      lastName: "Steen",
+      clubElo: 1000
     },
     1: {
       id: 1,
       firstName: "Jaap",
-      lastName: "Schaar"
+      lastName: "Schaar",
+      clubElo: 900
     },
     2: {
       id: 2,
       firstName: "Henk",
-      lastName: "Verhaag"
+      lastName: "Verhaag",
+      clubElo: 400
+    },
+    3: {
+      id: 3,
+      firstName: "Piet",
+      lastName: "Paal",
+      clubElo: 650
     }
   }
 }

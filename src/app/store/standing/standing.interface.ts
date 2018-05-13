@@ -1,4 +1,4 @@
-export interface StandingState {
+export interface Standing {
     id: number;
     competitionId: number;
     roundId: number;    

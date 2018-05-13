@@ -5,9 +5,25 @@
     <player-form></player-form>
 
     <!-- List with players -->
-    <mat-list>
-        <mat-list-item *ngFor="let player of players$ | async">            
-            <span>{{player.firstName}} {{player.lastName}}</span>
-        </mat-list-item>
-    </mat-list>
+    <table mat-table [dataSource]="players$ | async">
+        <ng-container matColumnDef="firstName">
+            <th mat-header-cell *matHeaderCellDef>Voornaam</th>
+            <td mat-cell *matCellDef="let player">{{player.firstName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName">
+            <th mat-header-cell *matHeaderCellDef>Achternaam</th>
+            <td mat-cell *matCellDef="let player">{{player.lastName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="clubElo">
+            <th mat-header-cell *matHeaderCellDef>Club Elo</th>
+            <td mat-cell *matCellDef="let player">{{player.clubElo}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+
 </mat-card>

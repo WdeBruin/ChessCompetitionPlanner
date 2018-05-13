@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core' ;
 import { Observable } from 'rxjs/Observable';
 import { first } from 'rxjs/operators';
-// import { PlayerState } from '../store/players/player.interface';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/appstate.interface';
 import { debug } from 'util';
@@ -10,13 +9,14 @@ import { Round } from 'src/app/store/round/round.interface';
 import { RoundStatus } from 'src/app/store/round/round-status.enum';
 import * as fromPlayer from '../store/player/player.reducer';
 import * as fromRound from '../store/round/round.reducer';
+import { Player } from 'src/app/store/player/player.interface';
 
 @Component({
     selector: 'round-component',
     templateUrl: "round-component.html"
 })
 export class RoundComponent implements OnInit {
-    players$: Observable<fromPlayer.Player[]>;    
+    players$: Observable<Player[]>;    
     selectedRound: Round;
     rounds$: Observable<Round[]>;
 

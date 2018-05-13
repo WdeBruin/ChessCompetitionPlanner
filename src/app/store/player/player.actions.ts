@@ -1,5 +1,5 @@
 import { Action } from "@ngrx/store";
-import { Player } from "src/app/store/player/player.reducer";
+import { Player } from "src/app/store/player/player.interface";
 
 export const CREATE_PLAYER = '[Players] Create'
 export const UPDATE_PLAYER = '[Players] Update'
