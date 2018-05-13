@@ -1,5 +1,7 @@
 export interface Standing {
     id: number;
     competitionId: number;
-    roundId: number;    
+    roundId: number;   
+    
+    isSelected: boolean;
 }

@@ -14,6 +14,7 @@ import { RoundComponent } from './round/round-component';
 import { CompetitionComponent } from './competition/competition-component';
 import { appReducer } from './store/appstate.reducer';
 import { PlayerFormComponent } from './players/player-form/player-form.component';
+import { StandingComponent } from 'src/app/standing/standing-component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { PlayerFormComponent } from './players/player-form/player-form.component
     PlayersComponent,
     PlayerFormComponent,
     RoundComponent,
-    CompetitionComponent
+    CompetitionComponent,
+    StandingComponent
   ],
   imports: [
     BrowserModule,

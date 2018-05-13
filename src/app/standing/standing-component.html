@@ -1,0 +1,26 @@
+<a mat-button routerLink="/competition">Competitie</a>
+<a mat-button routerLink="/players">Spelers</a>
+<mat-card>
+    <!-- List with players -->
+    <table mat-table [dataSource]="standingLines">
+        <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef>Pos.</th>
+            <td mat-cell *matCellDef="let line">{{line.position}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="playerId">
+            <th mat-header-cell *matHeaderCellDef>Naam</th>
+            <td mat-cell *matCellDef="let line">{{getName(line.playerId)}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="competitionPoints">
+            <th mat-header-cell *matHeaderCellDef>Punten</th>
+            <td mat-cell *matCellDef="let line">{{line.competitionPoints}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+
+</mat-card>

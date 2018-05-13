@@ -60,7 +60,8 @@ export class CompetitionComponent implements OnInit {
         const standing: Standing = {
             id: undefined,
             roundId: this.roundId,
-            competitionId: this.selectedCompetition.id
+            competitionId: this.selectedCompetition.id,
+            isSelected: true
         }
         this.store.dispatch(new standingActions.Create(standing));
 
