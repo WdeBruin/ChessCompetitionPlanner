@@ -4,11 +4,13 @@ import * as fromCompetition from '../store/competition/competition.reducer';
 import * as fromRound from '../store/round/round.reducer';
 import * as fromStanding from '../store/standing/standing.reducer';
 import * as fromStandingLine from '../store/standing-line/standing-line.reducer';
+import * as fromGame from '../store/game/game.reducer';
 
 export interface AppState {
     player: fromPlayer.State,
     competition: fromCompetition.State,
     round: fromRound.State,
     standing: fromStanding.State,
-    standingLine: fromStandingLine.State
+    standingLine: fromStandingLine.State,
+    game: fromGame.State
 }

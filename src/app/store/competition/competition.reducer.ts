@@ -6,7 +6,8 @@ import { createFeatureSelector } from '@ngrx/store';
 export interface Competition {
     id: number,
     name: string,
-    isSelected: boolean
+    isSelected: boolean,
+    vrijgeloot: number[]
 }
 
 // Entity adapter
@@ -20,12 +21,14 @@ const defaultCompetition = {
         0: {
             id: 0,
             name: "Winter 2018",
-            isSelected: false
+            isSelected: false,
+            vrijgeloot: []
         },
         1: {
             id: 1,
             name: "Voorjaar 2018",
-            isSelected: true
+            isSelected: true,
+            vrijgeloot: []
         }
     }
 }
