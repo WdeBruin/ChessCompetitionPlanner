@@ -206,14 +206,16 @@ export class RoundComponent implements OnInit {
         let winMin = 20;
         let lossMin = -20;
         let lossMax = -40;
+        let drawMax = 10;
+        let drawMin = -10;
 
         game.whiteWinCpChange = game.whiteWinEloChange * 2 > winMax ? winMax : game.whiteWinEloChange * 2 < winMin ? winMin : game.whiteWinEloChange * 2;
         game.whiteLossCpChange = game.whiteLossEloChange * 2 < lossMax ? lossMax : game.whiteLossEloChange * 2 > lossMin ? lossMin : game.whiteLossEloChange * 2;
-        game.whiteDrawCpChange = game.whiteDrawEloChange * 2;
+        game.whiteDrawCpChange = game.whiteDrawEloChange * 2 > drawMax ? drawMax : game.whiteDrawEloChange * 2 < drawMin ? drawMin : game.whiteDrawEloChange * 2;
 
         game.blackWinCpChange = game.blackWinEloChange * 2 > winMax ? winMax : game.blackWinEloChange * 2 < winMin ? winMin : game.blackWinEloChange * 2;
         game.blackLossCpChange = game.blackLossEloChange * 2 < lossMax ? lossMax : game.blackLossEloChange * 2 > lossMin ? lossMin : game.blackLossEloChange * 2;
-        game.blackDrawCpChange = game.blackDrawEloChange * 2;
+        game.blackDrawCpChange = game.blackDrawEloChange * 2 > drawMax ? drawMax : game.blackDrawEloChange * 2 < drawMin ? drawMin : game.blackDrawEloChange * 2;
 
         // create game
         this.store.dispatch(new gameActions.Create(game));
