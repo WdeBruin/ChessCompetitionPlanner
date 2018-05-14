@@ -53,6 +53,7 @@ export class CompetitionComponent implements OnInit {
             playersInRoundIds: [],            
             roundStatus: RoundStatus.PlayerSelect,
             competitionId: this.selectedCompetition.id,
+            playerVrijgeloot: undefined
         }
         this.store.dispatch(new roundActions.Create(round));
 

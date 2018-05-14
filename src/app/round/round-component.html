@@ -9,6 +9,7 @@
 </mat-card>
 
 <mat-card *ngIf="selectedRound?.roundStatus == roundStatus.Generated">
+    Vrijgeloot: {{getName(selectedRound.playerVrijgeloot)}}
     <table mat-table [dataSource]="roundGames">
         <ng-container matColumnDef="wit">
             <th mat-header-cell *matHeaderCellDef>Wit</th>

@@ -30,31 +30,32 @@ import { Normal } from 'distributions';
 export class RoundComponent implements OnInit {
     players$: Observable<Player[]>;
     players: Player[];
-    selectedRound: Round;
-    rounds$: Observable<Round[]>;
+    selectedRound: Round;    
+    competitonRounds: Round[];
     competition: Competition;
     standing: Standing;
     standingLines: StandingLine[];
     games: Game[];
     roundGames: Game[];
 
-    public roundStatus = RoundStatus;   
-    public displayedColumns = ["wit", "cpWit", "vs", "cpZwart", "zwart"] 
+    public roundStatus = RoundStatus;
+    public displayedColumns = ["wit", "cpWit", "vs", "cpZwart", "zwart"]
 
     constructor(private store: Store<AppState>) { }
 
     ngOnInit(): void {
         this.players$ = this.store.select(fromPlayer.selectAll);
         this.players$.subscribe(x => this.players = x);
-        this.rounds$ = this.store.select(fromRound.selectAll);
-        this.rounds$.subscribe(r =>
-            this.selectedRound = r.find(x => x.isSelected) || undefined);
+        this.store.select(fromRound.selectAll).subscribe(r => {
+            this.selectedRound = r.find(x => x.isSelected) || undefined;
+            this.competitonRounds = r.filter(x => x.competitionId == this.competition.id);
+        });
         this.store.select(fromCompetition.selectAll).subscribe(x => this.competition = x.find(c => c.isSelected));
         this.store.select(fromStanding.selectAll).subscribe(x => this.standing = x.find(c => c.isSelected));
         this.store.select(fromStandingLine.selectAll).subscribe(x => this.standingLines = x.filter(s => s.standingId == this.standing.id));
         this.store.select(fromGame.selectAll).subscribe(x => {
             this.games = x.filter(g => g.competitionId == this.competition.id)
-            this.roundGames = x.filter(g => g.competitionId == this.competition.id && g.roundId == this.selectedRound.id)        
+            this.roundGames = x.filter(g => g.competitionId == this.competition.id && g.roundId == this.selectedRound.id)
         });
     }
 
@@ -65,18 +66,16 @@ export class RoundComponent implements OnInit {
 
         // If necessary, remove one as "vrijgeloot" and save that to the round
         if (playersInRound.length % 2 == 1) {
-            let vrijgeloot = this.vrijLoting(playersInRound);
-            let playerVrijgeloot = playersInRound.find(p => p.id == vrijgeloot);
-            let indexVrijgeloot = playersInRound.indexOf(playerVrijgeloot);
-            playersInRound.slice(indexVrijgeloot, 1);
+            let vrijgeloot = this.vrijLoting(playersInRound);            
+            playersInRound = playersInRound.filter(p => p.id != vrijgeloot);
         }
 
         // find a match to create game with
         let playerIds = playersInRound.map(x => x.id);
         let standingLines = this.standingLines.filter(x => playerIds.indexOf(x.id) != -1);
         standingLines = this.sortStandingLines(standingLines);
-        
-        while(standingLines.length > 1) {
+
+        while (standingLines.length > 0) {
             let line = standingLines[0];
 
             // Find the closest player that this player didn't play yet, or the least amount of times.            
@@ -85,12 +84,12 @@ export class RoundComponent implements OnInit {
             let hasOpponent: boolean = false;
             let searchIndex: number = 0;
 
-            while (!hasOpponent) {                  
+            while (!hasOpponent) {
                 let candidate = candidates[searchIndex];
                 // find amount of games between line.playerId and candidate.
                 let games = this.games.filter
                     (x => (x.whitePlayerId == line.playerId && x.blackPlayerId == candidate.id) ||
-                    (x.blackPlayerId == line.playerId && x.whitePlayerId == candidate.id ));
+                        (x.blackPlayerId == line.playerId && x.whitePlayerId == candidate.id));
                 if (games.length == amountOfTimesPlayed) {
                     this.makeGame(line.playerId, candidate.id); // make game and do elo calc etc.
                     // remove them from list                 
@@ -98,14 +97,13 @@ export class RoundComponent implements OnInit {
                     hasOpponent = true;
                 }
                 searchIndex += 1;
-                if (searchIndex == candidates.length - 1)
-                {
+                if (searchIndex == candidates.length - 1) {
                     searchIndex = 0;
                     amountOfTimesPlayed += 1;
                 }
             }
         }
-        
+
         // update state of round to generated
         this.selectedRound.roundStatus = this.roundStatus.Generated;
         this.store.dispatch(new roundActions.Update(this.selectedRound.id, this.selectedRound));
@@ -128,10 +126,11 @@ export class RoundComponent implements OnInit {
         // Get playersinround that have not been vrijgeloot, or the least amount of times
         let lootbaar: number[] = [];
         let amountOfTimesFree: number = 0;
+        let playersVrijgeloot = this.competitonRounds.map(x => x.playerVrijgeloot);
 
         while (lootbaar.length == 0) {
             playersInRound.forEach(p => {
-                if (this.countOccurences(this.competition.vrijgeloot, p.id) == amountOfTimesFree)
+                if (this.countOccurences(playersVrijgeloot, p.id) == amountOfTimesFree)
                     lootbaar.push(p.id);
             })
 
@@ -139,13 +138,13 @@ export class RoundComponent implements OnInit {
         }
 
         let vrijgeloot = lootbaar[Math.floor(Math.random() * lootbaar.length)];
-        this.competition.vrijgeloot.push(vrijgeloot);
-        this.store.dispatch(new competitionActions.Update(this.competition.id, this.competition));
+        this.selectedRound.playerVrijgeloot = vrijgeloot;
+        this.store.dispatch(new roundActions.Update(this.selectedRound.id, this.selectedRound));
 
         return vrijgeloot;
     }
 
-    private makeGame(player1: number, player2: number) {        
+    private makeGame(player1: number, player2: number) {
         // calculate ELO and CP changes and store with game        
         let game: Game = {
             id: undefined,
@@ -166,7 +165,7 @@ export class RoundComponent implements OnInit {
             blackWinCpChange: undefined,
             blackDrawCpChange: undefined,
             blackLossCpChange: undefined
-        };        
+        };
 
         // Decide white and black
         let player1Whites = this.games.filter(g => g.whitePlayerId == player1).length;
@@ -187,15 +186,15 @@ export class RoundComponent implements OnInit {
         //console.log(`white: ${whitePlayer.firstName.concat(' ').concat(whitePlayer.lastName)} - black: ${blackPlayer.firstName.concat(' ').concat(blackPlayer.lastName)}`)
         // for white
         let whiteEloDiff = whitePlayer.clubElo - blackPlayer.clubElo;
-        let whiteZScore = whiteEloDiff / (200 * 10/7); // 200 * 10/7 is KNSB implementation of 200 * squareroot 2
+        let whiteZScore = whiteEloDiff / (200 * 10 / 7); // 200 * 10/7 is KNSB implementation of 200 * squareroot 2
         let whiteWinChance = normal.cdf(whiteZScore);
         game.whiteWinEloChange = k * (1 - whiteWinChance)
         game.whiteDrawEloChange = k * (0.5 - whiteWinChance)
         game.whiteLossEloChange = k * (0 - whiteWinChance)
-        
+
         // for black
         let blackEloDiff = blackPlayer.clubElo - whitePlayer.clubElo;
-        let blackZScore = blackEloDiff / (200 * 10/7); // 200 * 10/7 is KNSB implementation of 200 * squareroot 2
+        let blackZScore = blackEloDiff / (200 * 10 / 7); // 200 * 10/7 is KNSB implementation of 200 * squareroot 2
         let blackWinChance = normal.cdf(blackZScore);
         game.blackWinEloChange = k * (1 - blackWinChance)
         game.blackDrawEloChange = k * (0.5 - blackWinChance)
@@ -206,16 +205,16 @@ export class RoundComponent implements OnInit {
         let winMax = 40;
         let winMin = 20;
         let lossMin = -20;
-        let lossMax = -40;        
+        let lossMax = -40;
 
-        game.whiteWinCpChange = game.whiteWinEloChange * 2 > winMax ? winMax :  game.whiteWinEloChange * 2 < winMin ? winMin : game.whiteWinEloChange * 2;
+        game.whiteWinCpChange = game.whiteWinEloChange * 2 > winMax ? winMax : game.whiteWinEloChange * 2 < winMin ? winMin : game.whiteWinEloChange * 2;
         game.whiteLossCpChange = game.whiteLossEloChange * 2 < lossMax ? lossMax : game.whiteLossEloChange * 2 > lossMin ? lossMin : game.whiteLossEloChange * 2;
         game.whiteDrawCpChange = game.whiteDrawEloChange * 2;
 
-        game.blackWinCpChange = game.blackWinEloChange * 2 > winMax ? winMax :  game.blackWinEloChange * 2 < winMin ? winMin : game.blackWinEloChange * 2;
+        game.blackWinCpChange = game.blackWinEloChange * 2 > winMax ? winMax : game.blackWinEloChange * 2 < winMin ? winMin : game.blackWinEloChange * 2;
         game.blackLossCpChange = game.blackLossEloChange * 2 < lossMax ? lossMax : game.blackLossEloChange * 2 > lossMin ? lossMin : game.blackLossEloChange * 2;
         game.blackDrawCpChange = game.blackDrawEloChange * 2;
-        
+
         // create game
         this.store.dispatch(new gameActions.Create(game));
     }
