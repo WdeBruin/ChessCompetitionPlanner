@@ -75,7 +75,7 @@ export class RoundComponent implements OnInit {
         let standingLines = this.standingLines.filter(x => playerIds.indexOf(x.id) != -1);
         standingLines = this.sortStandingLines(standingLines);
 
-        while (standingLines.length > 0) {
+        while (standingLines.length > 1) {
             let line = standingLines[0];
 
             // Find the closest player that this player didn't play yet, or the least amount of times.            
