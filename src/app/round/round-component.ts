@@ -13,6 +13,8 @@ import * as fromCompetition from '../store/competition/competition.reducer';
 import * as fromStanding from '../store/standing/standing.reducer';
 import * as fromStandingLine from '../store/standing-line/standing-line.reducer';
 import * as fromGame from '../store/game/game.reducer';
+import * as playerActions from '../store/player/player.actions';
+import * as standingLineActions from '../store/standing-line/standing-line.actions';
 import * as roundActions from '../store/round/round.actions';
 import * as competitionActions from '../store/competition/competition.actions';
 import * as gameActions from '../store/game/game.actions';
@@ -30,7 +32,7 @@ import { Normal } from 'distributions';
 export class RoundComponent implements OnInit {
     players$: Observable<Player[]>;
     players: Player[];
-    selectedRound: Round;    
+    selectedRound: Round;
     competitonRounds: Round[];
     competition: Competition;
     standing: Standing;
@@ -39,7 +41,7 @@ export class RoundComponent implements OnInit {
     roundGames: Game[];
 
     public roundStatus = RoundStatus;
-    public displayedColumns = ["wit", "cpWit", "vs", "cpZwart", "zwart"]
+    public displayedColumns = ["wit", "cpWit", "vs", "cpZwart", "zwart", "result"]
 
     constructor(private store: Store<AppState>) { }
 
@@ -50,13 +52,89 @@ export class RoundComponent implements OnInit {
         this.store.select(fromRound.selectAll).subscribe(r => {
             this.selectedRound = r.find(x => x.isSelected) || undefined;
             this.competitonRounds = r.filter(x => x.competitionId == this.competition.id);
-        });        
+        });
         this.store.select(fromStanding.selectAll).subscribe(x => this.standing = x.find(c => c.isSelected));
         this.store.select(fromStandingLine.selectAll).subscribe(x => this.standingLines = x.filter(s => s.standingId == this.standing.id));
         this.store.select(fromGame.selectAll).subscribe(x => {
             this.games = x.filter(g => g.competitionId == this.competition.id)
             this.roundGames = x.filter(g => g.competitionId == this.competition.id && g.roundId == this.selectedRound.id)
         });
+    }
+
+    processResult(game: Game, result: number) {
+        // If result is changed undo the old result.
+        if (game.result && game.result != result) {             
+            // Update ELO and CP
+            let whitePlayer = this.players.find(x => x.id == game.whitePlayerId);
+            let whiteStandingLine = this.standingLines.find(x => x.playerId == game.whitePlayerId);
+            let blackPlayer = this.players.find(x => x.id == game.blackPlayerId);
+            let blackStandingLine = this.standingLines.find(x => x.playerId == game.blackPlayerId);
+
+            switch (game.result) {
+                case 1:
+                    whitePlayer.clubElo = whitePlayer.clubElo - game.whiteWinEloChange;
+                    whiteStandingLine.competitionPoints = whiteStandingLine.competitionPoints - game.whiteWinCpChange;
+                    blackPlayer.clubElo = blackPlayer.clubElo - game.blackLossEloChange;
+                    blackStandingLine.competitionPoints = blackStandingLine.competitionPoints - game.blackLossCpChange;
+                    break;
+                case 0.5:
+                    whitePlayer.clubElo = whitePlayer.clubElo - game.whiteDrawEloChange;
+                    whiteStandingLine.competitionPoints = whiteStandingLine.competitionPoints - game.whiteDrawCpChange;
+                    blackPlayer.clubElo = blackPlayer.clubElo - game.blackDrawEloChange;
+                    blackStandingLine.competitionPoints = blackStandingLine.competitionPoints - game.blackDrawCpChange;
+                    break;
+                case 0:
+                    whitePlayer.clubElo = whitePlayer.clubElo - game.whiteLossEloChange;
+                    whiteStandingLine.competitionPoints = whiteStandingLine.competitionPoints - game.whiteLossCpChange;
+                    blackPlayer.clubElo = blackPlayer.clubElo - game.blackWinEloChange;
+                    blackStandingLine.competitionPoints = blackStandingLine.competitionPoints - game.blackWinCpChange;
+                    break;
+            }
+
+            this.store.dispatch(new playerActions.Update(game.whitePlayerId, whitePlayer));
+            this.store.dispatch(new playerActions.Update(game.blackPlayerId, blackPlayer));
+            this.store.dispatch(new standingLineActions.Update(game.whitePlayerId, whiteStandingLine));
+            this.store.dispatch(new standingLineActions.Update(game.blackPlayerId, blackStandingLine));
+        }
+
+        // now only if result is new or changed, update stuff.
+        if (game.result != result) {            
+            game.result = result;
+
+            // Update ELO and CP
+            let whitePlayer = this.players.find(x => x.id == game.whitePlayerId);
+            let whiteStandingLine = this.standingLines.find(x => x.playerId == game.whitePlayerId);
+            let blackPlayer = this.players.find(x => x.id == game.blackPlayerId);
+            let blackStandingLine = this.standingLines.find(x => x.playerId == game.blackPlayerId);
+
+            switch (game.result) {
+                case 1:
+                    whitePlayer.clubElo = whitePlayer.clubElo + game.whiteWinEloChange;
+                    whiteStandingLine.competitionPoints = whiteStandingLine.competitionPoints + game.whiteWinCpChange;
+                    blackPlayer.clubElo = blackPlayer.clubElo + game.blackLossEloChange;
+                    blackStandingLine.competitionPoints = blackStandingLine.competitionPoints + game.blackLossCpChange;
+                    break;
+                case 0.5:
+                    whitePlayer.clubElo = whitePlayer.clubElo + game.whiteDrawEloChange;
+                    whiteStandingLine.competitionPoints = whiteStandingLine.competitionPoints + game.whiteDrawCpChange;
+                    blackPlayer.clubElo = blackPlayer.clubElo + game.blackDrawEloChange;
+                    blackStandingLine.competitionPoints = blackStandingLine.competitionPoints + game.blackDrawCpChange;
+                    break;
+                case 0:
+                    whitePlayer.clubElo = whitePlayer.clubElo + game.whiteLossEloChange;
+                    whiteStandingLine.competitionPoints = whiteStandingLine.competitionPoints + game.whiteLossCpChange;
+                    blackPlayer.clubElo = blackPlayer.clubElo + game.blackWinEloChange;
+                    blackStandingLine.competitionPoints = blackStandingLine.competitionPoints + game.blackWinCpChange;
+                    break;
+            }
+
+            // Update state for both players, in competition and clubelo
+            this.store.dispatch(new playerActions.Update(game.whitePlayerId, whitePlayer));
+            this.store.dispatch(new playerActions.Update(game.blackPlayerId, blackPlayer));
+            this.store.dispatch(new standingLineActions.Update(game.whitePlayerId, whiteStandingLine));
+            this.store.dispatch(new standingLineActions.Update(game.blackPlayerId, blackStandingLine));
+            this.store.dispatch(new gameActions.Update(game.id, game));
+        }
     }
 
     generateGames(): void {
@@ -66,7 +144,7 @@ export class RoundComponent implements OnInit {
 
         // If necessary, remove one as "vrijgeloot" and save that to the round
         if (playersInRound.length % 2 == 1) {
-            let vrijgeloot = this.vrijLoting(playersInRound);            
+            let vrijgeloot = this.vrijLoting(playersInRound);
             playersInRound = playersInRound.filter(p => p.id != vrijgeloot);
         }
 
@@ -243,5 +321,9 @@ export class RoundComponent implements OnInit {
     public getName(playerId: number): string {
         let player = this.players.find(x => x.id == playerId);
         return `${player.firstName} ${player.lastName}`;
+    }
+
+    public getResultDisplay(result: number): string {
+        return result == 1 ? "1-0" : result == 0.5 ? "0,5-0,5" : result == 0 ? "0-1" : "-";
     }
 }

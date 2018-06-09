@@ -3,5 +3,5 @@ export interface StandingLine {
     standingId: number;
     position: number | undefined;    
     playerId: number;
-    competitionPoints: Number;    
+    competitionPoints: number;    
 }

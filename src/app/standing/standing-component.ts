@@ -24,7 +24,8 @@ export class StandingComponent implements OnInit {
 
     ngOnInit(): void {
         this.store.select(fromStanding.selectAll).subscribe(x => this.standing = x.find(s => s.isSelected));
-        this.store.select(fromStandingLine.selectAll).subscribe(x => this.standingLines = x.filter(s => s.standingId == this.standing.id));
+        this.store.select(fromStandingLine.selectAll).subscribe(x => this.standingLines = x.filter(s => s.standingId == this.standing.id)
+        .sort((a,b) => b.competitionPoints - a.competitionPoints));
         this.store.select(fromPlayer.selectAll).subscribe(x => this.players = x);
     }
 
