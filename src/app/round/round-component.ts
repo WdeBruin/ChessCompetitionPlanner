@@ -46,11 +46,11 @@ export class RoundComponent implements OnInit {
     ngOnInit(): void {
         this.players$ = this.store.select(fromPlayer.selectAll);
         this.players$.subscribe(x => this.players = x);
+        this.store.select(fromCompetition.selectAll).subscribe(x => this.competition = x.find(c => c.isSelected));
         this.store.select(fromRound.selectAll).subscribe(r => {
             this.selectedRound = r.find(x => x.isSelected) || undefined;
             this.competitonRounds = r.filter(x => x.competitionId == this.competition.id);
-        });
-        this.store.select(fromCompetition.selectAll).subscribe(x => this.competition = x.find(c => c.isSelected));
+        });        
         this.store.select(fromStanding.selectAll).subscribe(x => this.standing = x.find(c => c.isSelected));
         this.store.select(fromStandingLine.selectAll).subscribe(x => this.standingLines = x.filter(s => s.standingId == this.standing.id));
         this.store.select(fromGame.selectAll).subscribe(x => {
