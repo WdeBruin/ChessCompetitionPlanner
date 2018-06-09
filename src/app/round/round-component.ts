@@ -41,7 +41,8 @@ export class RoundComponent implements OnInit {
     roundGames: Game[];
 
     public roundStatus = RoundStatus;
-    public displayedColumns = ["wit", "cpWit", "vs", "cpZwart", "zwart", "result"]
+    // public displayedColumns = ["wit", "cpWit", "vs", "cpZwart", "zwart", "result"]
+    public displayedColumns = ["wit", "vs", "zwart", "result"]
 
     constructor(private store: Store<AppState>) { }
 
@@ -63,7 +64,7 @@ export class RoundComponent implements OnInit {
 
     processResult(game: Game, result: number) {
         // If result is changed undo the old result.
-        if (game.result && game.result != result) {             
+        if (game.result != undefined && game.result != result) {             
             // Update ELO and CP
             let whitePlayer = this.players.find(x => x.id == game.whitePlayerId);
             let whiteStandingLine = this.standingLines.find(x => x.playerId == game.whitePlayerId);
