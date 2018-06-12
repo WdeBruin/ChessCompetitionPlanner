@@ -1,55 +1,25 @@
 import * as actions from './player.actions';
 import { EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeatureSelector } from '@ngrx/store';
-import { Player } from 'src/app/store/player/player.interface';
+import { Player } from './player.interface';
 
 // Entity adapter
 export const playerAdapter = createEntityAdapter<Player>();
 export interface State extends EntityState<Player> { }
 
 // Default data / initial state
-const defaultPlayer = {
-  ids: [0, 1, 2, 3],
-  entities: {
-    0: {
-      id: 0,
-      firstName: "Jan",
-      lastName: "Steen",
-      clubElo: 1000
-    },
-    1: {
-      id: 1,
-      firstName: "Jaap",
-      lastName: "Schaar",
-      clubElo: 900
-    },
-    2: {
-      id: 2,
-      firstName: "Henk",
-      lastName: "Verhaag",
-      clubElo: 400
-    },
-    3: {
-      id: 3,
-      firstName: "Piet",
-      lastName: "Paal",
-      clubElo: 650
-    }
-  }
-}
-
+const defaultPlayer = { }
 export const initialState: State = playerAdapter.getInitialState(defaultPlayer);
-
-// Reducer
 
 export function PlayerReducer(
   state: State = initialState,
   action: actions.PlayerActions) {
 
   switch (action.type) {
-
-    case actions.CREATE_PLAYER:
-      action.player.id = state.ids.length;
+    case actions.GET_PLAYERS_SUCCESS:
+     return playerAdapter.addAll(action.players, state);
+    
+    case actions.CREATE_PLAYER_SUCCESS:      
       return playerAdapter.addOne(action.player, state);
 
     case actions.UPDATE_PLAYER:
