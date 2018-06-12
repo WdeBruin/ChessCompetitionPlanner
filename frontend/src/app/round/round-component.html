@@ -1,0 +1,61 @@
+<mat-card *ngIf="selectedRound?.roundStatus == roundStatus.PlayerSelect">
+    <h3>Ronde {{selectedRound.roundNumber}}</h3>
+    <mat-selection-list #players>
+        <mat-list-option *ngFor="let player of players$ | async" (click)="toggle(player.id)">
+            {{player.firstName}} {{player.lastName}}
+        </mat-list-option>
+    </mat-selection-list>
+    <button mat-button class="custombutton" (click)="generateGames()">Genereer</button>
+</mat-card>
+
+<mat-card *ngIf="selectedRound?.roundStatus == roundStatus.Generated">
+    <span *ngIf="selectedRound.playerVrijgeloot">Vrijgeloot: {{getName(selectedRound?.playerVrijgeloot)}}</span>
+    <table mat-table [dataSource]="roundGames">
+        <ng-container matColumnDef="wit">
+            <th mat-header-cell *matHeaderCellDef>Wit</th>
+            <td mat-cell *matCellDef="let game">
+                <button class="custombutton" (click)="processResult(game, 1)">1-0</button>
+                {{getName(game.whitePlayerId)}}
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="cpWit">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let game">{{game.whiteWinCpChange | number:'1.1-1'}} {{game.whiteDrawCpChange | number:'1.1-1'}} {{game.whiteLossCpChange | number:'1.1-1'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="vs">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let game">
+                    vs.
+                    <button class="custombutton" (click)="processResult(game, 0.5)">0,5</button>
+                </td>
+        </ng-container>
+        <ng-container matColumnDef="cpZwart">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let game">{{game.blackWinCpChange | number:'1.1-1'}} {{game.blackDrawCpChange | number:'1.1-1'}} {{game.blackLossCpChange | number:'1.1-1'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="zwart">
+            <th mat-header-cell *matHeaderCellDef>Zwart</th>
+            <td mat-cell *matCellDef="let game">
+                {{getName(game.blackPlayerId)}}
+                <button class="custombutton" (click)="processResult(game, 0)">0-1</button>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="result">
+                <th mat-header-cell *matHeaderCellDef>Uitslag</th>
+                <td mat-cell *matCellDef="let game">
+                    {{getResultDisplay(game.result)}}                    
+                </td>
+            </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</mat-card>
+
+<mat-card *ngIf="selectedRound?.roundStatus == roundStatus.Done">
+
+</mat-card>
+
+<mat-card>
+    <standing-component></standing-component>
+</mat-card>

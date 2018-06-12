@@ -1,0 +1,29 @@
+<form (ngSubmit)="save()" #playerForm="ngForm">
+    <table cellspacing="0">
+        <tr>
+            <td>
+                <mat-form-field>
+                    <input matInput placeholder="Voornaam" required
+                    type="text" [(ngModel)]="model.firstName" name="firstName">
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <input matInput placeholder="Achternaam" required
+                    type="text" [(ngModel)]="model.lastName" name="lastName">
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field>
+                    <input matInput placeholder="Elo" required
+                    type="text" [(ngModel)]="model.clubElo" name="clubElo">
+                </mat-form-field>
+            </td>
+            <td>
+                <button type="submit">
+                    <mat-icon style="color:blue">save</mat-icon>
+                </button>
+            </td>
+        </tr>
+    </table>
+</form>
