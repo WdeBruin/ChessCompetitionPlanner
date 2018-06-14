@@ -1,5 +1,5 @@
 import { Action } from "@ngrx/store";
-import { Competition } from "./competition.reducer";
+import { Competition } from "./competition.interface";
 
 export const CREATE_COMPETITION     = '[Competitions] Create'
 export const UPDATE_COMPETITION     = '[Competitions] Update'

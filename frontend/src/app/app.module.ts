@@ -9,7 +9,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatMenuModule, MatIconModule, MatButtonModule, MatCardModule 
- , MatInputModule, MatListModule, MatTableModule} from '@angular/material';
+ , MatInputModule, MatListModule, MatTableModule, MatToolbarModule} from '@angular/material';
 import { DashboardComponent } from './dashboard/dashboard-component';
 import { PlayersComponent } from './players/players-component';
 import { RoundComponent } from './round/round-component';
@@ -19,6 +19,9 @@ import { PlayerFormComponent } from './players/player-form/player-form.component
 import { StandingComponent } from './standing/standing-component';
 import { PlayerEffects } from './store/player/player.effects';
 import { PlayerService } from './shared/player.service';
+import { CompetitionSelectComponent } from './competition-select/competition-select.component';
+import { ToolbarComponent } from './toolbar/toolbar.component';
+import { CompetitionFormComponent } from './competition-select/competition-form/competition-form.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,10 @@ import { PlayerService } from './shared/player.service';
     PlayerFormComponent,
     RoundComponent,
     CompetitionComponent,
-    StandingComponent
+    StandingComponent,
+    CompetitionSelectComponent,
+    CompetitionFormComponent,
+    ToolbarComponent
   ],
   imports: [
     BrowserModule,
@@ -43,6 +49,7 @@ import { PlayerService } from './shared/player.service';
     MatInputModule,
     MatListModule,
     MatTableModule,
+    MatToolbarModule,
     StoreModule.forRoot(appReducer),
     StoreDevtoolsModule.instrument({
       maxAge: 25

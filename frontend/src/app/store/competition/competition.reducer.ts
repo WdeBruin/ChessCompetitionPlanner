@@ -1,13 +1,7 @@
 import * as actions from './competition.actions';
 import { EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeatureSelector } from '@ngrx/store';
-
-// Main data interface
-export interface Competition {
-    id: number,
-    name: string,
-    isSelected: boolean    
-}
+import { Competition } from './competition.interface';
 
 // Entity adapter
 export const competitionAdapter = createEntityAdapter<Competition>();
@@ -21,11 +15,13 @@ const defaultCompetition = {
             id: 0,
             name: "Winter 2018",
             isSelected: false,
+            roundCount: 5,
         },
         1: {
             id: 1,
             name: "Voorjaar 2018",
             isSelected: true,
+            roundCount: 0
         }
     }
 }

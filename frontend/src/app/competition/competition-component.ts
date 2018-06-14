@@ -18,14 +18,15 @@ import { RoundStatus } from 'src/app/store/round/round-status.enum';
 import { Standing } from 'src/app/store/standing/standing.interface';
 import { Player } from 'src/app/store/player/player.interface';
 import { StandingLine } from 'src/app/store/standing-line/standing-line.interface';
+import { Competition } from '../store/competition/competition.interface';
 
 @Component({
     templateUrl: "competition-component.html"
 })
 export class CompetitionComponent implements OnInit {
-    public competitions$: Observable<fromCompetition.Competition[]>;    
+    public competitions$: Observable<Competition[]>;    
     public rounds: Round[];
-    public selectedCompetition: fromCompetition.Competition;
+    public selectedCompetition: Competition;
     public roundStanding: Standing | undefined;
     public roundId: number | undefined;
     public players: Player[];
