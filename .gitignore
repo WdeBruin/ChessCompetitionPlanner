@@ -33,6 +33,9 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+api/ChessCompetitionApi/bin/
+api/ChessCompetitionApi/obj/
+api/.vs/
 
 # System Files
 .DS_Store
