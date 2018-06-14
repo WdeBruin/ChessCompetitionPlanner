@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Effect, Actions, ofType } from "@ngrx/effects";
+import { Effect, Actions } from "@ngrx/effects";
 import * as playerActions from "./player.actions";
 import { Observable } from 'rxjs/Observable';
 import { Action } from '@ngrx/store';
-import { GET_PLAYERS } from './player.actions';
 import { PlayerService } from '../../shared/player.service';
-import { mergeMap, map, catchError, switchMap, retry } from 'rxjs/operators';
-import { HttpErrorResponse } from '@angular/common/http';
+import { map, catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 
 @Injectable()

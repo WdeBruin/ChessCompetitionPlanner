@@ -1,6 +1,6 @@
 <toolbar></toolbar>
 
-<div class="square" *ngFor="let competition of (competitions$ | async)">
+<div class="square" *ngFor="let competition of (competitions$ | async)" (click)="navigate(competition.id)">
     <div class="content text">
         <h1>{{competition.name}}</h1>
         <span>{{competition.roundCount}} rondes</span>    

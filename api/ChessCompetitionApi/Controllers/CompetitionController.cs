@@ -11,56 +11,56 @@ namespace ChessCompetitionApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlayerController : ControllerBase
+    public class CompetitionController : ControllerBase
     {
         private readonly CompetitionDbContext _context;
 
-        public PlayerController(CompetitionDbContext context)
+        public CompetitionController(CompetitionDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Player
+        // GET: api/Competition
         [HttpGet]
-        public IEnumerable<Player> GetPlayers()
+        public IEnumerable<Competition> GetCompetitions()
         {
-            return _context.Players;
+            return _context.Competitions;
         }
 
-        // GET: api/Player/5
+        // GET: api/Competition/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPlayer([FromRoute] int id)
+        public async Task<IActionResult> GetCompetition([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var player = await _context.Players.FindAsync(id);
+            var competition = await _context.Competitions.FindAsync(id);
 
-            if (player == null)
+            if (competition == null)
             {
                 return NotFound();
             }
 
-            return Ok(player);
+            return Ok(competition);
         }
 
-        // PUT: api/Player/5
+        // PUT: api/Competition/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlayer([FromRoute] int id, [FromBody] Player player)
+        public async Task<IActionResult> PutCompetition([FromRoute] int id, [FromBody] Competition competition)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != player.Id)
+            if (id != competition.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(player).State = EntityState.Modified;
+            _context.Entry(competition).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +68,7 @@ namespace ChessCompetitionApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PlayerExists(id))
+                if (!CompetitionExists(id))
                 {
                     return NotFound();
                 }
@@ -81,46 +81,45 @@ namespace ChessCompetitionApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Player
+        // POST: api/Competition
         [HttpPost]
-        public async Task<IActionResult> PostPlayer([FromBody] Player player)
+        public async Task<IActionResult> PostCompetition([FromBody] Competition competition)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Players.Add(player);
+            _context.Competitions.Add(competition);
             await _context.SaveChangesAsync();
 
-            //return CreatedAtAction("GetPlayer", new { id = player.Id }, player);
-            return Ok(player);
+            return Ok(competition);
         }
 
-        // DELETE: api/Player/5
+        // DELETE: api/Competition/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePlayer([FromRoute] int id)
+        public async Task<IActionResult> DeleteCompetition([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var player = await _context.Players.FindAsync(id);
-            if (player == null)
+            var competition = await _context.Competitions.FindAsync(id);
+            if (competition == null)
             {
                 return NotFound();
             }
 
-            _context.Players.Remove(player);
+            _context.Competitions.Remove(competition);
             await _context.SaveChangesAsync();
 
-            return Ok(player);
+            return Ok(competition);
         }
 
-        private bool PlayerExists(int id)
+        private bool CompetitionExists(int id)
         {
-            return _context.Players.Any(e => e.Id == id);
+            return _context.Competitions.Any(e => e.Id == id);
         }
     }
 }

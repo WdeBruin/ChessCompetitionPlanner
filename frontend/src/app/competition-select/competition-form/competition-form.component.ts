@@ -23,6 +23,12 @@ export class CompetitionFormComponent implements OnInit {
   constructor(private store: Store<fromCompetition.State>) { }  
 
   save() {    
-    //this.store.dispatch(new actions.Create(this.model));
+    this.store.dispatch(new actions.Create(this.model));  
+    this.model = {
+      id: 0,
+      isSelected: false,
+      name: undefined,
+      roundCount: 0
+    }
   }
 }

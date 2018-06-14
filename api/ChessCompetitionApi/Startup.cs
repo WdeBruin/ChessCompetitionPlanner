@@ -29,7 +29,7 @@ namespace ChessCompetitionApi
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration["Sql"];
-            services.AddDbContext<CompetitionDb>(options =>
+            services.AddDbContext<CompetitionDbContext>(options =>
                 options.UseSqlite("Data Source=ChessCompetitionApi.db")
             );
 

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChessCompetitionApi.Migrations
 {
-    [DbContext(typeof(CompetitionDb))]
+    [DbContext(typeof(CompetitionDbContext))]
     [Migration("20180614182339_initial")]
     partial class initial
     {

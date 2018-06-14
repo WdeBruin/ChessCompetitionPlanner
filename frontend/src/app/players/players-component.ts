@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/store/appstate.interface';
 import * as playerActions from '../store/player/player.actions';
 import * as fromPlayer from '../store/player/player.reducer';
 import { Player } from 'src/app/store/player/player.interface';

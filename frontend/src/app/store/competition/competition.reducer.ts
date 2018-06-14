@@ -8,24 +8,7 @@ export const competitionAdapter = createEntityAdapter<Competition>();
 export interface State extends EntityState<Competition> { }
 
 // Default data / initial state
-const defaultCompetition = {
-    ids: [0, 1],
-    entities: {
-        0: {
-            id: 0,
-            name: "Winter 2018",
-            isSelected: false,
-            roundCount: 5,
-        },
-        1: {
-            id: 1,
-            name: "Voorjaar 2018",
-            isSelected: true,
-            roundCount: 0
-        }
-    }
-}
-
+const defaultCompetition = {}
 export const initialState: State = competitionAdapter.getInitialState(defaultCompetition);
 
 // Reducer
@@ -34,18 +17,11 @@ export function CompetitionReducer(
     action: actions.CompetitionActions) {
 
     switch (action.type) {
-        case actions.CREATE_COMPETITION:
-            action.competition.id = state.ids.length;
+        case actions.GET_COMPETITIONS_SUCCESS:
+            return competitionAdapter.addAll(action.competitions, state);
+
+        case actions.CREATE_COMPETITION_SUCCESS:
             return competitionAdapter.addOne(action.competition, state);
-
-        case actions.UPDATE_COMPETITION:
-            return competitionAdapter.updateOne({
-                id: action.id,
-                changes: action.changes,
-            }, state);
-
-        case actions.DELETE_COMPETITION:
-            return competitionAdapter.removeOne(action.id, state)
 
         default:
             return state;
@@ -60,4 +36,4 @@ export const {
     selectEntities,
     selectAll,
     selectTotal,
-  } = competitionAdapter.getSelectors(getCompetitionState);
+} = competitionAdapter.getSelectors(getCompetitionState);

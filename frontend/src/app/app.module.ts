@@ -22,6 +22,8 @@ import { PlayerService } from './shared/player.service';
 import { CompetitionSelectComponent } from './competition-select/competition-select.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { CompetitionFormComponent } from './competition-select/competition-form/competition-form.component';
+import { CompetitionService } from './shared/competition.service';
+import { CompetitionEffects } from './store/competition/competition.effects';
 
 @NgModule({
   declarations: [
@@ -56,12 +58,14 @@ import { CompetitionFormComponent } from './competition-select/competition-form/
     }),
     EffectsModule.forRoot(
       [
-        PlayerEffects
+        PlayerEffects,
+        CompetitionEffects
       ]
     ),
   ],
   providers: [
-    PlayerService
+    PlayerService,
+    CompetitionService
   ],
   bootstrap: [AppComponent]
 })

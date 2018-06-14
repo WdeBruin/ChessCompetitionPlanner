@@ -1,3 +1,4 @@
+import { environment } from '../..//environments/environment';
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs/Observable";
@@ -9,7 +10,7 @@ export class PlayerService
     private apiEndpoint: string;
 
     constructor(private readonly http: HttpClient) {        
-        this.apiEndpoint = "http://localhost:5000/api" // todo make configurable.
+        this.apiEndpoint = environment.api;
     }
 
     public getAllPlayers(): Observable<Player[]> {
