@@ -1,8 +1,8 @@
 <toolbar></toolbar>
 <mat-card>
-    <h3>{{selectedCompetition.name}}</h3>
+    <h3>{{selectedCompetition?.name}}</h3>
     <span *ngFor="let round of rounds">        
-        <button (click)=selectRound(round) mat-mini-fab color="accent" class="roundButton">{{round.roundNumber}}</button>
+        <button (click)=selectRound(round) mat-mini-fab color="accent" class="roundButton">{{round?.roundNumber}}</button>
     </span>
     <span>
         <button (click)="createRound()" mat-mini-fab color="accent" class="roundButton">+</button>

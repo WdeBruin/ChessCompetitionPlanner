@@ -19,26 +19,33 @@ import { Standing } from 'src/app/store/standing/standing.interface';
 import { Player } from 'src/app/store/player/player.interface';
 import { StandingLine } from 'src/app/store/standing-line/standing-line.interface';
 import { Competition } from '../store/competition/competition.interface';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     templateUrl: "competition-component.html"
 })
 export class CompetitionComponent implements OnInit {
-    public competitions$: Observable<Competition[]>;    
+    public competitionId: number;
+
     public rounds: Round[];
     public selectedCompetition: Competition;
     public roundStanding: Standing | undefined;
     public roundId: number | undefined;
     public players: Player[];
 
-    constructor(private store: Store<AppState>) { }
+    constructor(private store: Store<AppState>, private route: ActivatedRoute) {
+    }
 
     ngOnInit(): void {
-        this.competitions$ = this.store.select(fromCompetition.selectAll);     
-        this.competitions$.subscribe(c => 
-            this.selectedCompetition =  c.find(x => x.isSelected) || undefined
-        )
-        this.store.select(fromRound.selectAll).subscribe(x => this.rounds = x.filter(f => f.competitionId == this.selectedCompetition.id));        
+        this.route.params.subscribe(params => {
+            if (params.id) {
+                this.competitionId = params.id;
+                this.store.dispatch(new competitionActions.GetById(this.competitionId));
+            }
+        });
+
+        this.store.select(fromCompetition.selectAll).subscribe(x => this.selectedCompetition = x.find(c => c.id == this.competitionId));
+        this.store.select(fromRound.selectAll).subscribe(x => this.rounds = x.filter(f => f.competitionId == this.selectedCompetition.id));
         this.store.select(fromStanding.selectAll).subscribe(x => this.roundStanding = x.find(s => s.competitionId == this.selectedCompetition.id && s.roundId == this.roundId) || undefined)
         this.store.select(fromPlayer.selectAll).subscribe(x => this.players = x);
     }
@@ -47,11 +54,11 @@ export class CompetitionComponent implements OnInit {
         this.roundId = this.rounds.length;
 
         // round create
-        const round: Round = {            
-            id: this.roundId,            
+        const round: Round = {
+            id: this.roundId,
             roundNumber: undefined,
             isSelected: true,
-            playersInRoundIds: [],            
+            playersInRoundIds: [],
             roundStatus: RoundStatus.PlayerSelect,
             competitionId: this.selectedCompetition.id,
             playerVrijgeloot: undefined

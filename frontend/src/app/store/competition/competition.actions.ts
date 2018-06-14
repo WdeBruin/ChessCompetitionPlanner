@@ -4,6 +4,8 @@ import { Competition } from "./competition.interface";
 export const COMPETITION_ERROR = '[Competitions] OOPS';
 export const GET_COMPETITIONS = '[Competitions] Get all';
 export const GET_COMPETITIONS_SUCCESS = '[Competitions] Get all -- OK';
+export const GET_COMPETITION_BY_ID = '[Competitions] Get by id';
+export const GET_COMPETITION_BY_ID_SUCCESS = '[Competitions] Get by id -- OK';
 export const CREATE_COMPETITION = '[Competitions] Create';
 export const CREATE_COMPETITION_SUCCESS = '[Competitions] Create -- OK';
 
@@ -17,6 +19,16 @@ export class Get implements Action {
 export class GetSuccess implements Action {
     readonly type = GET_COMPETITIONS_SUCCESS;
     constructor(public competitions: Competition[]) { }
+}
+
+export class GetById implements Action {
+    readonly type = GET_COMPETITION_BY_ID;
+    constructor(public id: number) { }
+}
+
+export class GetByIdSuccess implements Action {
+    readonly type = GET_COMPETITION_BY_ID_SUCCESS;
+    constructor(public competition: Competition) { }
 }
 
 export class CompetitionError implements Action {
@@ -50,6 +62,8 @@ export class Delete implements Action {
 export type CompetitionActions
     = Get 
     | GetSuccess
+    | GetById
+    | GetByIdSuccess
     | CompetitionError
     | Create
     | CreateSuccess

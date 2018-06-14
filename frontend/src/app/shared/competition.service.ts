@@ -17,6 +17,10 @@ export class CompetitionService
         return this.http.get<Competition[]>(`${this.apiEndpoint}/competition`);
     }
 
+    public getCompetition(id: number): Observable<Competition> {
+        return this.http.get<Competition>(`${this.apiEndpoint}/competition/${id}`);
+    }
+
     public addCompetition(competition: Competition): Observable<Competition> {
         return this.http.post<Competition>(`${this.apiEndpoint}/competition`, competition);
     }

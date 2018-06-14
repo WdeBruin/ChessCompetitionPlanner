@@ -20,6 +20,9 @@ export function CompetitionReducer(
         case actions.GET_COMPETITIONS_SUCCESS:
             return competitionAdapter.addAll(action.competitions, state);
 
+        case actions.GET_COMPETITION_BY_ID_SUCCESS:
+            return competitionAdapter.addOne(action.competition, state);
+
         case actions.CREATE_COMPETITION_SUCCESS:
             return competitionAdapter.addOne(action.competition, state);
 

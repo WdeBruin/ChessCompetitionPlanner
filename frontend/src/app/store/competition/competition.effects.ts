@@ -23,6 +23,16 @@ export class CompetitionEffects {
         );
 
     @Effect()
+    public getCompetitionById: Observable<Action> = this.actions
+        .ofType<competitionActions.GetById>(competitionActions.GET_COMPETITION_BY_ID)
+        .pipe(
+            switchMap(action => this.competitionService.getCompetition(action.id).pipe(
+                map(competition => new competitionActions.GetByIdSuccess(competition)),
+                catchError(error => this.handleError(error))
+            ))
+        );
+
+    @Effect()
     public addCompetition: Observable<Action> = this.actions
         .ofType<competitionActions.Create>(competitionActions.CREATE_COMPETITION)
         .pipe(
