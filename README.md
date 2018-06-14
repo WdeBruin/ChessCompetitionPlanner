@@ -17,4 +17,4 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 The api is an example in .NET Core 2.1. Which allows for very quick scaffolding of CRUD controllers. And generation of database tables with EF. In future we are probably going to run a low hostingcost PHP API.
 
 ## DB
-Database server is a raspberry pi on my desk running MariaDb, test setup like the API
+Database is just SQLite file

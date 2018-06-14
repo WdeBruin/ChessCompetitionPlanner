@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ChessCompetitionApi.Data
 {
-    public class CompetitionDb : IdentityDbContext<Account>
+    public class CompetitionDb : DbContext
     {
         public CompetitionDb(DbContextOptions<CompetitionDb> options) : base(options)
         { }

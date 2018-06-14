@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ChessCompetitionApi.Data.Models;
@@ -21,9 +20,6 @@ namespace ChessCompetitionApi
 {
     public class Startup
     {
-        private const string SecretKey = "BEoWDZfDeIvUfq7MPZYCqqsMLeYJ79D4"; 
-        private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -35,23 +31,10 @@ namespace ChessCompetitionApi
         {
             var connectionString = Configuration["Sql"];
             services.AddDbContext<CompetitionDb>(options =>
-                options.UseMySql(connectionString,
-                    mysqlOptions =>
-                    {
-                        mysqlOptions.ServerVersion(new Version(10, 1, 23), ServerType.MariaDb);
-                    })
+                options.UseSqlite("Data Source=ChessCompetitionApi.db")
             );
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
-
-            services.Configure<JwtIssuerOptions>(options =>
-            {
-                options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
-                options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
-                options.SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
-            });
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);            
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
