@@ -1,0 +1,10 @@
+.roundButton {
+    float:left;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    padding-bottom : 30%; /* = width for a 1:1 aspect ratio */
+    margin: 1.66%;
+    background-color:#3f51b5;
+    overflow:hidden;
+}

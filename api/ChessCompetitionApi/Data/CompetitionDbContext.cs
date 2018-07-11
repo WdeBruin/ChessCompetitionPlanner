@@ -15,5 +15,6 @@ namespace ChessCompetitionApi.Data
 
         public DbSet<Player> Players { get; set; }
         public DbSet<Competition> Competitions { get; set; }
+        public DbSet<Round> Rounds { get; set; }
     }
 }

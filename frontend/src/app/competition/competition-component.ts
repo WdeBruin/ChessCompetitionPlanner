@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/store/appstate.interface';
+import { AppState } from '../store/appstate.interface';
 import 'rxjs/add/operator/map';
 
 import * as competitionActions from '../store/competition/competition.actions';
@@ -13,16 +13,17 @@ import * as fromCompetition from '../store/competition/competition.reducer';
 import * as fromRound from '../store/round/round.reducer';
 import * as fromStanding from '../store/standing/standing.reducer';
 
-import { Round } from 'src/app/store/round/round.interface';
-import { RoundStatus } from 'src/app/store/round/round-status.enum';
-import { Standing } from 'src/app/store/standing/standing.interface';
-import { Player } from 'src/app/store/player/player.interface';
-import { StandingLine } from 'src/app/store/standing-line/standing-line.interface';
+import { Round } from '../store/round/round.interface';
+import { RoundStatus } from '../store/round/round-status.enum';
+import { Standing } from '../store/standing/standing.interface';
+import { Player } from '../store/player/player.interface';
+import { StandingLine } from '../store/standing-line/standing-line.interface';
 import { Competition } from '../store/competition/competition.interface';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    templateUrl: "competition-component.html"
+    templateUrl: "competition-component.html",
+    styleUrls: ['competition.component.css']
 })
 export class CompetitionComponent implements OnInit {
     public competitionId: number;
@@ -51,6 +52,8 @@ export class CompetitionComponent implements OnInit {
     }
 
     createRound(): void {
+
+        
         this.roundId = this.rounds.length;
 
         // round create

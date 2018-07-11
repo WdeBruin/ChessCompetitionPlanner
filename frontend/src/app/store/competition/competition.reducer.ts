@@ -21,6 +21,7 @@ export function CompetitionReducer(
             return competitionAdapter.addAll(action.competitions, state);
 
         case actions.GET_COMPETITION_BY_ID_SUCCESS:
+            action.competition.isSelected = true;
             return competitionAdapter.addOne(action.competition, state);
 
         case actions.CREATE_COMPETITION_SUCCESS:

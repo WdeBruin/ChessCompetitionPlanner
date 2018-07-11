@@ -1,9 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/store/appstate.interface';
-import { Round } from 'src/app/store/round/round.interface';
-import { RoundStatus } from 'src/app/store/round/round-status.enum';
+import { AppState } from '../store/appstate.interface';
+import { Round } from '../store/round/round.interface';
+import { RoundStatus } from '../store/round/round-status.enum';
 import * as fromPlayer from '../store/player/player.reducer';
 import * as fromRound from '../store/round/round.reducer';
 import * as fromCompetition from '../store/competition/competition.reducer';
@@ -14,7 +14,7 @@ import * as playerActions from '../store/player/player.actions';
 import * as standingLineActions from '../store/standing-line/standing-line.actions';
 import * as roundActions from '../store/round/round.actions';
 import * as gameActions from '../store/game/game.actions';
-import { Player } from 'src/app/store/player/player.interface';
+import { Player } from '../store/player/player.interface';
 import { Competition } from '../store/competition/competition.interface';
 import { StandingLine } from '../store/standing-line/standing-line.interface';
 import { Standing } from '../store/standing/standing.interface';
@@ -23,7 +23,8 @@ import { Normal } from 'distributions';
 
 @Component({
     selector: 'round-component',
-    templateUrl: "round-component.html"
+    templateUrl: "round-component.html",
+    styleUrls: ['round.component.css']
 })
 export class RoundComponent implements OnInit {
     players$: Observable<Player[]>;
