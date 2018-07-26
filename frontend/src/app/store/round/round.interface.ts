@@ -4,7 +4,7 @@ export interface Round {
     id: number;
     competitionId: number;
     roundNumber: number;
-    playersInRoundIds: number[];
+    playersInRoundIds: string;
     playerVrijgeloot: number;
     isSelected: boolean;
     roundStatus: RoundStatus;

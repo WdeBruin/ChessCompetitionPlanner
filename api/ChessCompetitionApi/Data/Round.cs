@@ -11,6 +11,8 @@ namespace ChessCompetitionApi.Data
         public int RoundNumber { get; set; }
 
         public string PlayersInRoundIds { get; set; }
-        public int PlayerVrijgeloot { get; set; }        
+        public int PlayerVrijgeloot { get; set; } 
+        
+        public int RoundStatus { get; set; } // enum. 0 is PlayerSelect, 1 is Generated, 2 is Done
     }
 }

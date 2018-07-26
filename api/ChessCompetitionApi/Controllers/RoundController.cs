@@ -21,29 +21,10 @@ namespace ChessCompetitionApi.Controllers
         }
 
         // GET: api/Round
-        [HttpGet]
-        public IEnumerable<Round> GetRounds()
+        [HttpGet("competition/{competitionId}")]
+        public IEnumerable<Round> GetRounds(int competitionId)
         {
-            return _context.Rounds;
-        }
-
-        // GET: api/Round/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetRound([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var round = await _context.Rounds.FindAsync(id);
-
-            if (round == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(round);
+            return _context.Rounds.Where(x => x.CompetitionId == competitionId);
         }
 
         // PUT: api/Round/5
@@ -85,6 +66,9 @@ namespace ChessCompetitionApi.Controllers
         [HttpPost]
         public async Task<IActionResult> PostRound([FromBody] Round round)
         {
+            _context.Rounds.RemoveRange(_context.Rounds.Where(x => x.CompetitionId == 1));
+            await _context.SaveChangesAsync();
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

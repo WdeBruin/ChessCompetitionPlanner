@@ -29,7 +29,6 @@ export class CompetitionComponent implements OnInit {
     public competitionId: number;
 
     public rounds: Round[];
-    public selectedCompetition: Competition;
     public roundStanding: Standing | undefined;
     public roundId: number | undefined;
     public players: Player[];
@@ -42,18 +41,16 @@ export class CompetitionComponent implements OnInit {
             if (params.id) {
                 this.competitionId = params.id;
                 this.store.dispatch(new competitionActions.GetById(this.competitionId));
+                this.store.dispatch(new roundActions.GetRoundsForCompetition(this.competitionId));
             }
         });
 
-        this.store.select(fromCompetition.selectAll).subscribe(x => this.selectedCompetition = x.find(c => c.id == this.competitionId));
-        this.store.select(fromRound.selectAll).subscribe(x => this.rounds = x.filter(f => f.competitionId == this.selectedCompetition.id));
-        this.store.select(fromStanding.selectAll).subscribe(x => this.roundStanding = x.find(s => s.competitionId == this.selectedCompetition.id && s.roundId == this.roundId) || undefined)
+        this.store.select(fromRound.selectAll).subscribe(x => this.rounds = x.filter(f => f.competitionId == this.competitionId));
+        this.store.select(fromStanding.selectAll).subscribe(x => this.roundStanding = x.find(s => s.competitionId == this.competitionId && s.roundId == this.roundId) || undefined)
         this.store.select(fromPlayer.selectAll).subscribe(x => this.players = x);
     }
 
-    createRound(): void {
-
-        
+    createRound(): void {        
         this.roundId = this.rounds.length;
 
         // round create
@@ -61,9 +58,9 @@ export class CompetitionComponent implements OnInit {
             id: this.roundId,
             roundNumber: undefined,
             isSelected: true,
-            playersInRoundIds: [],
+            playersInRoundIds: "",
             roundStatus: RoundStatus.PlayerSelect,
-            competitionId: this.selectedCompetition.id,
+            competitionId: this.competitionId,
             playerVrijgeloot: undefined
         }
         this.store.dispatch(new roundActions.Create(round));
@@ -72,7 +69,7 @@ export class CompetitionComponent implements OnInit {
         const standing: Standing = {
             id: undefined,
             roundId: this.roundId,
-            competitionId: this.selectedCompetition.id,
+            competitionId: this.competitionId,
             isSelected: true
         }
         this.store.dispatch(new standingActions.Create(standing));
@@ -82,7 +79,10 @@ export class CompetitionComponent implements OnInit {
     }
 
     selectRound(roundId: number): void {
-        // select
+        // select round action -> new action
+        // this.store.dispatch(new roundActions.Update(this.roundId, <Partial<Round>> {
+        //     isSelected: true
+        // }))
     }
 
     fillStandings() {

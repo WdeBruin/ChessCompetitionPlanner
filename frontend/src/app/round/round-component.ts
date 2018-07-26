@@ -30,6 +30,7 @@ export class RoundComponent implements OnInit {
     players$: Observable<Player[]>;
     players: Player[];
     selectedRound: Round;
+    roundplayerIds: number[];
     competitonRounds: Round[];
     competition: Competition;
     standing: Standing;
@@ -49,7 +50,12 @@ export class RoundComponent implements OnInit {
         this.store.select(fromCompetition.selectAll).subscribe(x => this.competition = x.find(c => c.isSelected));
         this.store.select(fromRound.selectAll).subscribe(r => {
             this.selectedRound = r.find(x => x.isSelected) || undefined;
-            this.competitonRounds = r.filter(x => x.competitionId == this.competition.id);
+            if(this.selectedRound && this.selectedRound.playersInRoundIds && this.selectedRound.playersInRoundIds.length > 0) {
+                this.roundplayerIds = this.selectedRound.playersInRoundIds.split(',').map(x => +x);
+            }
+            if(this.competition && this.competition.id) {
+                this.competitonRounds = r.filter(x => x.competitionId == this.competition.id);
+            }                
         });
         this.store.select(fromStanding.selectAll).subscribe(x => this.standing = x.find(c => c.isSelected));
         this.store.select(fromStandingLine.selectAll).subscribe(x => this.standingLines = x.filter(s => s.standingId == this.standing.id));
@@ -136,9 +142,8 @@ export class RoundComponent implements OnInit {
     }
 
     generateGames(): void {
-        // Get array of players that participate
-        let playersInRound = this.players.filter(p => this.selectedRound.playersInRoundIds.indexOf(p.id) !== -1)
-        //console.log(playersInRound);
+        // Get array of players that participate 
+        let playersInRound = this.players.filter(p => this.roundplayerIds.indexOf(p.id) !== -1)
 
         // If necessary, remove one as "vrijgeloot" and save that to the round
         if (playersInRound.length % 2 == 1) {
@@ -187,14 +192,14 @@ export class RoundComponent implements OnInit {
 
     toggle(playerId: number) {
         // here action for adding a player to the round
-        //console.log(playerId);
-        let index = this.selectedRound.playersInRoundIds.indexOf(playerId);
+        let index = this.roundplayerIds.indexOf(playerId);
 
         if (index == -1)
-            this.selectedRound.playersInRoundIds.push(playerId);
+            this.roundplayerIds.push(playerId);
         else
-            this.selectedRound.playersInRoundIds.splice(index, 1);
+            this.roundplayerIds.splice(index, 1);
 
+        this.selectedRound.playersInRoundIds = this.roundplayerIds.toString();        
         this.store.dispatch(new roundActions.Update(this.selectedRound.id, this.selectedRound));
     }
 

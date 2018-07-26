@@ -14,6 +14,9 @@ export class RoundService
     }
 
     public getRound(id: number): Observable<Round> {
+        // let backNumbers = converted.split(',').map(x => +x);
+        // let backNumbersString = backNumbers.toString();
+
         return this.http.get<Round>(`${this.apiEndpoint}/round/${id}`);
     }
 
@@ -22,6 +25,9 @@ export class RoundService
     }
 
     public addRound(round: Round): Observable<Round> {
+        // let numbers: Number[] = [1,2,3,4,5]
+        // let converted = numbers.toString();
+
         return this.http.post<Round>(`${this.apiEndpoint}/round`, round);
     }
 

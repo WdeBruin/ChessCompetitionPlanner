@@ -26,16 +26,16 @@ export function RoundReducer(
     case actions.CREATE_ROUND:      
       action.round.roundNumber = getRoundNumber(state, action.round.competitionId)
       return roundAdapter.addOne(action.round, state);
-
     case actions.UPDATE_ROUND:
       return roundAdapter.updateOne({
         id: action.id,
         changes: action.changes,
       }, state);
-
     case actions.DELETE_ROUND:
       return roundAdapter.removeOne(action.id, state)
-
+    case actions.GET_ROUNDS_FOR_COMPETITION_SUCCESS:
+      return action.rounds && action.rounds.length > 0 ?
+         roundAdapter.addAll(action.rounds, state) : state;
     default:
       return state;
   }
