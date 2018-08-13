@@ -11,37 +11,37 @@ namespace ChessCompetitionApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlayerController : ControllerBase
+    public class GameController : ControllerBase
     {
         private readonly CompetitionDbContext _context;
 
-        public PlayerController(CompetitionDbContext context)
+        public GameController(CompetitionDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Player
-        [HttpGet]
-        public IEnumerable<Player> GetPlayers()
+        // GET: api/Game
+        [HttpGet("round/{roundId}")]
+        public IEnumerable<Game> GetGames(int roundId)
         {
-            return _context.Players;
+            return _context.Games.Where(x => x.RoundId == roundId);
         }
-       
-        // PUT: api/Player/5
+
+        // PUT: api/Game/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlayer([FromRoute] int id, [FromBody] Player player)
+        public async Task<IActionResult> PutGame([FromRoute] int id, [FromBody] Game game)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != player.Id)
+            if (id != game.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(player).State = EntityState.Modified;
+            _context.Entry(game).State = EntityState.Modified;
 
             try
             {
@@ -49,7 +49,7 @@ namespace ChessCompetitionApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PlayerExists(id))
+                if (!GameExists(id))
                 {
                     return NotFound();
                 }
@@ -62,45 +62,47 @@ namespace ChessCompetitionApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Player
+        // POST: api/Game
         [HttpPost]
-        public async Task<IActionResult> PostPlayer([FromBody] Player player)
+        public async Task<IActionResult> PostGame([FromBody] Game game)
         {
+            await _context.SaveChangesAsync();
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Players.Add(player);
+            _context.Games.Add(game);
             await _context.SaveChangesAsync();
-                        
-            return Ok(player);
+
+            return Ok(game);
         }
 
-        // DELETE: api/Player/5
+        // DELETE: api/Game/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePlayer([FromRoute] int id)
+        public async Task<IActionResult> DeleteGame([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var player = await _context.Players.FindAsync(id);
-            if (player == null)
+            var game = await _context.Games.FindAsync(id);
+            if (game == null)
             {
                 return NotFound();
             }
 
-            _context.Players.Remove(player);
+            _context.Games.Remove(game);
             await _context.SaveChangesAsync();
 
-            return Ok(player);
+            return Ok(game);
         }
 
-        private bool PlayerExists(int id)
+        private bool GameExists(int id)
         {
-            return _context.Players.Any(e => e.Id == id);
+            return _context.Games.Any(e => e.Id == id);
         }
     }
 }

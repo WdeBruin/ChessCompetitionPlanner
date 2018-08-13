@@ -11,37 +11,37 @@ namespace ChessCompetitionApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlayerController : ControllerBase
+    public class StandingLineController : ControllerBase
     {
         private readonly CompetitionDbContext _context;
 
-        public PlayerController(CompetitionDbContext context)
+        public StandingLineController(CompetitionDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Player
-        [HttpGet]
-        public IEnumerable<Player> GetPlayers()
+        // GET: api/StandingLine
+        [HttpGet("standing/{standingId}")]
+        public IEnumerable<StandingLine> GetStandingLines(int standingId)
         {
-            return _context.Players;
+            return _context.StandingLines.Where(x => x.StandingId == standingId);
         }
-       
-        // PUT: api/Player/5
+
+        // PUT: api/StandingLine/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlayer([FromRoute] int id, [FromBody] Player player)
+        public async Task<IActionResult> PutStandingLine([FromRoute] int id, [FromBody] StandingLine standingLine)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != player.Id)
+            if (id != standingLine.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(player).State = EntityState.Modified;
+            _context.Entry(standingLine).State = EntityState.Modified;
 
             try
             {
@@ -49,7 +49,7 @@ namespace ChessCompetitionApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PlayerExists(id))
+                if (!StandingLineExists(id))
                 {
                     return NotFound();
                 }
@@ -62,45 +62,47 @@ namespace ChessCompetitionApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Player
+        // POST: api/StandingLine
         [HttpPost]
-        public async Task<IActionResult> PostPlayer([FromBody] Player player)
+        public async Task<IActionResult> PostStandingLine([FromBody] StandingLine standingLine)
         {
+            await _context.SaveChangesAsync();
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Players.Add(player);
+            _context.StandingLines.Add(standingLine);
             await _context.SaveChangesAsync();
-                        
-            return Ok(player);
+
+            return Ok(standingLine);
         }
 
-        // DELETE: api/Player/5
+        // DELETE: api/StandingLine/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePlayer([FromRoute] int id)
+        public async Task<IActionResult> DeleteStandingLine([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var player = await _context.Players.FindAsync(id);
-            if (player == null)
+            var standingLine = await _context.StandingLines.FindAsync(id);
+            if (standingLine == null)
             {
                 return NotFound();
             }
 
-            _context.Players.Remove(player);
+            _context.StandingLines.Remove(standingLine);
             await _context.SaveChangesAsync();
 
-            return Ok(player);
+            return Ok(standingLine);
         }
 
-        private bool PlayerExists(int id)
+        private bool StandingLineExists(int id)
         {
-            return _context.Players.Any(e => e.Id == id);
+            return _context.StandingLines.Any(e => e.Id == id);
         }
     }
 }

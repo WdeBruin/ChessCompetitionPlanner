@@ -66,7 +66,6 @@ namespace ChessCompetitionApi.Controllers
         [HttpPost]
         public async Task<IActionResult> PostRound([FromBody] Round round)
         {
-            _context.Rounds.RemoveRange(_context.Rounds.Where(x => x.CompetitionId == 1));
             await _context.SaveChangesAsync();
 
             if (!ModelState.IsValid)
@@ -77,7 +76,7 @@ namespace ChessCompetitionApi.Controllers
             _context.Rounds.Add(round);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetRound", new { id = round.Id }, round);
+            return Ok(round);
         }
 
         // DELETE: api/Round/5
