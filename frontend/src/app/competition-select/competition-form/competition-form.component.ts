@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as actions from '../../store/competition/competition.actions';
-import * as fromCompetition from '../../store/competition/competition.reducer';
-import { OnInit } from '@angular/core';
-import { Competition } from 'src/app/store/competition/competition.interface';
+
+import { Competition, IAppState } from '../../store';
+import * as competitionActions from '../../store/competition/competition.actions';
 
 @Component({
   selector: 'competition-form',
@@ -20,10 +19,10 @@ export class CompetitionFormComponent implements OnInit {
   ngOnInit(): void {    
   }
 
-  constructor(private store: Store<fromCompetition.State>) { }  
+  constructor(private store: Store<IAppState>) { }  
 
   save() {    
-    this.store.dispatch(new actions.Create(this.model));  
+    this.store.dispatch(new competitionActions.Create(this.model));  
     this.model = {
       id: 0,
       isSelected: false,
