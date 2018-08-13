@@ -13,7 +13,7 @@ export class CompetitionEffects {
     }
 
     @Effect()
-    public getCompetitions: Observable<Action> = this.actions
+    public getCompetitions$: Observable<Action> = this.actions
         .ofType<competitionActions.Get>(competitionActions.GET_COMPETITIONS)
         .pipe(
             switchMap(action => this.competitionService.getAllCompetitions().pipe(
@@ -23,17 +23,7 @@ export class CompetitionEffects {
         );
 
     @Effect()
-    public getCompetitionById: Observable<Action> = this.actions
-        .ofType<competitionActions.GetById>(competitionActions.GET_COMPETITION_BY_ID)
-        .pipe(
-            switchMap(action => this.competitionService.getCompetition(action.id).pipe(
-                map(competition => new competitionActions.GetByIdSuccess(competition)),
-                catchError(error => this.handleError(error))
-            ))
-        );
-
-    @Effect()
-    public addCompetition: Observable<Action> = this.actions
+    public addCompetition$: Observable<Action> = this.actions
         .ofType<competitionActions.Create>(competitionActions.CREATE_COMPETITION)
         .pipe(
             switchMap(action => this.competitionService.addCompetition(action.competition).pipe(
@@ -41,6 +31,26 @@ export class CompetitionEffects {
                 catchError(error => this.handleError(error))
             ))
         );
+
+    @Effect()
+    public updateCompetition$: Observable<Action> = this.actions
+        .ofType<competitionActions.Update>(competitionActions.UPDATE_COMPETITION)
+        .pipe(
+            switchMap(action => this.competitionService.updateCompetition(action.updatedCompetition).pipe(
+                map(competition => new competitionActions.UpdateSuccess(competition)),
+                catchError(error => this.handleError(error))
+            ))
+        );
+
+    @Effect()
+    public deleteCompetition$: Observable<Action> = this.actions
+        .ofType<competitionActions.Delete>(competitionActions.DELETE_COMPETITION)
+            .pipe(
+                switchMap(action => this.competitionService.deleteCompetition(action.id).pipe(
+                    map(competition => new competitionActions.DeleteSuccess(action.id)),
+                    catchError(error => this.handleError(error))
+                ))
+            );
 
     private handleError(error) {
         return of(new competitionActions.CompetitionError(error));

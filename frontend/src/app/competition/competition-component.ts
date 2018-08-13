@@ -1,61 +1,67 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { AppState } from '../store/appstate.interface';
-import 'rxjs/add/operator/map';
 
+import { Round, Standing, Player, IAppState, roundSelector, Competition, competitionSelector, playerSelector, standingSelector, RoundStatus, StandingLine } from '../store';
+import * as playerActions from '../store/player/player.actions';
 import * as competitionActions from '../store/competition/competition.actions';
 import * as roundActions from '../store/round/round.actions';
 import * as standingActions from '../store/standing/standing.actions';
 import * as standingLineActions from '../store/standing-line/standing-line.actions';
-import * as fromPlayer from '../store/player/player.reducer';
-import * as fromCompetition from '../store/competition/competition.reducer';
-import * as fromRound from '../store/round/round.reducer';
-import * as fromStanding from '../store/standing/standing.reducer';
-
-import { Round } from '../store/round/round.interface';
-import { RoundStatus } from '../store/round/round-status.enum';
-import { Standing } from '../store/standing/standing.interface';
-import { Player } from '../store/player/player.interface';
-import { StandingLine } from '../store/standing-line/standing-line.interface';
-import { Competition } from '../store/competition/competition.interface';
-import { ActivatedRoute } from '@angular/router';
+import { tap } from 'rxjs/operators';
 
 @Component({
     templateUrl: "competition-component.html",
     styleUrls: ['competition.component.css']
 })
 export class CompetitionComponent implements OnInit {
+    public nextRoundId: number;
     public competitionId: number;
-
-    public rounds: Round[];
-    public roundStanding: Standing | undefined;
-    public roundId: number | undefined;
+    public selectedRoundStandingId: number; 
     public players: Player[];
 
-    constructor(private store: Store<AppState>, private route: ActivatedRoute) {
-    }
+    public selectedCompetition$: Observable<Competition>;
+    public selectedRound$: Observable<Round>;
+    public rounds$: Observable<Round[]>;
+    public selectedRoundStanding$: Observable<Standing>;
+    public players$: Observable<Player[]>;
+
+    constructor(private store: Store<IAppState>, private route: ActivatedRoute) { }
 
     ngOnInit(): void {
+        this.store.dispatch(new competitionActions.Get());
+        this.store.dispatch(new playerActions.GetPlayers());
+
         this.route.params.subscribe(params => {
             if (params.id) {
-                this.competitionId = params.id;
-                this.store.dispatch(new competitionActions.GetById(this.competitionId));
-                this.store.dispatch(new roundActions.GetRoundsForCompetition(this.competitionId));
+                this.store.dispatch(new roundActions.Get(params.id));                
+
+                this.selectedCompetition$ = this.store.select(competitionSelector).select(s => s.data).select(s => s.find(c => c.id === params.id)).pipe(
+                    tap(competition => this.competitionId = competition.id)
+                );                
             }
         });
 
-        this.store.select(fromRound.selectAll).subscribe(x => this.rounds = x.filter(f => f.competitionId == this.competitionId));
-        this.store.select(fromStanding.selectAll).subscribe(x => this.roundStanding = x.find(s => s.competitionId == this.competitionId && s.roundId == this.roundId) || undefined)
-        this.store.select(fromPlayer.selectAll).subscribe(x => this.players = x);
+        this.rounds$ = this.store.select(roundSelector).select(s => s.data.filter(r => r.competitionId === this.competitionId)).pipe(
+            tap(rounds => this.nextRoundId = rounds.length)
+        );                
+
+        this.players$ = this.store.select(playerSelector).select(p => p.data).pipe(
+            tap(players => this.players = players)
+        );
+        
+        this.selectedRound$ = this.store.select(roundSelector).select(s => s.data.find(r => r.isSelected));
+        this.selectedRoundStanding$ = this.store.select(standingSelector).select(s => s.data.find(r => r.isSelected)).pipe(
+            tap(standing => this.selectedRoundStandingId = standing.id)
+        );
     }
 
-    createRound(): void {        
-        this.roundId = this.rounds.length;
-
+    createRound(): void {
         // round create
         const round: Round = {
-            id: this.roundId,
+            id: this.nextRoundId,
             roundNumber: undefined,
             isSelected: true,
             playersInRoundIds: "",
@@ -68,7 +74,7 @@ export class CompetitionComponent implements OnInit {
         // standings create
         const standing: Standing = {
             id: undefined,
-            roundId: this.roundId,
+            roundId: this.nextRoundId,
             competitionId: this.competitionId,
             isSelected: true
         }
@@ -96,7 +102,7 @@ export class CompetitionComponent implements OnInit {
                 id: undefined,
                 playerId: player.id,
                 competitionPoints: player.clubElo,
-                standingId: this.roundStanding.id,
+                standingId: this.selectedRoundStandingId,
                 position: positionCounter
             }
 

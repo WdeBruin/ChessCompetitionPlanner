@@ -1,16 +1,15 @@
-import { EntityState } from '@ngrx/entity/src/models';
-import * as fromPlayer from '../store/player/player.reducer';
-import * as fromCompetition from '../store/competition/competition.reducer';
-import * as fromRound from '../store/round/round.reducer';
-import * as fromStanding from '../store/standing/standing.reducer';
-import * as fromStandingLine from '../store/standing-line/standing-line.reducer';
-import * as fromGame from '../store/game/game.reducer';
+import { PlayerState } from './player';
+import { CompetitionState } from './competition';
+import { RoundState } from './round';
+import { StandingState } from './standing';
+import { StandingLineState } from './standing-line';
+import { GameState } from './game';
 
-export interface AppState {
-    player: fromPlayer.State,
-    competition: fromCompetition.State,
-    round: fromRound.State,
-    standing: fromStanding.State,
-    standingLine: fromStandingLine.State,
-    game: fromGame.State
+export interface IAppState {
+    player: PlayerState,
+    competition: CompetitionState,
+    round: RoundState,
+    standing: StandingState,
+    standingLine: StandingLineState,
+    game: GameState
 }

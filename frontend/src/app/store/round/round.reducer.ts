@@ -1,61 +1,55 @@
-import * as actions from './round.actions';
-import { EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeatureSelector } from '@ngrx/store';
-import { Round } from './round.interface';
-
-// Entity adapter
-export const roundAdapter = createEntityAdapter<Round>();
-export interface State extends EntityState<Round> { }
-
-// Default data / initial state
-const defaultRound = {
-  ids: [],
-  entities: {
-  }
-}
-
-export const initialState: State = roundAdapter.getInitialState(defaultRound);
-
-// Reducer
+import * as actions from './round.actions';
+import { RoundState } from './';
+import { Status } from '../../shared';
 
 export function RoundReducer(
-  state: State = initialState,
+  state: RoundState,
   action: actions.RoundActions) {
-
   switch (action.type) {
-    case actions.CREATE_ROUND:      
-      action.round.roundNumber = getRoundNumber(state, action.round.competitionId)
-      return roundAdapter.addOne(action.round, state);
+    case actions.GET_ROUNDS:
     case actions.UPDATE_ROUND:
-      return roundAdapter.updateOne({
-        id: action.id,
-        changes: action.changes,
-      }, state);
     case actions.DELETE_ROUND:
-      return roundAdapter.removeOne(action.id, state)
-    case actions.GET_ROUNDS_FOR_COMPETITION_SUCCESS:
-      return action.rounds && action.rounds.length > 0 ?
-         roundAdapter.addAll(action.rounds, state) : state;
+      return {
+        ...state,
+        status: Status.Loading
+      }
+    case actions.ROUND_ERROR:
+      return {
+        ...state,
+        status: Status.Error
+      }
+    case actions.GET_ROUNDS_SUCCESS:
+      return {
+        status: Status.Loaded,
+        data: action.rounds
+      }
+    case actions.CREATE_ROUND_SUCCESS:      
+      return {
+        status: Status.Loaded,
+        data: [
+          ...state.data,
+          action.round
+        ]
+      }
+    case actions.UPDATE_ROUND_SUCCESS:
+      return {
+        status: Status.Loaded,
+        data: state.data.map(round => {
+          if (round.id !== action.updatedRound.id) {
+            return round;
+          }
+          return action.updatedRound;
+        })
+      }      
+    case actions.DELETE_ROUND_SUCCESS:
+      return {
+        ...state,
+        data: state.data.filter(round => round.id !== action.id)
+      }    
     default:
       return state;
   }
 }
 
-// Create the default selectors
-export const getRoundState = createFeatureSelector<State>('round');
-
-export const {
-    selectIds,
-  selectEntities,
-  selectAll,
-  selectTotal,
-  } = roundAdapter.getSelectors(getRoundState);
-
-function getRoundNumber(state: State, competitionId: number): number {
-  let counter = 1;
-  for (let i = 0; i < state.ids.length; i += 1) {
-    if (state.entities[i].competitionId === competitionId)
-      counter += 1;
-  }
-  return counter;
-}
+export const roundSelector = createFeatureSelector<RoundState>('round');

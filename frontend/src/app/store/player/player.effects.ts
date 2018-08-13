@@ -13,7 +13,7 @@ export class PlayerEffects {
     }
 
     @Effect()
-    public getPlayers: Observable<Action> = this.actions
+    public getPlayers$: Observable<Action> = this.actions
         .ofType<playerActions.GetPlayers>(playerActions.GET_PLAYERS)
         .pipe(
             switchMap(action => this.playerService.getAllPlayers().pipe(
@@ -23,7 +23,7 @@ export class PlayerEffects {
         );
 
     @Effect()
-    public addPlayer: Observable<Action> = this.actions
+    public addPlayer$: Observable<Action> = this.actions
         .ofType<playerActions.Create>(playerActions.CREATE_PLAYER)
         .pipe(
             switchMap(action => this.playerService.addPlayer(action.player).pipe(
@@ -31,6 +31,26 @@ export class PlayerEffects {
                 catchError(error => this.handleError(error))
             ))
         );
+
+    @Effect()
+    public updatePlayer$: Observable<Action> = this.actions
+        .ofType<playerActions.Update>(playerActions.UPDATE_PLAYER)
+        .pipe(
+            switchMap(action => this.playerService.updatePlayer(action.updatedPlayer).pipe(
+                map(player => new playerActions.UpdateSuccess(player)),
+                catchError(error => this.handleError(error))
+            ))
+        );
+
+    @Effect()
+    public deletePlayer$: Observable<Action> = this.actions
+        .ofType<playerActions.Delete>(playerActions.DELETE_PLAYER)
+            .pipe(
+                switchMap(action => this.playerService.deletePlayer(action.id).pipe(
+                    map(player => new playerActions.DeleteSuccess(action.id)),
+                    catchError(error => this.handleError(error))
+                ))
+            );
 
     private handleError(error) {
         return of(new playerActions.PlayerError(error));

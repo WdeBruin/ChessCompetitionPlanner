@@ -1,35 +1,22 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { AppState } from '../store/appstate.interface';
-import { Round } from '../store/round/round.interface';
-import { RoundStatus } from '../store/round/round-status.enum';
-import * as fromPlayer from '../store/player/player.reducer';
-import * as fromRound from '../store/round/round.reducer';
-import * as fromCompetition from '../store/competition/competition.reducer';
-import * as fromStanding from '../store/standing/standing.reducer';
-import * as fromStandingLine from '../store/standing-line/standing-line.reducer';
-import * as fromGame from '../store/game/game.reducer';
+import { Observable } from 'rxjs/Observable';
+import { Normal } from 'distributions';
+
 import * as playerActions from '../store/player/player.actions';
 import * as standingLineActions from '../store/standing-line/standing-line.actions';
 import * as roundActions from '../store/round/round.actions';
 import * as gameActions from '../store/game/game.actions';
-import { Player } from '../store/player/player.interface';
-import { Competition } from '../store/competition/competition.interface';
-import { StandingLine } from '../store/standing-line/standing-line.interface';
-import { Standing } from '../store/standing/standing.interface';
-import { Game } from '../store/game/game.interface';
-import { Normal } from 'distributions';
+import { Player, Round, Competition, Standing, StandingLine, Game, RoundStatus, IAppState, playerSelector, competitionSelector, roundSelector, standingSelector, standingLineSelector, gameSelector } from '../store';
+import { tap } from 'rxjs/operators';
 
 @Component({
     selector: 'round-component',
-    templateUrl: "round-component.html",
+    templateUrl: "round.component.html",
     styleUrls: ['round.component.css']
 })
 export class RoundComponent implements OnInit {
-    players$: Observable<Player[]>;
-    players: Player[];
-    selectedRound: Round;
+    // Things for the logic in this component
     roundplayerIds: number[];
     competitonRounds: Round[];
     competition: Competition;
@@ -37,32 +24,55 @@ export class RoundComponent implements OnInit {
     standingLines: StandingLine[];
     games: Game[];
     roundGames: Game[];
+    players: Player[];
+
+    players$: Observable<Player[]>;
+
+    @Input()
+    selectedRound: Round;
+    
 
     public roundStatus = RoundStatus;
     // public displayedColumns = ["wit", "cpWit", "vs", "cpZwart", "zwart", "result"]
     public displayedColumns = ["wit", "vs", "zwart", "result"]
 
-    constructor(private store: Store<AppState>) { }
+    constructor(private store: Store<IAppState>) { }
 
     ngOnInit(): void {
-        this.players$ = this.store.select(fromPlayer.selectAll);
-        this.players$.subscribe(x => this.players = x);
-        this.store.select(fromCompetition.selectAll).subscribe(x => this.competition = x.find(c => c.isSelected));
-        this.store.select(fromRound.selectAll).subscribe(r => {
-            this.selectedRound = r.find(x => x.isSelected) || undefined;
-            if(this.selectedRound && this.selectedRound.playersInRoundIds && this.selectedRound.playersInRoundIds.length > 0) {
-                this.roundplayerIds = this.selectedRound.playersInRoundIds.split(',').map(x => +x);
-            }
-            if(this.competition && this.competition.id) {
-                this.competitonRounds = r.filter(x => x.competitionId == this.competition.id);
-            }                
-        });
-        this.store.select(fromStanding.selectAll).subscribe(x => this.standing = x.find(c => c.isSelected));
-        this.store.select(fromStandingLine.selectAll).subscribe(x => this.standingLines = x.filter(s => s.standingId == this.standing.id));
-        this.store.select(fromGame.selectAll).subscribe(x => {
-            this.games = x.filter(g => g.competitionId == this.competition.id)
-            this.roundGames = x.filter(g => g.competitionId == this.competition.id && g.roundId == this.selectedRound.id)
-        });
+        this.players$ = this.store.select(playerSelector).select(p => p.data).pipe(
+            tap(players => this.players = players)
+        );
+
+        this.store.select(competitionSelector).select(c => c.data).pipe(
+            tap(competitions => this.competition = competitions.find(c => c.isSelected))
+        );
+        
+        this.store.select(roundSelector).select(r => r.data).pipe(
+            tap(rounds => {
+                this.selectedRound = rounds.find(x => x.isSelected) || undefined;
+                if(this.selectedRound && this.selectedRound.playersInRoundIds && this.selectedRound.playersInRoundIds.length > 0) {
+                    this.roundplayerIds = this.selectedRound.playersInRoundIds.split(',').map(x => +x);
+                }
+                if(this.competition && this.competition.id) {
+                    this.competitonRounds = rounds.filter(x => x.competitionId == this.competition.id);
+                }      
+            })            
+        );
+
+        this.store.select(standingSelector).select(s => s.data).pipe(
+            tap(standings => this.standing = standings.find(s => s.isSelected))
+        );
+
+        this.store.select(standingLineSelector).select(s => s.data).pipe(
+            tap(standingLines => this.standingLines = standingLines.filter(s => s.standingId == this.standing.id))
+        );
+
+        this.store.select(gameSelector).select(g => g.data).pipe(
+            tap(games => {
+                this.games = games.filter(g => g.competitionId == this.competition.id)
+                this.roundGames = games.filter(g => g.competitionId == this.competition.id && g.roundId == this.selectedRound.id)
+            })
+        );
     }
 
     processResult(game: Game, result: number) {
@@ -95,10 +105,10 @@ export class RoundComponent implements OnInit {
                     break;
             }
 
-            this.store.dispatch(new playerActions.Update(game.whitePlayerId, whitePlayer));
-            this.store.dispatch(new playerActions.Update(game.blackPlayerId, blackPlayer));
-            this.store.dispatch(new standingLineActions.Update(game.whitePlayerId, whiteStandingLine));
-            this.store.dispatch(new standingLineActions.Update(game.blackPlayerId, blackStandingLine));
+            this.store.dispatch(new playerActions.Update(whitePlayer));
+            this.store.dispatch(new playerActions.Update(blackPlayer));
+            this.store.dispatch(new standingLineActions.Update( whiteStandingLine));
+            this.store.dispatch(new standingLineActions.Update(blackStandingLine));
         }
 
         // now only if result is new or changed, update stuff.
@@ -133,11 +143,11 @@ export class RoundComponent implements OnInit {
             }
 
             // Update state for both players, in competition and clubelo
-            this.store.dispatch(new playerActions.Update(game.whitePlayerId, whitePlayer));
-            this.store.dispatch(new playerActions.Update(game.blackPlayerId, blackPlayer));
-            this.store.dispatch(new standingLineActions.Update(game.whitePlayerId, whiteStandingLine));
-            this.store.dispatch(new standingLineActions.Update(game.blackPlayerId, blackStandingLine));
-            this.store.dispatch(new gameActions.Update(game.id, game));
+            this.store.dispatch(new playerActions.Update(whitePlayer));
+            this.store.dispatch(new playerActions.Update(blackPlayer));
+            this.store.dispatch(new standingLineActions.Update(whiteStandingLine));
+            this.store.dispatch(new standingLineActions.Update(blackStandingLine));
+            this.store.dispatch(new gameActions.Update(game));
         }
     }
 
@@ -187,7 +197,7 @@ export class RoundComponent implements OnInit {
 
         // update state of round to generated
         this.selectedRound.roundStatus = this.roundStatus.Generated;
-        this.store.dispatch(new roundActions.Update(this.selectedRound.id, this.selectedRound));
+        this.store.dispatch(new roundActions.Update(this.selectedRound));
     }
 
     toggle(playerId: number) {
@@ -200,7 +210,7 @@ export class RoundComponent implements OnInit {
             this.roundplayerIds.splice(index, 1);
 
         this.selectedRound.playersInRoundIds = this.roundplayerIds.toString();        
-        this.store.dispatch(new roundActions.Update(this.selectedRound.id, this.selectedRound));
+        this.store.dispatch(new roundActions.Update(this.selectedRound));
     }
 
     private vrijLoting(playersInRound: Player[]): number {
@@ -220,7 +230,7 @@ export class RoundComponent implements OnInit {
 
         let vrijgeloot = lootbaar[Math.floor(Math.random() * lootbaar.length)];
         this.selectedRound.playerVrijgeloot = vrijgeloot;
-        this.store.dispatch(new roundActions.Update(this.selectedRound.id, this.selectedRound));
+        this.store.dispatch(new roundActions.Update(this.selectedRound));
 
         return vrijgeloot;
     }

@@ -25,26 +25,7 @@ namespace ChessCompetitionApi.Controllers
         public IEnumerable<Competition> GetCompetitions()
         {
             return _context.Competitions;
-        }
-
-        // GET: api/Competition/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCompetition([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var competition = await _context.Competitions.FindAsync(id);
-
-            if (competition == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(competition);
-        }
+        }       
 
         // PUT: api/Competition/5
         [HttpPut("{id}")]

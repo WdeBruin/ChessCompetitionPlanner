@@ -1,3 +1,5 @@
+import { Status } from "../../shared";
+
 export interface Game {
     id: number;
     roundId: number;
@@ -19,4 +21,9 @@ export interface Game {
     blackWinCpChange: number;
     blackDrawCpChange: number;
     blackLossCpChange: number;    
+}
+
+export interface GameState {
+    status: Status,
+    data: Game[]
 }

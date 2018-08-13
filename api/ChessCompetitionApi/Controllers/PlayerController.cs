@@ -26,26 +26,7 @@ namespace ChessCompetitionApi.Controllers
         {
             return _context.Players;
         }
-
-        // GET: api/Player/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPlayer([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var player = await _context.Players.FindAsync(id);
-
-            if (player == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(player);
-        }
-
+       
         // PUT: api/Player/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPlayer([FromRoute] int id, [FromBody] Player player)

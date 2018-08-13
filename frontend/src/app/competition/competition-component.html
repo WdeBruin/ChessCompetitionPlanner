@@ -1,4 +1,4 @@
-<toolbar name="{{selectedCompetition?.name}}"></toolbar>
+<toolbar [name]="(selectedCompetition$ | async)?.name"></toolbar>
 <div>
     <span *ngFor="let round of rounds">
         <button (click)=selectRound(round) mat-raised-button color="primary" class="squareButton">
@@ -11,4 +11,4 @@
         </button>
     </span>
 </div>
-<round-component></round-component>
+<round-component [selectedRound]="selectedRound$ | async"></round-component>

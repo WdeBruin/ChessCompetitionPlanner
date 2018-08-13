@@ -20,4 +20,12 @@ export class PlayerService
     public addPlayer(player: Player): Observable<Player> {
         return this.http.post<Player>(`${this.apiEndpoint}/player`, player);
     }
+
+    public updatePlayer(player: Player): Observable<Player> {
+        return this.http.put<Player>(`${this.apiEndpoint}/player/${player.id}`, player);
+    }
+
+    public deletePlayer(playerId: number): Observable<Player> {
+        return this.http.delete<Player>(`${this.apiEndpoint}/player/${playerId}`);
+    }
 }

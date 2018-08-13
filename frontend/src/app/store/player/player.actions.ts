@@ -2,13 +2,14 @@ import { Action } from "@ngrx/store";
 import { Player } from "./player.interface";
 
 export const PLAYER_ERROR = '[Player] OOPS';
-
 export const GET_PLAYERS = '[Players] Get all';
 export const GET_PLAYERS_SUCCESS = '[Players] Get all -- OK';
 export const CREATE_PLAYER = '[Players] Create';
 export const CREATE_PLAYER_SUCCESS = '[Players] Create -- OK';
 export const UPDATE_PLAYER = '[Players] Update';
+export const UPDATE_PLAYER_SUCCESS = '[Players] Update -- OK';
 export const DELETE_PLAYER = '[Players] Delete';
+export const DELETE_PLAYER_SUCCESS = '[Players] Delete -- OK';
 
 export class GetPlayers implements Action {
   readonly type = GET_PLAYERS;  
@@ -16,35 +17,42 @@ export class GetPlayers implements Action {
 
 export class GetPlayersSuccess implements Action {
   readonly type = GET_PLAYERS_SUCCESS;
-  constructor(public players: Player[]) {}
+  constructor(public readonly players: Player[]) {}
 }
 
 export class PlayerError implements Action {
   readonly type = PLAYER_ERROR;  
-  constructor(public message: string) {}
+  constructor(public readonly message: string) {}
 }
 
 export class Create implements Action {
   readonly type = CREATE_PLAYER;  
-  constructor(public player: Player) { }
+  constructor(public readonly player: Player) { }
 }
 
 export class CreateSuccess implements Action {
   readonly type = CREATE_PLAYER_SUCCESS;
-  constructor(public player: Player) { }
+  constructor(public readonly player: Player) { }
 }
 
 export class Update implements Action {
   readonly type = UPDATE_PLAYER;
-  constructor(
-    public id: number,
-    public changes: Partial<Player>,
-  ) { }
+  constructor(public readonly updatedPlayer: Player) { }
+}
+
+export class UpdateSuccess implements Action {
+  readonly type = UPDATE_PLAYER_SUCCESS;
+  constructor(public readonly updatedPlayer: Player) { }
 }
 
 export class Delete implements Action {
   readonly type = DELETE_PLAYER;
-  constructor(public id: number) { }
+  constructor(public readonly id: number) { }
+}
+
+export class DeleteSuccess implements Action {
+  readonly type = DELETE_PLAYER_SUCCESS;
+  constructor(public readonly id: number) { }
 }
 
 export type PlayerActions
@@ -54,4 +62,6 @@ export type PlayerActions
   | Create
   | CreateSuccess
   | Update
-  | Delete;
+  | UpdateSuccess
+  | Delete
+  | DeleteSuccess;

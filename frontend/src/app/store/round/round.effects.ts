@@ -14,10 +14,10 @@ export class RoundEffects {
 
     @Effect()
     public getRoundsForCompetition: Observable<Action> = this.actions
-        .ofType<roundActions.GetRoundsForCompetition>(roundActions.GET_ROUNDS_FOR_COMPETITION)
+        .ofType<roundActions.Get>(roundActions.GET_ROUNDS)
         .pipe(
             switchMap(action => this.roundService.getRounds(action.competitionId).pipe(
-                map(rounds => new roundActions.GetRoundsForCompetitionSuccess(rounds)),
+                map(rounds => new roundActions.GetSuccess(action.competitionId, rounds)),
                 catchError(error => this.handleError(error))
             ))
         );
@@ -33,11 +33,21 @@ export class RoundEffects {
     );
 
     @Effect()
-    public saveChangesRound: Observable<Action> = this.actions
-    .ofType<roundActions.SaveChanges>(roundActions.SAVE_CHANGES_ROUND)
+    public updateRound: Observable<Action> = this.actions
+    .ofType<roundActions.Update>(roundActions.UPDATE_ROUND)
     .pipe(
-        switchMap(action => this.roundService.updateRound(action.round).pipe(
-            map(round => new roundActions.SaveChangesSuccess(round)),
+        switchMap(action => this.roundService.updateRound(action.updatedRound).pipe(
+            map(round => new roundActions.UpdateSuccess(round)),
+            catchError(error => this.handleError(error))
+        ))
+    );
+
+    @Effect()
+    public deleteRound: Observable<Action> = this.actions
+    .ofType<roundActions.Delete>(roundActions.DELETE_ROUND)
+    .pipe(
+        switchMap(action => this.roundService.deleteRound(action.id).pipe(
+            map(round => new roundActions.DeleteSuccess(round.id)),
             catchError(error => this.handleError(error))
         ))
     );

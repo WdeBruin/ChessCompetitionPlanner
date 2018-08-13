@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { AppState } from '../store/appstate.interface';
-import { Observable } from 'rxjs';
-import { Competition } from '../store/competition/competition.interface';
-import * as fromCompetition from '../store/competition/competition.reducer';
-import * as competitionActions from '../store/competition/competition.actions';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
+import * as competitionActions from '../store/competition/competition.actions';
+
+import { Competition, IAppState, competitionSelector } from '../store';
 
 @Component({
   selector: 'competition-select',
@@ -16,8 +16,8 @@ export class CompetitionSelectComponent implements OnInit {
   competitions$: Observable<Competition[]>;
   addNew: boolean = false;
 
-  constructor(private store: Store<AppState>, private router: Router) {
-    this.competitions$ = this.store.select(fromCompetition.selectAll);
+  constructor(private store: Store<IAppState>, private router: Router) {
+    this.competitions$ = this.store.select(competitionSelector).select(c => c.data);
   }
 
   ngOnInit() {

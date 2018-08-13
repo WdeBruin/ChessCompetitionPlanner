@@ -1,53 +1,55 @@
-import * as actions from './game.actions';
-import { EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createFeatureSelector } from '@ngrx/store';
-import { Game } from 'src/app/store/game/game.interface';
-
-// Entity adapter
-export const gameAdapter = createEntityAdapter<Game>();
-export interface State extends EntityState<Game> { }
-
-// Default data / initial state
-const defaultGame = {
-  ids: [],
-  entities: {    
-  }
-}
-
-export const initialState: State = gameAdapter.getInitialState(defaultGame);
-
-// Reducer
+import * as actions from './game.actions';
+import { GameState } from './';
+import { Status } from '../../shared';
 
 export function GameReducer(
-  state: State = initialState,
+  state: GameState,
   action: actions.GameActions) {
-
   switch (action.type) {
-
-    case actions.CREATE_GAME:
-      action.game.id = state.ids.length;
-      return gameAdapter.addOne(action.game, state);
-
+    case actions.GET_GAMES:
     case actions.UPDATE_GAME:
-      return gameAdapter.updateOne({
-        id: action.id,
-        changes: action.changes,
-      }, state);
-
     case actions.DELETE_GAME:
-      return gameAdapter.removeOne(action.id, state)
-
+      return {
+        ...state,
+        status: Status.Loading
+      }
+    case actions.GAME_ERROR:
+      return {
+        ...state,
+        status: Status.Error
+      }
+    case actions.GET_GAMES_SUCCESS:
+      return {
+        status: Status.Loaded,
+        data: action.games
+      }
+    case actions.CREATE_GAME_SUCCESS:      
+      return {
+        status: Status.Loaded,
+        data: [
+          ...state.data,
+          action.game
+        ]
+      }
+    case actions.UPDATE_GAME_SUCCESS:
+      return {
+        status: Status.Loaded,
+        data: state.data.map(game => {
+          if (game.id !== action.updatedGame.id) {
+            return game;
+          }
+          return action.updatedGame;
+        })
+      }      
+    case actions.DELETE_GAME_SUCCESS:
+      return {
+        ...state,
+        data: state.data.filter(game => game.id !== action.id)
+      }    
     default:
       return state;
   }
 }
 
-// Create the default selectors
-export const getGameState = createFeatureSelector<State>('game');
-
-export const {
-    selectIds,
-  selectEntities,
-  selectAll,
-  selectTotal,
-  } = gameAdapter.getSelectors(getGameState);
+export const gameSelector = createFeatureSelector<GameState>('game');

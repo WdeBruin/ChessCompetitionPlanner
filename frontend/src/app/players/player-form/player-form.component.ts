@@ -1,10 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../store/appstate.interface';
-import * as actions from '../../store/player/player.actions';
-import * as fromPlayer from '../../store/player/player.reducer';
-import { OnInit } from '@angular/core';
-import { Player } from 'src/app/store/player/player.interface';
+import * as playerActions from '../../store/player/player.actions';
+import { Player, IAppState } from '../../store';
 
 @Component({
   selector: 'player-form',
@@ -21,10 +18,10 @@ export class PlayerFormComponent implements OnInit {
   ngOnInit(): void {    
   }
 
-  constructor(private store: Store<fromPlayer.State>) { }  
+  constructor(private store: Store<IAppState>) { }  
 
   save() {    
-    this.store.dispatch(new actions.Create(this.model));  
+    this.store.dispatch(new playerActions.Create(this.model));  
     this.model = {
       id: undefined,
       firstName: "",
