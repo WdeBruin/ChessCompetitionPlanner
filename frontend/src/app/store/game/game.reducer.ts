@@ -4,7 +4,7 @@ import { GameState } from './';
 import { Status } from '../../shared';
 
 export function GameReducer(
-  state: GameState,
+  state: GameState = { data: [], status: undefined },
   action: actions.GameActions) {
   switch (action.type) {
     case actions.GET_GAMES:

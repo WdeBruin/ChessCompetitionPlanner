@@ -1,11 +1,11 @@
 <mat-card *ngIf="selectedRound?.roundStatus == roundStatus.PlayerSelect">
-    <h3>Ronde {{selectedRound.roundNumber}}</h3>
-    <mat-selection-list #players>
-        <mat-list-option *ngFor="let player of players$ | async" (click)="toggle(player.id)">
+    <h3>Ronde {{selectedRound.roundNumber}}</h3>       
+    <mat-selection-list #playerselect>        
+        <mat-list-option color="primary" *ngFor="let player of players" (click)="toggle(player.id)">
             {{player.firstName}} {{player.lastName}}
         </mat-list-option>
     </mat-selection-list>
-    <button mat-button class="custombutton" (click)="generateGames()">Genereer</button>
+    <button mat-raised-button color="primary" class="squareButton" (click)="generateGames()">Genereer</button>
 </mat-card>
 
 <mat-card *ngIf="selectedRound?.roundStatus == roundStatus.Generated">
@@ -56,6 +56,7 @@
 
 </mat-card>
 
+<!-- Stand misschien aparte view component maken -->
 <mat-card>
     <standing-component></standing-component>
 </mat-card>

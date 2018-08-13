@@ -59,15 +59,13 @@ namespace ChessCompetitionApi.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(round);
         }
 
         // POST: api/Round
         [HttpPost]
         public async Task<IActionResult> PostRound([FromBody] Round round)
         {
-            await _context.SaveChangesAsync();
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

@@ -2,7 +2,7 @@
 {
     public class Game: BaseEntity
     {
-        public int RoundId { get; set; }
+        public int RoundNumber { get; set; }
         public int CompetitionId { get; set; }
 
         public int WhitePlayerId { get; set; }

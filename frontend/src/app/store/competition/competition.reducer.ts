@@ -4,7 +4,7 @@ import { CompetitionState } from './';
 import { Status } from '../../shared';
 
 export function CompetitionReducer(
-    state: CompetitionState,
+    state: CompetitionState = { data: [], status: undefined },
     action: actions.CompetitionActions): CompetitionState {
     switch (action.type) {
         case actions.GET_COMPETITIONS:

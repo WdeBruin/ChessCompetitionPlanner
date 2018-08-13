@@ -13,8 +13,8 @@ export class GameService
         this.apiEndpoint = environment.api;
     }
 
-    public getGames(roundId: number): Observable<Game[]> {
-        return this.http.get<Game[]>(`${this.apiEndpoint}/game/round/${roundId}`);
+    public getGames(competitionId: number, roundId: number): Observable<Game[]> {
+        return this.http.get<Game[]>(`${this.apiEndpoint}/game/${competitionId}/${roundId}`);
     }
 
     public addGame(game: Game): Observable<Game> {

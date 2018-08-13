@@ -18,7 +18,7 @@ export class GameError implements Action {
 
 export class Get implements Action {
   readonly type = GET_GAMES;
-  constructor(public roundId: number) { }
+  constructor(public competitionId: number, public roundId: number) { }
 }
 
 export class GetSuccess implements Action {

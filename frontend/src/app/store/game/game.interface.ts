@@ -2,7 +2,8 @@ import { Status } from "../../shared";
 
 export interface Game {
     id: number;
-    roundId: number;
+    roundNumber: number;
+
     competitionId: number;
     whitePlayerId: number;
     blackPlayerId: number;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 import { Effect, Actions, ofType } from "@ngrx/effects";
 import { Observable } from 'rxjs/Observable';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
 import * as standingLineActions from './standing-line.actions';
 import { StandingLineService } from '../../shared/standing-line.service';
 import { of } from 'rxjs/internal/observable/of';
@@ -26,7 +26,7 @@ export class StandingLineEffects {
     public createStandingLine: Observable<Action> = this.actions
     .ofType<standingLineActions.Create>(standingLineActions.CREATE_STANDING_LINE)
     .pipe(
-        switchMap(action => this.standingLineService.addStandingLine(action.standingLine).pipe(
+        mergeMap(action => this.standingLineService.addStandingLine(action.standingLine).pipe(
             map(standingLine => new standingLineActions.CreateSuccess(standingLine)),
             catchError(error => this.handleError(error))
         ))
@@ -36,7 +36,7 @@ export class StandingLineEffects {
     public updateStandingLine: Observable<Action> = this.actions
     .ofType<standingLineActions.Update>(standingLineActions.UPDATE_STANDING_LINE)
     .pipe(
-        switchMap(action => this.standingLineService.updateStandingLine(action.updatedStandingLine).pipe(
+        mergeMap(action => this.standingLineService.updateStandingLine(action.updatedStandingLine).pipe(
             map(standingLine => new standingLineActions.UpdateSuccess(standingLine)),
             catchError(error => this.handleError(error))
         ))

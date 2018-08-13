@@ -10,23 +10,18 @@ import * as competitionActions from '../store/competition/competition.actions';
 import * as roundActions from '../store/round/round.actions';
 import * as standingActions from '../store/standing/standing.actions';
 import * as standingLineActions from '../store/standing-line/standing-line.actions';
-import { tap } from 'rxjs/operators';
+import { tap, filter } from 'rxjs/operators';
 
 @Component({
     templateUrl: "competition-component.html",
     styleUrls: ['competition.component.css']
 })
 export class CompetitionComponent implements OnInit {
-    public nextRoundId: number;
-    public competitionId: number;
-    public selectedRoundStandingId: number; 
     public players: Player[];
-
-    public selectedCompetition$: Observable<Competition>;
-    public selectedRound$: Observable<Round>;
-    public rounds$: Observable<Round[]>;
-    public selectedRoundStanding$: Observable<Standing>;
-    public players$: Observable<Player[]>;
+    public selectedCompetition: Competition | undefined;
+    public rounds: Round[];
+    public selectedRound: Round;
+    public selectedRoundStanding: Standing;
 
     constructor(private store: Store<IAppState>, private route: ActivatedRoute) { }
 
@@ -36,37 +31,50 @@ export class CompetitionComponent implements OnInit {
 
         this.route.params.subscribe(params => {
             if (params.id) {
-                this.store.dispatch(new roundActions.Get(params.id));                
+                this.store.dispatch(new roundActions.Get(params.id));
 
-                this.selectedCompetition$ = this.store.select(competitionSelector).select(s => s.data).select(s => s.find(c => c.id === params.id)).pipe(
-                    tap(competition => this.competitionId = competition.id)
-                );                
+                this.store.select(competitionSelector).select(s => s.data).pipe(
+                    tap(competitions => {
+                        this.selectedCompetition = competitions ? competitions.find(c => c.id === +params.id) : undefined
+                        // console.log(params.id);
+                    })
+                ).subscribe();
             }
         });
 
-        this.rounds$ = this.store.select(roundSelector).select(s => s.data.filter(r => r.competitionId === this.competitionId)).pipe(
-            tap(rounds => this.nextRoundId = rounds.length)
-        );                
+        this.store.select(roundSelector).select(s => s.data)
+            .pipe(
+                tap(rounds => {
+                    if (rounds) {
+                        this.rounds = rounds.filter(r => this.selectedCompetition ? r.competitionId === this.selectedCompetition.id : false);
+                        this.selectedRound = this.rounds.find(r => r.isSelected) || this.rounds[rounds.length - 1]; // selected or last one.                        
+                    }
+                })
+            ).subscribe();
 
-        this.players$ = this.store.select(playerSelector).select(p => p.data).pipe(
-            tap(players => this.players = players)
-        );
-        
-        this.selectedRound$ = this.store.select(roundSelector).select(s => s.data.find(r => r.isSelected));
-        this.selectedRoundStanding$ = this.store.select(standingSelector).select(s => s.data.find(r => r.isSelected)).pipe(
-            tap(standing => this.selectedRoundStandingId = standing.id)
-        );
+        this.store.select(playerSelector).pipe(
+            tap(players => {
+                this.players = players.data
+                //console.log(this.players);
+            })
+        ).subscribe();
+
+        this.store.select(standingSelector).select(s => s ? s.data : undefined).pipe(
+            tap(standings => {
+                this.selectedRoundStanding = standings ? standings.find(s => s.isSelected) : undefined;                
+            })
+        ).subscribe();
     }
 
     createRound(): void {
         // round create
         const round: Round = {
-            id: this.nextRoundId,
-            roundNumber: undefined,
+            id: undefined,
+            roundNumber: this.rounds.length + 1,
             isSelected: true,
             playersInRoundIds: "",
             roundStatus: RoundStatus.PlayerSelect,
-            competitionId: this.competitionId,
+            competitionId: this.selectedCompetition ? this.selectedCompetition.id : undefined,
             playerVrijgeloot: undefined
         }
         this.store.dispatch(new roundActions.Create(round));
@@ -74,21 +82,18 @@ export class CompetitionComponent implements OnInit {
         // standings create
         const standing: Standing = {
             id: undefined,
-            roundId: this.nextRoundId,
-            competitionId: this.competitionId,
+            roundNumber: round.roundNumber,
+            competitionId: this.selectedCompetition ? this.selectedCompetition.id : undefined,
             isSelected: true
         }
-        this.store.dispatch(new standingActions.Create(standing));
+        this.store.dispatch(new standingActions.Create(standing));       
 
-        // standings initial fill.
-        this.fillStandings();
+        // Give standing line a roundNumber and CompetitionId and delete Standing as a model, clears up things.
+        this.fillStandings(); 
     }
 
-    selectRound(roundId: number): void {
-        // select round action -> new action
-        // this.store.dispatch(new roundActions.Update(this.roundId, <Partial<Round>> {
-        //     isSelected: true
-        // }))
+    selectRound(round: Round): void {
+        this.selectedRound = round;        
     }
 
     fillStandings() {
@@ -102,7 +107,7 @@ export class CompetitionComponent implements OnInit {
                 id: undefined,
                 playerId: player.id,
                 competitionPoints: player.clubElo,
-                standingId: this.selectedRoundStandingId,
+                standingId: this.selectedRoundStanding ? this.selectedRoundStanding.id : undefined,
                 position: positionCounter
             }
 

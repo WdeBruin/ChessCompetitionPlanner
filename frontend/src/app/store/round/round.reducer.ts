@@ -4,7 +4,7 @@ import { RoundState } from './';
 import { Status } from '../../shared';
 
 export function RoundReducer(
-  state: RoundState,
+  state: RoundState = { data: [], status: undefined },
   action: actions.RoundActions) {
   switch (action.type) {
     case actions.GET_ROUNDS:
@@ -36,7 +36,7 @@ export function RoundReducer(
       return {
         status: Status.Loaded,
         data: state.data.map(round => {
-          if (round.id !== action.updatedRound.id) {
+          if ((round.competitionId !== action.updatedRound.competitionId && round.roundNumber !== action.updatedRound.roundNumber)) {
             return round;
           }
           return action.updatedRound;

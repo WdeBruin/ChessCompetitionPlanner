@@ -8,3 +8,8 @@
     background-color:#3f51b5;
     overflow:hidden;
 }
+
+.squareButton {
+    max-width: 40px;   
+    margin-right: 1%; 
+}

@@ -16,7 +16,7 @@ export class GameEffects {
     public getGamesForCompetition: Observable<Action> = this.actions
         .ofType<gameActions.Get>(gameActions.GET_GAMES)
         .pipe(
-            switchMap(action => this.gameService.getGames(action.roundId).pipe(
+            switchMap(action => this.gameService.getGames(action.competitionId, action.roundId).pipe(
                 map(games => new gameActions.GetSuccess(action.roundId, games)),
                 catchError(error => this.handleError(error))
             ))

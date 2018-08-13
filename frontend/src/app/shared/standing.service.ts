@@ -13,8 +13,8 @@ export class StandingService
         this.apiEndpoint = environment.api;
     }
 
-    public getStandings(roundId: number): Observable<Standing[]> {
-        return this.http.get<Standing[]>(`${this.apiEndpoint}/standing/round/${roundId}`);
+    public getStandings(competitionId: number, roundId: number): Observable<Standing> {
+        return this.http.get<Standing>(`${this.apiEndpoint}/standing/${competitionId}/${roundId}`);
     }
 
     public addStanding(standing: Standing): Observable<Standing> {

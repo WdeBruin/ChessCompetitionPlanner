@@ -21,10 +21,11 @@ namespace ChessCompetitionApi.Controllers
         }
 
         // GET: api/Standing
-        [HttpGet("round/{roundId}")]
-        public IEnumerable<Standing> GetStandings(int roundId)
+        [HttpGet("{competitionId}/{roundNumber}")]
+        public async Task<IActionResult> GetStandings(int competitionId, int roundNumber)
         {
-            return _context.Standings.Where(x => x.RoundId == roundId);
+            var standing = await _context.Standings.FirstOrDefaultAsync(x => x.CompetitionId == competitionId && x.RoundNumber == roundNumber);
+            return Ok(standing);
         }
 
         // PUT: api/Standing/5
@@ -66,8 +67,6 @@ namespace ChessCompetitionApi.Controllers
         [HttpPost]
         public async Task<IActionResult> PostStanding([FromBody] Standing standing)
         {
-            await _context.SaveChangesAsync();
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

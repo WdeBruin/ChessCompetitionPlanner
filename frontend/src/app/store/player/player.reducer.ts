@@ -4,7 +4,7 @@ import * as actions from './player.actions';
 import { Status } from '../../shared';
 
 export function PlayerReducer(
-  state: PlayerState,
+  state: PlayerState = { data: [], status: undefined },
   action: actions.PlayerActions) {
 
   switch (action.type) {

@@ -4,11 +4,12 @@ import { Observable } from 'rxjs/Observable';
 import { Normal } from 'distributions';
 
 import * as playerActions from '../store/player/player.actions';
+import * as standingActions from '../store/standing/standing.actions';
 import * as standingLineActions from '../store/standing-line/standing-line.actions';
 import * as roundActions from '../store/round/round.actions';
 import * as gameActions from '../store/game/game.actions';
 import { Player, Round, Competition, Standing, StandingLine, Game, RoundStatus, IAppState, playerSelector, competitionSelector, roundSelector, standingSelector, standingLineSelector, gameSelector } from '../store';
-import { tap } from 'rxjs/operators';
+import { tap, withLatestFrom, map } from 'rxjs/operators';
 
 @Component({
     selector: 'round-component',
@@ -17,7 +18,7 @@ import { tap } from 'rxjs/operators';
 })
 export class RoundComponent implements OnInit {
     // Things for the logic in this component
-    roundplayerIds: number[];
+    roundplayerIds: number[] = [];
     competitonRounds: Round[];
     competition: Competition;
     standing: Standing;
@@ -26,11 +27,8 @@ export class RoundComponent implements OnInit {
     roundGames: Game[];
     players: Player[];
 
-    players$: Observable<Player[]>;
-
     @Input()
     selectedRound: Round;
-    
 
     public roundStatus = RoundStatus;
     // public displayedColumns = ["wit", "cpWit", "vs", "cpZwart", "zwart", "result"]
@@ -39,45 +37,55 @@ export class RoundComponent implements OnInit {
     constructor(private store: Store<IAppState>) { }
 
     ngOnInit(): void {
-        this.players$ = this.store.select(playerSelector).select(p => p.data).pipe(
-            tap(players => this.players = players)
-        );
+        this.store.dispatch(new standingActions.Get(this.selectedRound.competitionId, this.selectedRound.roundNumber));
+        
+        this.store.select(playerSelector).select(p => p.data).pipe(
+            tap(players => {
+                players ? this.players = players : this.players = []                
+            })
+        ).subscribe();
 
         this.store.select(competitionSelector).select(c => c.data).pipe(
-            tap(competitions => this.competition = competitions.find(c => c.isSelected))
-        );
-        
+            tap(competitions => this.competition = competitions.find(c => c.id == this.selectedRound.competitionId))
+        ).subscribe();
+
         this.store.select(roundSelector).select(r => r.data).pipe(
             tap(rounds => {
-                this.selectedRound = rounds.find(x => x.isSelected) || undefined;
-                if(this.selectedRound && this.selectedRound.playersInRoundIds && this.selectedRound.playersInRoundIds.length > 0) {
+                if (this.selectedRound && this.selectedRound.playersInRoundIds && this.selectedRound.playersInRoundIds.length > 0) {
                     this.roundplayerIds = this.selectedRound.playersInRoundIds.split(',').map(x => +x);
                 }
-                if(this.competition && this.competition.id) {
-                    this.competitonRounds = rounds.filter(x => x.competitionId == this.competition.id);
-                }      
-            })            
-        );
-
+                if (rounds && this.selectedRound) {
+                    this.competitonRounds = rounds.filter(x => x.competitionId == this.selectedRound.competitionId);
+                }
+            })
+        ).subscribe();
+        
         this.store.select(standingSelector).select(s => s.data).pipe(
-            tap(standings => this.standing = standings.find(s => s.isSelected))
-        );
+            tap(standings => {
+                this.standing = standings.find(s => s.competitionId == this.selectedRound.competitionId && s.roundNumber == this.selectedRound.roundNumber)                                
+                if(this.standing) {
+                    this.store.dispatch(new standingLineActions.Get(this.standing.id));
+                }                
+            })
+        ).subscribe();       
 
         this.store.select(standingLineSelector).select(s => s.data).pipe(
-            tap(standingLines => this.standingLines = standingLines.filter(s => s.standingId == this.standing.id))
-        );
+            tap(standingLines => {
+                this.standingLines = this.standing ? standingLines.filter(x => x.standingId == this.standing.id) : undefined
+            })
+        ).subscribe();
 
         this.store.select(gameSelector).select(g => g.data).pipe(
             tap(games => {
                 this.games = games.filter(g => g.competitionId == this.competition.id)
-                this.roundGames = games.filter(g => g.competitionId == this.competition.id && g.roundId == this.selectedRound.id)
+                this.roundGames = games.filter(g => g.competitionId == this.competition.id && g.roundNumber == this.selectedRound.roundNumber)
             })
-        );
+        ).subscribe();
     }
 
     processResult(game: Game, result: number) {
         // If result is changed undo the old result.
-        if (game.result != undefined && game.result != result) {             
+        if (game.result != undefined && game.result != result) {
             // Update ELO and CP
             let whitePlayer = this.players.find(x => x.id == game.whitePlayerId);
             let whiteStandingLine = this.standingLines.find(x => x.playerId == game.whitePlayerId);
@@ -107,12 +115,12 @@ export class RoundComponent implements OnInit {
 
             this.store.dispatch(new playerActions.Update(whitePlayer));
             this.store.dispatch(new playerActions.Update(blackPlayer));
-            this.store.dispatch(new standingLineActions.Update( whiteStandingLine));
+            this.store.dispatch(new standingLineActions.Update(whiteStandingLine));
             this.store.dispatch(new standingLineActions.Update(blackStandingLine));
         }
 
         // now only if result is new or changed, update stuff.
-        if (game.result != result) {            
+        if (game.result != result) {
             game.result = result;
 
             // Update ELO and CP
@@ -209,7 +217,7 @@ export class RoundComponent implements OnInit {
         else
             this.roundplayerIds.splice(index, 1);
 
-        this.selectedRound.playersInRoundIds = this.roundplayerIds.toString();        
+        this.selectedRound.playersInRoundIds = this.roundplayerIds.toString();
         this.store.dispatch(new roundActions.Update(this.selectedRound));
     }
 
@@ -240,7 +248,7 @@ export class RoundComponent implements OnInit {
         let game: Game = {
             id: undefined,
             competitionId: this.competition.id,
-            roundId: this.selectedRound.id,
+            roundNumber: this.selectedRound.roundNumber,
             whitePlayerId: undefined,
             blackPlayerId: undefined,
             result: undefined,

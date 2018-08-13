@@ -16,8 +16,8 @@ export class StandingEffects {
     public getStandingsForCompetition: Observable<Action> = this.actions
         .ofType<standingActions.Get>(standingActions.GET_STANDINGS)
         .pipe(
-            switchMap(action => this.standingService.getStandings(action.roundId).pipe(
-                map(standings => new standingActions.GetSuccess(action.roundId, standings)),
+            switchMap(action => this.standingService.getStandings(action.competitionId, action.roundNumber).pipe(
+                map(standings => new standingActions.GetSuccess(standings)),
                 catchError(error => this.handleError(error))
             ))
         );

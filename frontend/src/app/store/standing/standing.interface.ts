@@ -3,7 +3,7 @@ import { Status } from "../../shared";
 export interface Standing {
     id: number;
     competitionId: number;
-    roundId: number;   
+    roundNumber: number;   
     
     isSelected: boolean;
 }

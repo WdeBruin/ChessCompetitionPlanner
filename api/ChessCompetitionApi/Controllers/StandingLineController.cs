@@ -66,8 +66,6 @@ namespace ChessCompetitionApi.Controllers
         [HttpPost]
         public async Task<IActionResult> PostStandingLine([FromBody] StandingLine standingLine)
         {
-            await _context.SaveChangesAsync();
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

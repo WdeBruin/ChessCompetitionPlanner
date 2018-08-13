@@ -4,7 +4,7 @@ import { StandingLineState } from './';
 import { Status } from '../../shared';
 
 export function StandingLineReducer(
-  state: StandingLineState,
+  state: StandingLineState = { data: [], status: undefined },
   action: actions.StandingLineActions) {
   switch (action.type) {
     case actions.GET_STANDING_LINES:

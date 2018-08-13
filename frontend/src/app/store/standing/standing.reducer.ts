@@ -4,7 +4,7 @@ import { StandingState } from './';
 import { Status } from '../../shared';
 
 export function StandingReducer(
-  state: StandingState,
+  state: StandingState = { data: [], status: undefined },
   action: actions.StandingActions) {
   switch (action.type) {
     case actions.GET_STANDINGS:
@@ -22,7 +22,9 @@ export function StandingReducer(
     case actions.GET_STANDINGS_SUCCESS:
       return {
         status: Status.Loaded,
-        data: action.standings
+        data: [
+          action.standings
+        ]
       }
     case actions.CREATE_STANDING_SUCCESS:      
       return {
