@@ -40,3 +40,6 @@ api/.vs/
 # System Files
 .DS_Store
 Thumbs.db
+api/ChessCompetitionApi/Properties/PublishProfiles/ChessCompetitionApi20180817031500 - Web Deploy.pubxml
+api/ChessCompetitionApi/Properties/PublishProfiles/ChessCompetitionApi20180817031500 - Web Deploy.pubxml.user
+frontend/src/environments/environment.ts
