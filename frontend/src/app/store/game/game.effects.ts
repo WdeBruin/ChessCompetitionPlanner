@@ -36,7 +36,7 @@ export class GameEffects {
     public updateGame: Observable<Action> = this.actions
     .ofType<gameActions.Update>(gameActions.UPDATE_GAME)
     .pipe(
-        switchMap(action => this.gameService.updateGame(action.updatedGame).pipe(
+        mergeMap(action => this.gameService.updateGame(action.updatedGame).pipe(
             map(game => new gameActions.UpdateSuccess(game)),
             catchError(error => this.handleError(error))
         ))

@@ -4,7 +4,7 @@ import * as roundActions from "./round.actions";
 import { Observable } from 'rxjs/Observable';
 import { Action } from '@ngrx/store';
 import { RoundService } from '../../shared/round.service';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class RoundEffects {
     public updateRound: Observable<Action> = this.actions
     .ofType<roundActions.Update>(roundActions.UPDATE_ROUND)
     .pipe(
-        switchMap(action => this.roundService.updateRound(action.updatedRound).pipe(
+        mergeMap(action => this.roundService.updateRound(action.updatedRound).pipe(
             map(round => new roundActions.UpdateSuccess(round)),
             catchError(error => this.handleError(error))
         ))

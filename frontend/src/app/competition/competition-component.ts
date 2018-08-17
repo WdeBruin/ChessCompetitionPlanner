@@ -9,6 +9,7 @@ import * as playerActions from '../store/player/player.actions';
 import * as competitionActions from '../store/competition/competition.actions';
 import * as roundActions from '../store/round/round.actions';
 import * as standingLineActions from '../store/standing-line/standing-line.actions';
+import * as gameActions from '../store/game/game.actions';
 import { tap, filter, take } from 'rxjs/operators';
 
 @Component({
@@ -47,7 +48,7 @@ export class CompetitionComponent implements OnInit {
             .pipe(
                 tap(rounds => {
                     if (rounds) {
-                        this.rounds = rounds.filter(r => this.selectedCompetition ? r.competitionId === this.selectedCompetition.id : false);
+                        this.rounds = rounds.filter(r => r.competitionId === this.selectedCompetition.id);
                         this.selectedRound = this.rounds.find(r => r.isSelected) || this.rounds[rounds.length - 1]; // selected or last one.                        
 
                         this.roundsFinished = rounds.filter(r => r.roundStatus === RoundStatus.Generated || r.roundStatus === RoundStatus.PlayerSelect).length === 0;
@@ -83,6 +84,7 @@ export class CompetitionComponent implements OnInit {
 
     selectRound(round: Round): void {
         this.selectedRound = round;        
+        this.store.dispatch(new gameActions.Get(this.selectedRound.competitionId, this.selectedRound.roundNumber));          
     }
 
     fillStandings() {

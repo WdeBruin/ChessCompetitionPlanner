@@ -36,10 +36,10 @@ export function RoundReducer(
       return {
         status: Status.Loaded,
         data: state.data.map(round => {
-          if ((round.competitionId !== action.updatedRound.competitionId && round.roundNumber !== action.updatedRound.roundNumber)) {
-            return round;
+          if ((round.competitionId === action.updatedRound.competitionId && round.roundNumber === action.updatedRound.roundNumber)) {
+            return action.updatedRound;            
           }
-          return action.updatedRound;
+          return round;          
         })
       }      
     case actions.DELETE_ROUND_SUCCESS:

@@ -4,7 +4,7 @@ import * as competitionActions from "./competition.actions";
 import { Observable } from 'rxjs/Observable';
 import { Action } from '@ngrx/store';
 import { CompetitionService } from '../../shared/competition.service';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class CompetitionEffects {
     public updateCompetition$: Observable<Action> = this.actions
         .ofType<competitionActions.Update>(competitionActions.UPDATE_COMPETITION)
         .pipe(
-            switchMap(action => this.competitionService.updateCompetition(action.updatedCompetition).pipe(
+            mergeMap(action => this.competitionService.updateCompetition(action.updatedCompetition).pipe(
                 map(competition => new competitionActions.UpdateSuccess(competition)),
                 catchError(error => this.handleError(error))
             ))
