@@ -6,7 +6,7 @@
         </button>
     </span>
     <span>
-        <button (click)="createRound()" mat-raised-button color="primary" class="squareButton">
+        <button (click)="createRound()" [disabled]="!roundsFinished" mat-raised-button color="primary" class="squareButton">
             +
         </button>
     </span>

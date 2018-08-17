@@ -3,14 +3,16 @@ using System;
 using ChessCompetitionApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChessCompetitionApi.Migrations
 {
     [DbContext(typeof(CompetitionDbContext))]
-    partial class CompetitionDbModelSnapshot : ModelSnapshot
+    [Migration("20180816154008_resultNullable")]
+    partial class resultNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +53,7 @@ namespace ChessCompetitionApi.Migrations
 
                     b.Property<int>("CompetitionId");
 
-                    b.Property<double?>("Result");
+                    b.Property<int?>("Result");
 
                     b.Property<int>("RoundNumber");
 
@@ -79,7 +81,7 @@ namespace ChessCompetitionApi.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("ClubElo");
+                    b.Property<int>("ClubElo");
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(100);
@@ -119,7 +121,7 @@ namespace ChessCompetitionApi.Migrations
 
                     b.Property<int>("CompetitionId");
 
-                    b.Property<double>("CompetitionPoints");
+                    b.Property<int>("CompetitionPoints");
 
                     b.Property<int>("PlayerId");
 

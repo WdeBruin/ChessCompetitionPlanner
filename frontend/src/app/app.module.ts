@@ -12,8 +12,8 @@ import { MatMenuModule, MatIconModule, MatButtonModule, MatCardModule, MatInputM
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { IAppState, appReducer, PlayerEffects, CompetitionEffects, RoundEffects, GameEffects, StandingEffects, StandingLineEffects } from './store';
-import { PlayerService, CompetitionService, RoundService, GameService, StandingService, StandingLineService } from './shared';
+import { IAppState, appReducer, PlayerEffects, CompetitionEffects, RoundEffects, GameEffects, StandingLineEffects } from './store';
+import { PlayerService, CompetitionService, RoundService, GameService, StandingLineService } from './shared';
 import { DashboardComponent, PlayersComponent, PlayerFormComponent, RoundComponent, CompetitionComponent, StandingComponent, CompetitionSelectComponent, CompetitionFormComponent, ToolbarComponent } from './';
 
 @NgModule({
@@ -53,7 +53,6 @@ import { DashboardComponent, PlayersComponent, PlayerFormComponent, RoundCompone
         CompetitionEffects,
         RoundEffects,
         GameEffects,
-        StandingEffects,
         StandingLineEffects
       ]
     ),
@@ -63,7 +62,6 @@ import { DashboardComponent, PlayersComponent, PlayerFormComponent, RoundCompone
     CompetitionService,
     RoundService,
     GameService,
-    StandingService,
     StandingLineService
   ],
   bootstrap: [AppComponent]

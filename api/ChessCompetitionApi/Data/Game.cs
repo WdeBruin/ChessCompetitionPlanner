@@ -8,20 +8,20 @@
         public int WhitePlayerId { get; set; }
         public int BlackPlayerId { get; set; }
 
-        public int Result { get; set; } // 0, 0.5, 1 like in chess
+        public double? Result { get; set; } // 0, 0.5, 1 like in chess
 
-        public int WhiteWinEloChange { get; set; }
-        public int WhiteDrawEloChange { get; set; }
-        public int WhiteLossEloChange { get; set; }
-        public int BlackWinEloChange { get; set; }
-        public int BlackDrawEloChange { get; set; }
-        public int BlackLossEloChange { get; set; }
+        public double WhiteWinEloChange { get; set; }
+        public double WhiteDrawEloChange { get; set; }
+        public double WhiteLossEloChange { get; set; }
+        public double BlackWinEloChange { get; set; }
+        public double BlackDrawEloChange { get; set; }
+        public double BlackLossEloChange { get; set; }
 
-        public int WhiteWinCpChange { get; set; }
-        public int WhiteDrawCpChange { get; set; }
-        public int WhiteLossCpChange { get; set; }
-        public int BlackWinCpChange { get; set; }
-        public int BlackDrawCpChange { get; set; }
-        public int BlackLossCpChange { get; set; }
+        public double WhiteWinCpChange { get; set; }
+        public double WhiteDrawCpChange { get; set; }
+        public double WhiteLossCpChange { get; set; }
+        public double BlackWinCpChange { get; set; }
+        public double BlackDrawCpChange { get; set; }
+        public double BlackLossCpChange { get; set; }
     }
 }

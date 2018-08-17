@@ -13,19 +13,19 @@ export class StandingLineService
         this.apiEndpoint = environment.api;
     }
 
-    public getStandingLines(standingId: number): Observable<StandingLine[]> {
-        return this.http.get<StandingLine[]>(`${this.apiEndpoint}/standingline/standing/${standingId}`);
+    public getStandingLines(competitionId: number, roundNumber: number): Observable<StandingLine[]> {
+        return this.http.get<StandingLine[]>(`${this.apiEndpoint}/standingline/standing/${competitionId}/${roundNumber}`);
     }
 
-    public addStandingLine(standing: StandingLine): Observable<StandingLine> {
-        return this.http.post<StandingLine>(`${this.apiEndpoint}/standingline`, standing);
+    public addStandingLine(standingLine: StandingLine): Observable<StandingLine> {
+        return this.http.post<StandingLine>(`${this.apiEndpoint}/standingline`, standingLine);
     }
 
-    public updateStandingLine(standing: StandingLine): Observable<StandingLine> {
-        return this.http.put<StandingLine>(`${this.apiEndpoint}/standingline/${standing.id}`, standing);
+    public updateStandingLine(standingLine: StandingLine): Observable<StandingLine> {
+        return this.http.put<StandingLine>(`${this.apiEndpoint}/standingline/${standingLine.id}`, standingLine);
     }
 
-    public deleteStandingLine(standingId: number): Observable<StandingLine> {
-        return this.http.delete<StandingLine>(`${this.apiEndpoint}/standingline/${standingId}`);
+    public deleteStandingLine(standingLineId: number): Observable<StandingLine> {
+        return this.http.delete<StandingLine>(`${this.apiEndpoint}/standingline/${standingLineId}`);
     }
 }

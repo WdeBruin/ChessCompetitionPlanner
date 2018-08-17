@@ -8,7 +8,7 @@
     <button mat-raised-button color="primary" class="squareButton" (click)="generateGames()">Genereer</button>
 </mat-card>
 
-<mat-card *ngIf="selectedRound?.roundStatus == roundStatus.Generated">
+<mat-card *ngIf="selectedRound?.roundStatus != roundStatus.PlayerSelect">
     <span *ngIf="selectedRound.playerVrijgeloot">Vrijgeloot: {{getName(selectedRound?.playerVrijgeloot)}}</span>
     <table mat-table [dataSource]="roundGames">
         <ng-container matColumnDef="wit">
@@ -50,6 +50,11 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+    
+    <button mat-raised-button *ngIf="selectedRound?.roundStatus != roundStatus.Done" [disabled]="!allgamesFinished" 
+    color="primary" class="squareButton" (click)="finishRound()">Sluit ronde</button>
+
+    <span *ngIf="selectedRound?.roundStatus == roundStatus.Done">Ronde gesloten</span>
 </mat-card>
 
 <mat-card *ngIf="selectedRound?.roundStatus == roundStatus.Done">
@@ -58,5 +63,5 @@
 
 <!-- Stand misschien aparte view component maken -->
 <mat-card>
-    <standing-component></standing-component>
+    <standing-component [round]="selectedRound"></standing-component>
 </mat-card>

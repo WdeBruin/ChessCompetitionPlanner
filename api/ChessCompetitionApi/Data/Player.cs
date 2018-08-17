@@ -8,6 +8,6 @@ namespace ChessCompetitionApi.Data
         public string FirstName { get; set; }
         [MaxLength(100)]
         public string LastName { get; set; }        
-        public int ClubElo { get; set; }
+        public double ClubElo { get; set; }
     }
 }

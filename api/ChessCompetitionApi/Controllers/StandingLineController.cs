@@ -21,10 +21,10 @@ namespace ChessCompetitionApi.Controllers
         }
 
         // GET: api/StandingLine
-        [HttpGet("standing/{standingId}")]
-        public IEnumerable<StandingLine> GetStandingLines(int standingId)
+        [HttpGet("standing/{competitionId}/{roundNumber}")]
+        public IEnumerable<StandingLine> GetStandingLines(int competitionId, int roundNumber)
         {
-            return _context.StandingLines.Where(x => x.StandingId == standingId);
+            return _context.StandingLines.Where(x => x.CompetitionId == competitionId && x.RoundNumber == roundNumber);
         }
 
         // PUT: api/StandingLine/5
@@ -59,7 +59,7 @@ namespace ChessCompetitionApi.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(standingLine);
         }
 
         // POST: api/StandingLine

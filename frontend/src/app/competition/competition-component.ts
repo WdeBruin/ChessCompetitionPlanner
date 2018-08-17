@@ -4,13 +4,12 @@ import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
-import { Round, Standing, Player, IAppState, roundSelector, Competition, competitionSelector, playerSelector, standingSelector, RoundStatus, StandingLine } from '../store';
+import { Round, Player, IAppState, roundSelector, Competition, competitionSelector, playerSelector, RoundStatus, StandingLine, standingLineSelector } from '../store';
 import * as playerActions from '../store/player/player.actions';
 import * as competitionActions from '../store/competition/competition.actions';
 import * as roundActions from '../store/round/round.actions';
-import * as standingActions from '../store/standing/standing.actions';
 import * as standingLineActions from '../store/standing-line/standing-line.actions';
-import { tap, filter } from 'rxjs/operators';
+import { tap, filter, take } from 'rxjs/operators';
 
 @Component({
     templateUrl: "competition-component.html",
@@ -21,14 +20,16 @@ export class CompetitionComponent implements OnInit {
     public selectedCompetition: Competition | undefined;
     public rounds: Round[];
     public selectedRound: Round;
-    public selectedRoundStanding: Standing;
+
+    // things for view
+    public roundsFinished: boolean; // only allow new round if rounds are finished
 
     constructor(private store: Store<IAppState>, private route: ActivatedRoute) { }
 
     ngOnInit(): void {
         this.store.dispatch(new competitionActions.Get());
         this.store.dispatch(new playerActions.GetPlayers());
-
+        
         this.route.params.subscribe(params => {
             if (params.id) {
                 this.store.dispatch(new roundActions.Get(params.id));
@@ -48,6 +49,8 @@ export class CompetitionComponent implements OnInit {
                     if (rounds) {
                         this.rounds = rounds.filter(r => this.selectedCompetition ? r.competitionId === this.selectedCompetition.id : false);
                         this.selectedRound = this.rounds.find(r => r.isSelected) || this.rounds[rounds.length - 1]; // selected or last one.                        
+
+                        this.roundsFinished = rounds.filter(r => r.roundStatus === RoundStatus.Generated || r.roundStatus === RoundStatus.PlayerSelect).length === 0;
                     }
                 })
             ).subscribe();
@@ -56,12 +59,6 @@ export class CompetitionComponent implements OnInit {
             tap(players => {
                 this.players = players.data
                 //console.log(this.players);
-            })
-        ).subscribe();
-
-        this.store.select(standingSelector).select(s => s ? s.data : undefined).pipe(
-            tap(standings => {
-                this.selectedRoundStanding = standings ? standings.find(s => s.isSelected) : undefined;                
             })
         ).subscribe();
     }
@@ -79,16 +76,8 @@ export class CompetitionComponent implements OnInit {
         }
         this.store.dispatch(new roundActions.Create(round));
 
-        // standings create
-        const standing: Standing = {
-            id: undefined,
-            roundNumber: round.roundNumber,
-            competitionId: this.selectedCompetition ? this.selectedCompetition.id : undefined,
-            isSelected: true
-        }
-        this.store.dispatch(new standingActions.Create(standing));       
-
         // Give standing line a roundNumber and CompetitionId and delete Standing as a model, clears up things.
+        this.selectedRound = round;
         this.fillStandings(); 
     }
 
@@ -99,23 +88,46 @@ export class CompetitionComponent implements OnInit {
     fillStandings() {
         //console.log(`competitionId: ${this.selectedCompetition.id} roundId: ${this.roundId} standingId: ${this.roundStanding.id}`);
         // if first round
-        this.players = this.players.sort(x => x.clubElo).reverse();
-        let positionCounter = 1;
+        if (this.selectedRound.roundNumber == 1) {
+            this.players = this.players.sort((a,b) => b.clubElo - a.clubElo);
+            let positionCounter = 1;
 
-        this.players.forEach(player => {
-            const standingLine: StandingLine = {
-                id: undefined,
-                playerId: player.id,
-                competitionPoints: player.clubElo,
-                standingId: this.selectedRoundStanding ? this.selectedRoundStanding.id : undefined,
-                position: positionCounter
-            }
+            this.players.forEach(player => {
+                const standingLine: StandingLine = {
+                    id: undefined,
+                    competitionId: this.selectedRound.competitionId,
+                    roundNumber: this.selectedRound.roundNumber,
+                    playerId: player.id,
+                    competitionPoints: player.clubElo,
+                    position: positionCounter
+                }
+    
+                this.store.dispatch(new standingLineActions.Create(standingLine));
+                positionCounter += 1;
+            });
+        } else {
+            // else copy standings from last round as our start point
+            this.store.dispatch(new standingLineActions.Get(this.selectedCompetition.id, this.selectedRound.roundNumber - 1));
 
-            this.store.dispatch(new standingLineActions.Create(standingLine));
-            positionCounter += 1;
-        });
+            this.store.select(standingLineSelector).select(s => s.data).pipe(
+                take(1),
+                tap(standingLines => {
+                    this.players.forEach(player => {
+                        const oldStandingLine = standingLines.find(s => s.playerId === player.id);
 
-        // else take from last round
-        // ...
+                        const newStandingLine: StandingLine = {
+                            id: undefined,
+                            competitionId: this.selectedRound.competitionId,
+                            roundNumber: this.selectedRound.roundNumber,
+                            playerId: player.id,
+                            competitionPoints: oldStandingLine.competitionPoints,
+                            position: oldStandingLine.position
+                        }
+
+                        this.store.dispatch(new standingLineActions.Create(newStandingLine));
+                    })
+                })
+            ).subscribe();
+        }          
     }
 }

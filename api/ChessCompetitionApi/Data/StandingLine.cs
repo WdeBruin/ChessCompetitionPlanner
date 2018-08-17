@@ -2,9 +2,11 @@
 {
     public class StandingLine: BaseEntity
     {
-        public int StandingId { get; set; }
+        public int CompetitionId { get; set; }
+        public int RoundNumber { get; set; }
+
         public int Position { get; set; }
         public int PlayerId { get; set; }
-        public int CompetitionPoints { get; set; }
+        public double CompetitionPoints { get; set; }
     }
 }

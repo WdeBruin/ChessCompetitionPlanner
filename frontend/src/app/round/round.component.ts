@@ -4,12 +4,11 @@ import { Observable } from 'rxjs/Observable';
 import { Normal } from 'distributions';
 
 import * as playerActions from '../store/player/player.actions';
-import * as standingActions from '../store/standing/standing.actions';
 import * as standingLineActions from '../store/standing-line/standing-line.actions';
 import * as roundActions from '../store/round/round.actions';
 import * as gameActions from '../store/game/game.actions';
-import { Player, Round, Competition, Standing, StandingLine, Game, RoundStatus, IAppState, playerSelector, competitionSelector, roundSelector, standingSelector, standingLineSelector, gameSelector } from '../store';
-import { tap, withLatestFrom, map } from 'rxjs/operators';
+import { Player, Round, Competition, StandingLine, Game, RoundStatus, IAppState, playerSelector, competitionSelector, roundSelector, standingLineSelector, gameSelector } from '../store';
+import { tap } from 'rxjs/operators';
 
 @Component({
     selector: 'round-component',
@@ -21,11 +20,13 @@ export class RoundComponent implements OnInit {
     roundplayerIds: number[] = [];
     competitonRounds: Round[];
     competition: Competition;
-    standing: Standing;
     standingLines: StandingLine[];
     games: Game[];
     roundGames: Game[];
     players: Player[];
+
+    // things for view disabling
+    allgamesFinished: boolean;     
 
     @Input()
     selectedRound: Round;
@@ -37,8 +38,9 @@ export class RoundComponent implements OnInit {
     constructor(private store: Store<IAppState>) { }
 
     ngOnInit(): void {
-        this.store.dispatch(new standingActions.Get(this.selectedRound.competitionId, this.selectedRound.roundNumber));
-        
+        this.store.dispatch(new standingLineActions.Get(this.selectedRound.competitionId, this.selectedRound.roundNumber));        
+        this.store.dispatch(new gameActions.Get(this.selectedRound.competitionId, this.selectedRound.roundNumber));
+
         this.store.select(playerSelector).select(p => p.data).pipe(
             tap(players => {
                 players ? this.players = players : this.players = []                
@@ -58,20 +60,11 @@ export class RoundComponent implements OnInit {
                     this.competitonRounds = rounds.filter(x => x.competitionId == this.selectedRound.competitionId);
                 }
             })
-        ).subscribe();
-        
-        this.store.select(standingSelector).select(s => s.data).pipe(
-            tap(standings => {
-                this.standing = standings.find(s => s.competitionId == this.selectedRound.competitionId && s.roundNumber == this.selectedRound.roundNumber)                                
-                if(this.standing) {
-                    this.store.dispatch(new standingLineActions.Get(this.standing.id));
-                }                
-            })
-        ).subscribe();       
+        ).subscribe();                   
 
         this.store.select(standingLineSelector).select(s => s.data).pipe(
             tap(standingLines => {
-                this.standingLines = this.standing ? standingLines.filter(x => x.standingId == this.standing.id) : undefined
+                this.standingLines = standingLines.filter(x => x.competitionId == this.selectedRound.competitionId && x.roundNumber == this.selectedRound.roundNumber)
             })
         ).subscribe();
 
@@ -79,6 +72,10 @@ export class RoundComponent implements OnInit {
             tap(games => {
                 this.games = games.filter(g => g.competitionId == this.competition.id)
                 this.roundGames = games.filter(g => g.competitionId == this.competition.id && g.roundNumber == this.selectedRound.roundNumber)
+
+                if(this.roundGames.length > 0 && this.roundGames.filter(x => x.result === null).length === 0) {
+                    this.allgamesFinished = true;
+                }
             })
         ).subscribe();
     }
@@ -171,7 +168,8 @@ export class RoundComponent implements OnInit {
 
         // find a match to create game with
         let playerIds = playersInRound.map(x => x.id);
-        let standingLines = this.standingLines.filter(x => playerIds.indexOf(x.id) != -1);
+
+        let standingLines = this.standingLines.filter(x => playerIds.indexOf(x.playerId) !== -1);
         standingLines = this.sortStandingLines(standingLines);
 
         while (standingLines.length > 1) {
@@ -187,12 +185,12 @@ export class RoundComponent implements OnInit {
                 let candidate = candidates[searchIndex];
                 // find amount of games between line.playerId and candidate.
                 let games = this.games.filter
-                    (x => (x.whitePlayerId == line.playerId && x.blackPlayerId == candidate.id) ||
-                        (x.blackPlayerId == line.playerId && x.whitePlayerId == candidate.id));
+                    (x => (x.whitePlayerId == line.playerId && x.blackPlayerId == candidate.playerId) ||
+                        (x.blackPlayerId == line.playerId && x.whitePlayerId == candidate.playerId));
                 if (games.length == amountOfTimesPlayed) {
-                    this.makeGame(line.playerId, candidate.id); // make game and do elo calc etc.
+                    this.makeGame(line.playerId, candidate.playerId); // make game and do elo calc etc.
                     // remove them from list                 
-                    standingLines = standingLines.filter(x => x.id != line.playerId && x.id != candidate.playerId);
+                    standingLines = standingLines.filter(x => x.playerId != line.playerId && x.playerId != candidate.playerId);
                     hasOpponent = true;
                 }
                 searchIndex += 1;
@@ -341,10 +339,18 @@ export class RoundComponent implements OnInit {
 
     public getName(playerId: number): string {
         let player = this.players.find(x => x.id == playerId);
-        return `${player.firstName} ${player.lastName}`;
+        if(player) {
+            return `${player.firstName} ${player.lastName}`;
+        }
+        return '';
     }
 
     public getResultDisplay(result: number): string {
         return result == 1 ? "1-0" : result == 0.5 ? "0,5-0,5" : result == 0 ? "0-1" : "-";
+    }
+
+    public finishRound() {
+        this.selectedRound.roundStatus = RoundStatus.Done;
+        this.store.dispatch(new roundActions.Update(this.selectedRound));
     }
 }

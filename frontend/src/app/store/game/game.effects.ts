@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 import { Effect, Actions, ofType } from "@ngrx/effects";
 import { Observable } from 'rxjs/Observable';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
 import * as gameActions from './game.actions';
 import { GameService } from '../../shared/game.service';
 import { of } from 'rxjs/internal/observable/of';
@@ -26,7 +26,7 @@ export class GameEffects {
     public createGame: Observable<Action> = this.actions
     .ofType<gameActions.Create>(gameActions.CREATE_GAME)
     .pipe(
-        switchMap(action => this.gameService.addGame(action.game).pipe(
+        mergeMap(action => this.gameService.addGame(action.game).pipe(
             map(game => new gameActions.CreateSuccess(game)),
             catchError(error => this.handleError(error))
         ))

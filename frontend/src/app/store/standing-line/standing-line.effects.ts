@@ -16,8 +16,8 @@ export class StandingLineEffects {
     public getStandingLinesForCompetition: Observable<Action> = this.actions
         .ofType<standingLineActions.Get>(standingLineActions.GET_STANDING_LINES)
         .pipe(
-            switchMap(action => this.standingLineService.getStandingLines(action.standingId).pipe(
-                map(standingLines => new standingLineActions.GetSuccess(action.standingId, standingLines)),
+            switchMap(action => this.standingLineService.getStandingLines(action.competitionId, action.roundNumber).pipe(
+                map(standingLines => new standingLineActions.GetSuccess(action.competitionId, action.roundNumber, standingLines)),
                 catchError(error => this.handleError(error))
             ))
         );

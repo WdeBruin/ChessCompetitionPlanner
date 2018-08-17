@@ -59,7 +59,7 @@ namespace ChessCompetitionApi.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(game);
         }
 
         // POST: api/Game

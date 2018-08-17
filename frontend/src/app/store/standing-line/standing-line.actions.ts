@@ -18,12 +18,12 @@ export class StandingLineError implements Action {
 
 export class Get implements Action {
   readonly type = GET_STANDING_LINES;
-  constructor(public standingId: number) { }
+  constructor(public competitionId: number, public roundNumber: number) { }
 }
 
 export class GetSuccess implements Action {
   readonly type = GET_STANDING_LINES_SUCCESS;
-  constructor(public standingId, public standingLines: StandingLine[]) { }
+  constructor(public competitionId: number, public roundNumber: number, public standingLines: StandingLine[]) { }
 }
 
 export class Create implements Action {
