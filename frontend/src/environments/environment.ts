@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  api: 'http://https://chesscompetitionapi20180817031500.azurewebsites.net/api'
+  api: 'http://localhost:5000/api'
 };
 
 /*
