@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChessCompetitionApi.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChessCompetitionApi.Controllers
 {
+    [Authorize(Policy = "ApiUser")]
     [Route("api/[controller]")]
     [ApiController]
     public class PlayerController : ControllerBase
