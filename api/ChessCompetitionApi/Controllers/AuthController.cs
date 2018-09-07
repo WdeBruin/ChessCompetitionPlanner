@@ -47,13 +47,13 @@ namespace ChessCompetitionApi.Controllers
 
             var passwordHashed = Convert.ToBase64String(_sha1Hash.ComputeHash(Encoding.UTF8.GetBytes(credentials.Password)));
 
-            var identity = await BuildToken(credentials.UserName, passwordHashed);
+            var identity = await BuildToken(credentials.Username, passwordHashed);
             if (identity == null)
             {
                 return BadRequest();
             }
             
-            var jwt = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.UserName, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            var jwt = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.Username, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
             return new OkObjectResult(jwt);
         }
         

@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -13,8 +13,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { IAppState, appReducer, PlayerEffects, CompetitionEffects, RoundEffects, GameEffects, StandingLineEffects } from './store';
-import { PlayerService, CompetitionService, RoundService, GameService, StandingLineService } from './shared';
+import { PlayerService, CompetitionService, RoundService, GameService, StandingLineService, UserService } from './shared';
 import { DashboardComponent, PlayersComponent, PlayerFormComponent, RoundComponent, CompetitionComponent, StandingComponent, CompetitionSelectComponent, CompetitionFormComponent, ToolbarComponent } from './';
+import { LoginComponent } from './login';
+import { TokenInterceptor } from './shared/token.interceptor';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import { DashboardComponent, PlayersComponent, PlayerFormComponent, RoundCompone
     StandingComponent,
     CompetitionSelectComponent,
     CompetitionFormComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +65,13 @@ import { DashboardComponent, PlayersComponent, PlayerFormComponent, RoundCompone
     CompetitionService,
     RoundService,
     GameService,
-    StandingLineService
+    StandingLineService,
+    UserService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })
