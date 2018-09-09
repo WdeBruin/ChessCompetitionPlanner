@@ -43,7 +43,18 @@ export class RoundComponent implements OnInit {
 
         this.store.select(playerSelector).select(p => p.data).pipe(
             tap(players => {
-                players ? this.players = players : this.players = []                
+                players ? this.players = players.sort(function(a, b) {
+                    var nameA = a.firstName.toUpperCase(); // ignore upper and lowercase
+                    var nameB = b.firstName.toUpperCase(); // ignore upper and lowercase
+                    if (nameA < nameB) {
+                      return -1;
+                    }
+                    if (nameA > nameB) {
+                      return 1;
+                    }                  
+                    // names must be equal
+                    return 0;
+                  }) : this.players = []                
             })
         ).subscribe();
 

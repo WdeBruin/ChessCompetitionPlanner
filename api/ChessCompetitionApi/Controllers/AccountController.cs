@@ -24,27 +24,27 @@ namespace ChessCompetitionApi.Controllers
             _sha1Hash = SHA1.Create();
         }
 
-        // POST api/accounts
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody]RegistrationViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// POST api/accounts
+        //[HttpPost]
+        //public async Task<IActionResult> Post([FromBody]RegistrationViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var userIdentity = new User
-            {
-                UserName = model.Username,
-                NormalizedUserName = model.Username,
+        //    var userIdentity = new User
+        //    {
+        //        UserName = model.Username,
+        //        NormalizedUserName = model.Username,
 
-                PasswordHash = Convert.ToBase64String(_sha1Hash.ComputeHash(Encoding.UTF8.GetBytes(model.Password)))
-            };
+        //        PasswordHash = Convert.ToBase64String(_sha1Hash.ComputeHash(Encoding.UTF8.GetBytes(model.Password)))
+        //    };
 
-            await _context.Users.AddAsync(userIdentity);
-            await _context.SaveChangesAsync();
+        //    await _context.Users.AddAsync(userIdentity);
+        //    await _context.SaveChangesAsync();
 
-            return new OkObjectResult("Account created");
-        }
+        //    return new OkObjectResult("Account created");
+        //}
     }
 }

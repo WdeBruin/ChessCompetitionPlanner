@@ -26,7 +26,7 @@ namespace ChessCompetitionApi.Controllers
         [HttpGet]
         public IEnumerable<Player> GetPlayers()
         {
-            return _context.Players;
+            return _context.Players.OrderBy(x => x.FirstName);
         }
        
         // PUT: api/Player/5
