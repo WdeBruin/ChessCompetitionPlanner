@@ -1,6 +1,6 @@
 <mat-card *ngIf="selectedRound?.roundStatus == roundStatus.PlayerSelect">
-    <h3>Ronde {{selectedRound.roundNumber}}</h3>       
-    <mat-selection-list #playerselect>        
+    <h3>Ronde {{selectedRound.roundNumber}}</h3>
+    <mat-selection-list #playerselect>
         <mat-list-option color="primary" *ngFor="let player of players" (click)="toggle(player.id)">
             {{player.firstName}} {{player.lastName}}
         </mat-list-option>
@@ -19,19 +19,21 @@
             </td>
         </ng-container>
         <ng-container matColumnDef="cpWit">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let game">{{game.whiteWinCpChange | number:'1.1-1'}} {{game.whiteDrawCpChange | number:'1.1-1'}} {{game.whiteLossCpChange | number:'1.1-1'}}</td>
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let game">{{game.whiteWinCpChange | number:'1.1-1'}} {{game.whiteDrawCpChange | number:'1.1-1'}} {{game.whiteLossCpChange
+                | number:'1.1-1'}}</td>
         </ng-container>
         <ng-container matColumnDef="vs">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let game">
-                    vs.
-                    <button class="custombutton" (click)="processResult(game, 0.5)">0,5</button>
-                </td>
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let game">
+                vs.
+                <button class="custombutton" (click)="processResult(game, 0.5)">0,5</button>
+            </td>
         </ng-container>
         <ng-container matColumnDef="cpZwart">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let game">{{game.blackWinCpChange | number:'1.1-1'}} {{game.blackDrawCpChange | number:'1.1-1'}} {{game.blackLossCpChange | number:'1.1-1'}}</td>
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let game">{{game.blackWinCpChange | number:'1.1-1'}} {{game.blackDrawCpChange | number:'1.1-1'}} {{game.blackLossCpChange
+                | number:'1.1-1'}}</td>
         </ng-container>
         <ng-container matColumnDef="zwart">
             <th mat-header-cell *matHeaderCellDef>Zwart</th>
@@ -41,18 +43,18 @@
             </td>
         </ng-container>
         <ng-container matColumnDef="result">
-                <th mat-header-cell *matHeaderCellDef>Uitslag</th>
-                <td mat-cell *matCellDef="let game">
-                    {{getResultDisplay(game.result)}}                    
-                </td>
-            </ng-container>
+            <th mat-header-cell *matHeaderCellDef>Uitslag</th>
+            <td mat-cell *matCellDef="let game">
+                {{getResultDisplay(game.result)}}
+            </td>
+        </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-    
-    <button mat-raised-button *ngIf="selectedRound?.roundStatus != roundStatus.Done" [disabled]="!allgamesFinished" 
-    color="primary" class="squareButton" (click)="finishRound()">Sluit ronde</button>
+
+    <button mat-raised-button *ngIf="selectedRound?.roundStatus != roundStatus.Done" [disabled]="!allgamesFinished" color="primary"
+        class="squareButton" (click)="finishRound()">Sluit ronde</button>
 
     <span *ngIf="selectedRound?.roundStatus == roundStatus.Done">Ronde gesloten</span>
 </mat-card>

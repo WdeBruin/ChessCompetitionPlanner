@@ -4,7 +4,7 @@ import * as playerActions from "./player.actions";
 import { Observable } from 'rxjs/Observable';
 import { Action } from '@ngrx/store';
 import { PlayerService } from '../../shared/player.service';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class PlayerEffects {
     public updatePlayer$: Observable<Action> = this.actions
         .ofType<playerActions.Update>(playerActions.UPDATE_PLAYER)
         .pipe(
-            switchMap(action => this.playerService.updatePlayer(action.updatedPlayer).pipe(
+            mergeMap(action => this.playerService.updatePlayer(action.updatedPlayer).pipe(
                 map(player => new playerActions.UpdateSuccess(player)),
                 catchError(error => this.handleError(error))
             ))

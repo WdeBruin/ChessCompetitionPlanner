@@ -5,6 +5,9 @@
 /frontend/tmp
 /out-tsc
 
+# data backups
+/backups
+
 # dependencies
 /frontend/node_modules
 
