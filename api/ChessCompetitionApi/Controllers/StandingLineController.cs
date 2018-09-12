@@ -1,16 +1,13 @@
-﻿using System;
+﻿using ChessCompetitionApi.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ChessCompetitionApi.Data;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ChessCompetitionApi.Controllers
 {
-    [Authorize(Policy = "ApiUser")]
     [Route("api/[controller]")]
     [ApiController]
     public class StandingLineController : ControllerBase
@@ -22,14 +19,70 @@ namespace ChessCompetitionApi.Controllers
             _context = context;
         }
 
-        // GET: api/StandingLine
+        // Expose competition points standings
         [HttpGet("standing/{competitionId}/{roundNumber}")]
         public IEnumerable<StandingLine> GetStandingLines(int competitionId, int roundNumber)
         {
-            return _context.StandingLines.Where(x => x.CompetitionId == competitionId && x.RoundNumber == roundNumber);
+            return _context.StandingLines.Where(x => x.CompetitionId == competitionId && x.RoundNumber == roundNumber)
+                .OrderBy(x => x.CompetitionPoints);
         }
 
-        // PUT: api/StandingLine/5
+        // Expose competition elo change list
+        [HttpGet("standing/winloss/{competitionId}")]
+        public IEnumerable<(string, double)> GetEloWinLossLines(int competitionId)
+        {
+            var winLossLines = new List<(string, double)>();
+            var players = _context.Players;
+
+            foreach (var player in players)
+            {
+                // get the win/loss for each player
+                double winLoss = 0;
+                var relevantGames = _context.Games.Where(x => x.CompetitionId == competitionId 
+                    && (x.WhitePlayerId == player.Id || x.BlackPlayerId == player.Id));
+
+                foreach (var game in relevantGames)
+                {
+                    if(player.Id == game.WhitePlayerId)
+                    {
+                        switch (game.Result)
+                        {
+                            case 1:
+                                winLoss += game.WhiteWinEloChange;
+                                break;
+                            case 0.5:
+                                winLoss += game.WhiteDrawEloChange;
+                                break;
+                            case 0:
+                                winLoss += game.WhiteLossEloChange;
+                                break;
+                        }
+                    }
+                    else if(player.Id == game.BlackPlayerId)
+                    {
+                        switch (game.Result)
+                        {
+                            case 1:
+                                winLoss += game.BlackLossEloChange;
+                                break;
+                            case 0.5:
+                                winLoss += game.BlackDrawEloChange;
+                                break;
+                            case 0:
+                                winLoss += game.BlackWinEloChange;
+                                break;
+                        }
+                    }
+                }
+
+                // Add the total to the resulting list
+                winLossLines.Add(($"{player.FirstName} {player.LastName}", winLoss));
+            }
+
+            return winLossLines;
+        }
+
+        [Authorize(Policy = "ApiUser")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStandingLine([FromRoute] int id, [FromBody] StandingLine standingLine)
         {
@@ -65,6 +118,7 @@ namespace ChessCompetitionApi.Controllers
         }
 
         // POST: api/StandingLine
+        [Authorize(Policy = "ApiUser")]
         [HttpPost]
         public async Task<IActionResult> PostStandingLine([FromBody] StandingLine standingLine)
         {
@@ -80,6 +134,7 @@ namespace ChessCompetitionApi.Controllers
         }
 
         // DELETE: api/StandingLine/5
+        [Authorize(Policy = "ApiUser")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStandingLine([FromRoute] int id)
         {

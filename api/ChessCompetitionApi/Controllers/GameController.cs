@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ChessCompetitionApi.Controllers
 {
-    [Authorize(Policy = "ApiUser")]
     [Route("api/[controller]")]
     [ApiController]
     public class GameController : ControllerBase
@@ -30,6 +29,7 @@ namespace ChessCompetitionApi.Controllers
         }
 
         // PUT: api/Game/5
+        [Authorize(Policy = "ApiUser")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGame([FromRoute] int id, [FromBody] Game game)
         {
@@ -65,6 +65,7 @@ namespace ChessCompetitionApi.Controllers
         }
 
         // POST: api/Game
+        [Authorize(Policy = "ApiUser")]
         [HttpPost]
         public async Task<IActionResult> PostGame([FromBody] Game game)
         {
@@ -80,6 +81,7 @@ namespace ChessCompetitionApi.Controllers
         }
 
         // DELETE: api/Game/5
+        [Authorize(Policy = "ApiUser")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame([FromRoute] int id)
         {
