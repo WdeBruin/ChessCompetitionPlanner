@@ -3,6 +3,7 @@ using ChessCompetitionApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,18 +21,41 @@ namespace ChessCompetitionApi.Controllers
             _context = context;
         }
 
-        // Expose competition points standings
-        [HttpGet("{competitionId}")]
-        public IEnumerable<StandingLine> GetStandingLines(int competitionId)
+        // GET: api/StandingLine
+        [Authorize(Policy = "ApiUser")]
+        [HttpGet("standing/{competitionId}/{roundNumber}")]
+        public IEnumerable<StandingLine> GetStandingLines(int competitionId, int roundNumber)
         {
-            var roundnumber = _context.Rounds.Max(x => x.RoundNumber);
-            return _context.StandingLines.Where(x => x.CompetitionId == competitionId && x.RoundNumber == roundnumber)
-                .OrderBy(x => x.CompetitionPoints);
+            return _context.StandingLines.Where(x => x.CompetitionId == competitionId && x.RoundNumber == roundNumber);
+        }
+
+        // Expose competition standing list
+        [HttpGet("{competitionId}")]
+        public IEnumerable<Standing> GetStanding(int competitionId)
+        {
+            var roundnumber = _context.Rounds.Where(x => x.CompetitionId == competitionId).Max(x => x.RoundNumber);
+            var lines = _context.StandingLines.Where(x => x.CompetitionId == competitionId && x.RoundNumber == roundnumber);
+            var players = _context.Players;
+
+            var standings = new List<Standing>();
+            foreach(var line in lines)
+            {
+                var player = players.FirstOrDefault(x => x.Id == line.PlayerId);
+
+                standings.Add(new Standing
+                {
+                    Round = line.RoundNumber,
+                    PlayerName = $"{player.FirstName} {player.LastName}",
+                    CompetitionPoints = Convert.ToInt32(line.CompetitionPoints)
+                });
+            }
+
+            return standings.OrderByDescending(x => x.CompetitionPoints);
         }
 
         // Expose competition elo change list
         [HttpGet("winloss/{competitionId}")]
-        public IEnumerable<WinLossLine> GetEloWinLossLines(int competitionId)
+        public IEnumerable<WinLossLine> GetEloWinLoss(int competitionId)
         {
             var winLossLines = new List<WinLossLine>();
             var players = _context.Players;
@@ -78,7 +102,7 @@ namespace ChessCompetitionApi.Controllers
                 }
 
                 // Add the total to the resulting list
-                winLossLines.Add(new WinLossLine { PlayerName = $"{player.FirstName} {player.LastName}", EloChange = winLoss });
+                winLossLines.Add(new WinLossLine { PlayerName = $"{player.FirstName} {player.LastName}", EloChange = Math.Round(winLoss, 1) });
             }
 
             return winLossLines.OrderByDescending(x => x.EloChange);

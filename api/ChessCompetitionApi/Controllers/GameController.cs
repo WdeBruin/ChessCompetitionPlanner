@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ChessCompetitionApi.Data;
 using Microsoft.AspNetCore.Authorization;
+using ChessCompetitionApi.Models;
 
 namespace ChessCompetitionApi.Controllers
 {
@@ -21,7 +22,37 @@ namespace ChessCompetitionApi.Controllers
             _context = context;
         }
 
+        // Expose games for website
+        [HttpGet("{competitionId}")]
+        public IEnumerable<GameLastRound> GetLastRoundGames(int competitionId)
+        {
+            var roundnumber = _context.Rounds.Where(x => x.CompetitionId == competitionId).Max(x => x.RoundNumber);
+            var games = _context.Games.Where(x => x.RoundNumber == roundnumber && x.CompetitionId == competitionId);
+            var players = _context.Players;
+
+            var lastroundgames = new List<GameLastRound>();
+            foreach (var game in games)
+            {
+                lastroundgames.Add(new GameLastRound
+                {
+                    WhitePlayerName = $"{players.FirstOrDefault(x => x.Id == game.WhitePlayerId).FirstName} {players.FirstOrDefault(x => x.Id == game.WhitePlayerId).LastName}",
+                    BlackPlayerName = $"{players.FirstOrDefault(x => x.Id == game.BlackPlayerId).FirstName} {players.FirstOrDefault(x => x.Id == game.BlackPlayerId).LastName}",
+                    Result = game.Result == 1 ? "1-0" : game.Result == 0 ? "0-1" : "0.5-0.5",
+
+                    WhiteCpWin = Math.Round(game.WhiteWinCpChange, 1),
+                    WhiteCpDraw = Math.Round(game.WhiteDrawCpChange, 1),
+                    WhiteCpLoss = Math.Round(game.WhiteLossCpChange, 1),
+                    BlackCpWin = Math.Round(game.BlackWinCpChange, 1),
+                    BlackCpDraw = Math.Round(game.BlackDrawCpChange, 1),
+                    BlackCpLoss = Math.Round(game.BlackLossCpChange, 1)
+                });
+            }
+
+            return lastroundgames;
+        }
+
         // GET: api/Game
+        [Authorize(Policy = "ApiUser")]
         [HttpGet("{competitionId}/{roundNumber}")]
         public IEnumerable<Game> GetGames(int competitionId, int roundNumber)
         {
