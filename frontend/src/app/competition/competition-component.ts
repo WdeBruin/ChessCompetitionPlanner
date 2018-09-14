@@ -92,7 +92,7 @@ export class CompetitionComponent implements OnInit {
         // if first round
         if (this.selectedRound.roundNumber == 1) {
             this.players = this.players.sort((a,b) => b.clubElo - a.clubElo);
-            let positionCounter = 1;
+            let positionCounter = 1; // positioncounter obsolete
 
             this.players.forEach(player => {
                 const standingLine: StandingLine = {
@@ -101,11 +101,11 @@ export class CompetitionComponent implements OnInit {
                     roundNumber: this.selectedRound.roundNumber,
                     playerId: player.id,
                     competitionPoints: player.clubElo,
-                    position: positionCounter
+                    position: positionCounter // obsolete field
                 }
     
                 this.store.dispatch(new standingLineActions.Create(standingLine));
-                positionCounter += 1;
+                positionCounter += 1; // positioncounter obsolete
             });
         } else {
             // else copy standings from last round as our start point

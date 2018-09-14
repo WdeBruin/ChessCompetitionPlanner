@@ -166,6 +166,25 @@ export class RoundComponent implements OnInit {
         // Get array of players that participate 
         let playersInRound = this.players.filter(p => this.roundplayerIds.indexOf(p.id) !== -1)
 
+        // Check if all those players have standinglines, if not, we add them. (Like when new player was added between rounds)
+        // 14/9/2018 this was bug in round 1 when adding a player while in player select
+        playersInRound.forEach(player => {
+            console.log(player);
+            if(!this.standingLines.find(x => x.playerId === player.id)) {
+                const standingLine: StandingLine = {
+                    id: undefined,
+                    competitionId: this.selectedRound.competitionId,
+                    roundNumber: this.selectedRound.roundNumber,
+                    playerId: player.id,
+                    competitionPoints: player.clubElo,
+                    position: 99 // position is display, its obsolete field
+                }
+    
+                this.standingLines.push(standingLine);
+                this.store.dispatch(new standingLineActions.Create(standingLine));
+            }
+        });
+
         // If necessary, remove one as "vrijgeloot" and save that to the round
         if (playersInRound.length % 2 == 1) {
             let vrijgeloot = this.vrijLoting(playersInRound);
@@ -222,7 +241,10 @@ export class RoundComponent implements OnInit {
             this.roundplayerIds.splice(index, 1);
 
         this.selectedRound.playersInRoundIds = this.roundplayerIds.toString();
-        this.store.dispatch(new roundActions.Update(this.selectedRound));
+        
+        // 14/9/18 Commented this after round 1 of the competition. Led to an annoying bug, we persist stuff in DB here that we don't want.
+        // TODO: Refactor round component, make toggle screen a seperate component and have it use redux for persisting state when navigating away.
+        // this.store.dispatch(new roundActions.Update(this.selectedRound));
     }
 
     private vrijLoting(playersInRound: Player[]): number {
