@@ -84,7 +84,6 @@ export class CompetitionComponent implements OnInit {
 
     selectRound(round: Round): void {
         this.selectedRound = round;        
-        this.store.dispatch(new gameActions.Get(this.selectedRound.competitionId, this.selectedRound.roundNumber));          
     }
 
     fillStandings() {

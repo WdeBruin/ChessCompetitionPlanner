@@ -22,6 +22,7 @@ export class RoundComponent implements OnInit {
     competition: Competition;
     standingLines: StandingLine[];
     games: Game[];
+    allGamesOfCompetition: Game[];
     roundGames: Game[];
     players: Player[];
 
@@ -38,8 +39,8 @@ export class RoundComponent implements OnInit {
     constructor(private store: Store<IAppState>) { }
 
     ngOnInit(): void {
-        this.store.dispatch(new standingLineActions.Get(this.selectedRound.competitionId, this.selectedRound.roundNumber));        
-        this.store.dispatch(new gameActions.Get(this.selectedRound.competitionId, this.selectedRound.roundNumber));
+        this.store.dispatch(new standingLineActions.Get(this.selectedRound.competitionId, this.selectedRound.roundNumber));
+        this.store.dispatch(new gameActions.GetAll(this.selectedRound.competitionId));
 
         this.store.select(playerSelector).select(p => p.data).pipe(
             tap(players => {
@@ -87,11 +88,7 @@ export class RoundComponent implements OnInit {
         this.store.select(gameSelector).select(g => g.data).pipe(
             tap(games => {
                 this.games = games.filter(g => g.competitionId == this.competition.id)
-                this.roundGames = games.filter(g => g.competitionId == this.competition.id && g.roundNumber == this.selectedRound.roundNumber)
-
-                if(this.roundGames.length > 0 && this.roundGames.filter(x => x.result === null).length === 0) {
-                    this.allgamesFinished = true;
-                }
+                this.roundGames = games.filter(g => g.competitionId == this.competition.id && g.roundNumber == this.selectedRound.roundNumber)                
             })
         ).subscribe();
     }
@@ -380,5 +377,20 @@ export class RoundComponent implements OnInit {
     public finishRound() {
         this.selectedRound.roundStatus = RoundStatus.Done;
         this.store.dispatch(new roundActions.Update(this.selectedRound));
+    }
+
+    public currentRound(): Game[] {
+        return this.games.filter(x => x.roundNumber == this.selectedRound.roundNumber && x.competitionId == this.selectedRound.competitionId);
+    }
+
+    public isPlayerSelected(id: number): boolean {
+        return this.roundplayerIds.indexOf(id) !== -1
+    }
+
+    public allGamesFinished(): boolean {
+        if(this.roundGames.length > 0 && this.roundGames.filter(x => x.result === null).length === 0) {
+            return true;
+        }
+        return false;
     }
 }

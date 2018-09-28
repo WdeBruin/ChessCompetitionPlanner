@@ -53,10 +53,10 @@ namespace ChessCompetitionApi.Controllers
 
         // GET: api/Game
         [Authorize(Policy = "ApiUser")]
-        [HttpGet("{competitionId}/{roundNumber}")]
-        public IEnumerable<Game> GetGames(int competitionId, int roundNumber)
+        [HttpGet("all/{competitionId}")]
+        public IEnumerable<Game> GetGames(int competitionId)
         {
-            return _context.Games.Where(x => x.RoundNumber == roundNumber && x.CompetitionId == competitionId);
+            return _context.Games.Where(x => x.CompetitionId == competitionId);
         }
 
         // PUT: api/Game/5

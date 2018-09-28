@@ -13,14 +13,14 @@ export class GameEffects {
     }
 
     @Effect()
-    public getGamesForCompetition: Observable<Action> = this.actions
-        .ofType<gameActions.Get>(gameActions.GET_GAMES)
-        .pipe(
-            switchMap(action => this.gameService.getGames(action.competitionId, action.roundId).pipe(
-                map(games => new gameActions.GetSuccess(action.roundId, games)),
-                catchError(error => this.handleError(error))
-            ))
-        );
+    public getAllGamesForCompetition: Observable<Action> = this.actions
+    .ofType<gameActions.GetAll>(gameActions.GET_ALL_GAMES)
+    .pipe(
+        switchMap(action => this.gameService.getAllGames(action.competitionId).pipe(
+            map(games => new gameActions.GetAllSuccess(action.competitionId, games)),
+            catchError(error => this.handleError(error))
+        ))
+    );
 
     @Effect()
     public createGame: Observable<Action> = this.actions

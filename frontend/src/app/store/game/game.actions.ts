@@ -4,6 +4,8 @@ import { Game } from "src/app/store/game/game.interface";
 export const GAME_ERROR = '[Games] OOPS';
 export const GET_GAMES = '[Games] Get'
 export const GET_GAMES_SUCCESS = '[Games] Get -- OK'
+export const GET_ALL_GAMES = '[Games] Get all'
+export const GET_ALL_GAMES_SUCCESS = '[Games] Get all -- OK'
 export const CREATE_GAME = '[Games] Create'
 export const CREATE_GAME_SUCCESS = '[Games] Create -- OK'
 export const UPDATE_GAME = '[Games] Update'
@@ -16,14 +18,14 @@ export class GameError implements Action {
   constructor(public message: string) { }
 }
 
-export class Get implements Action {
-  readonly type = GET_GAMES;
-  constructor(public competitionId: number, public roundId: number) { }
+export class GetAll implements Action {
+  readonly type = GET_ALL_GAMES;
+  constructor(public competitionId: number) { }
 }
 
-export class GetSuccess implements Action {
-  readonly type = GET_GAMES_SUCCESS;
-  constructor(public roundId, public games: Game[]) { }
+export class GetAllSuccess implements Action {
+  readonly type = GET_ALL_GAMES_SUCCESS;
+  constructor(public competitionId, public games: Game[]) { }
 }
 
 export class Create implements Action {
@@ -58,8 +60,8 @@ export class DeleteSuccess implements Action {
 
 export type GameActions
   = GameError 
-  | Get
-  | GetSuccess
+  | GetAll
+  | GetAllSuccess
   | Create
   | CreateSuccess
   | Update

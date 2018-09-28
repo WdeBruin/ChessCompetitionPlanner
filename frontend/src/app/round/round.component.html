@@ -1,7 +1,8 @@
 <mat-card *ngIf="selectedRound?.roundStatus == roundStatus.PlayerSelect">
     <h3>Ronde {{selectedRound.roundNumber}}</h3>
     <mat-selection-list #playerselect>
-        <mat-list-option color="primary" *ngFor="let player of players" (click)="toggle(player.id)">
+        <mat-list-option color="primary" *ngFor="let player of players" (click)="toggle(player.id)"
+            [selected]="isPlayerSelected(player.id)">
             {{player.firstName}} {{player.lastName}}
         </mat-list-option>
     </mat-selection-list>
@@ -10,7 +11,7 @@
 
 <mat-card *ngIf="selectedRound?.roundStatus != roundStatus.PlayerSelect">
     <span *ngIf="selectedRound.playerVrijgeloot">Vrijgeloot: {{getName(selectedRound?.playerVrijgeloot)}}</span>
-    <table mat-table [dataSource]="roundGames">
+    <table mat-table [dataSource]="currentRound()">
         <ng-container matColumnDef="wit">
             <th mat-header-cell *matHeaderCellDef>Wit</th>
             <td mat-cell *matCellDef="let game">
@@ -53,7 +54,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <button mat-raised-button *ngIf="selectedRound?.roundStatus != roundStatus.Done" [disabled]="!allgamesFinished" color="primary"
+    <button mat-raised-button *ngIf="selectedRound?.roundStatus != roundStatus.Done" [disabled]="!allGamesFinished()" color="primary"
         class="squareButton" (click)="finishRound()">Sluit ronde</button>
 
     <span *ngIf="selectedRound?.roundStatus == roundStatus.Done">Ronde gesloten</span>

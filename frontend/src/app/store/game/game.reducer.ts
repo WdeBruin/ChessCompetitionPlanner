@@ -7,7 +7,7 @@ export function GameReducer(
   state: GameState = { data: [], status: undefined },
   action: actions.GameActions) {
   switch (action.type) {
-    case actions.GET_GAMES:
+    case actions.GET_ALL_GAMES:    
     case actions.UPDATE_GAME:
     case actions.DELETE_GAME:
       return {
@@ -19,7 +19,7 @@ export function GameReducer(
         ...state,
         status: Status.Error
       }
-    case actions.GET_GAMES_SUCCESS:
+    case actions.GET_ALL_GAMES_SUCCESS:
       return {
         status: Status.Loaded,
         data: action.games
