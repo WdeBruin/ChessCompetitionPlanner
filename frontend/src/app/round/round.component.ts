@@ -216,7 +216,7 @@ export class RoundComponent implements OnInit {
                     hasOpponent = true;
                 }
                 searchIndex += 1;
-                if (searchIndex == candidates.length - 1) {
+                if (searchIndex == candidates.length) {
                     searchIndex = 0;
                     amountOfTimesPlayed += 1;
                 }
@@ -392,5 +392,21 @@ export class RoundComponent implements OnInit {
             return true;
         }
         return false;
+    }
+
+    public noGamesFinished(): boolean {
+        if (this.roundGames.length > 0 && this.roundGames.filter(x => x.result === 1 || x.result === 0 || x.result === 0.5).length === 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public cancelRound(): void {
+        this.roundGames.forEach((game) => {
+            this.store.dispatch(new gameActions.Delete(game.id));
+        });
+        
+        this.selectedRound.roundStatus = RoundStatus.PlayerSelect;
+        this.store.dispatch(new roundActions.Update(this.selectedRound)) ;       
     }
 }

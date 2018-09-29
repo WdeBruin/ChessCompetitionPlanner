@@ -57,6 +57,9 @@
     <button mat-raised-button *ngIf="selectedRound?.roundStatus != roundStatus.Done" [disabled]="!allGamesFinished()" color="primary"
         class="squareButton" (click)="finishRound()">Sluit ronde</button>
 
+    <button mat-raised-button *ngIf="selectedRound?.roundStatus != roundStatus.Done" [disabled]="noGamesFinished()" color="primary"
+        class="squareButton" (click)="cancelRound()">!Annuleer!</button>
+
     <span *ngIf="selectedRound?.roundStatus == roundStatus.Done">Ronde gesloten</span>
 </mat-card>
 

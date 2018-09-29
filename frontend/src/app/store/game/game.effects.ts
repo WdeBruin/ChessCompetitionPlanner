@@ -46,7 +46,7 @@ export class GameEffects {
     public deleteGame: Observable<Action> = this.actions
     .ofType<gameActions.Delete>(gameActions.DELETE_GAME)
     .pipe(
-        switchMap(action => this.gameService.deleteGame(action.id).pipe(
+        mergeMap(action => this.gameService.deleteGame(action.id).pipe(
             map(game => new gameActions.DeleteSuccess(game.id)),
             catchError(error => this.handleError(error))
         ))
