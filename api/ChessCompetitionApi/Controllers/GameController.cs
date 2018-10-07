@@ -22,11 +22,10 @@ namespace ChessCompetitionApi.Controllers
             _context = context;
         }
 
-        // Expose games for website
-        [HttpGet("{competitionId}")]
-        public IEnumerable<GameLastRound> GetLastRoundGames(int competitionId)
+        // Misnamed it, its not just lastround games.
+        [HttpGet("{competitionId}/{roundnumber}")]
+        public IEnumerable<GameLastRound> GetLastRoundGames(int competitionId, int roundnumber)
         {
-            var roundnumber = _context.Rounds.Where(x => x.CompetitionId == competitionId).Max(x => x.RoundNumber);
             var games = _context.Games.Where(x => x.RoundNumber == roundnumber && x.CompetitionId == competitionId);
             var players = _context.Players;
 
@@ -49,6 +48,14 @@ namespace ChessCompetitionApi.Controllers
             }
 
             return lastroundgames;
+        }
+
+        // Expose games for website
+        [HttpGet("{competitionId}")]
+        public IEnumerable<GameLastRound> GetLastRoundGames(int competitionId)
+        {
+            var roundnumber = _context.Rounds.Where(x => x.CompetitionId == competitionId).Max(x => x.RoundNumber);
+            return GetLastRoundGames(competitionId, roundnumber);
         }
 
         // GET: api/Game
