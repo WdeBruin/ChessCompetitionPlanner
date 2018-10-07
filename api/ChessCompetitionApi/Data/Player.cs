@@ -9,5 +9,6 @@ namespace ChessCompetitionApi.Data
         [MaxLength(100)]
         public string LastName { get; set; }        
         public double ClubElo { get; set; }
+        public bool Disabled { get; set; }
     }
 }

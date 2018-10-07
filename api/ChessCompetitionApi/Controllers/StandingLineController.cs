@@ -21,55 +21,56 @@ namespace ChessCompetitionApi.Controllers
             _context = context;
         }
 
-        // GET: api/StandingLine
-        [Authorize(Policy = "ApiUser")]
-        [HttpGet("standing/{competitionId}/{roundNumber}")]
-        public IEnumerable<StandingLine> GetStandingLines(int competitionId, int roundNumber)
+        // Expose competition standing list, specific roundnumber
+        [HttpGet("{competitionId}/{roundnumber}")]
+        public IEnumerable<Standing> GetStanding(int competitionId, int roundnumber)
         {
-            return _context.StandingLines.Where(x => x.CompetitionId == competitionId && x.RoundNumber == roundNumber);
-        }
-
-        // Expose competition standing list
-        [HttpGet("{competitionId}")]
-        public IEnumerable<Standing> GetStanding(int competitionId)
-        {
-            var roundnumber = _context.Rounds.Where(x => x.CompetitionId == competitionId).Max(x => x.RoundNumber);
             var lines = _context.StandingLines.Where(x => x.CompetitionId == competitionId && x.RoundNumber == roundnumber);
             var players = _context.Players;
 
             var standings = new List<Standing>();
-            foreach(var line in lines)
+            foreach (var line in lines)
             {
                 var player = players.FirstOrDefault(x => x.Id == line.PlayerId);
 
-                standings.Add(new Standing
+                if (!player.Disabled)
                 {
-                    Round = line.RoundNumber,
-                    PlayerName = $"{player.FirstName} {player.LastName}",
-                    CompetitionPoints = Convert.ToInt32(line.CompetitionPoints)
-                });
+                    standings.Add(new Standing
+                    {
+                        Round = line.RoundNumber,
+                        PlayerName = $"{player.FirstName} {player.LastName}",
+                        CompetitionPoints = Convert.ToInt32(line.CompetitionPoints)
+                    });
+                }
             }
 
             return standings.OrderByDescending(x => x.CompetitionPoints);
         }
 
-        // Expose competition elo change list
-        [HttpGet("winloss/{competitionId}")]
-        public IEnumerable<WinLossLine> GetEloWinLoss(int competitionId)
+        // Expose competition standing list, last round
+        [HttpGet("{competitionId}")]
+        public IEnumerable<Standing> GetStanding(int competitionId)
+        {
+            var roundnumber = _context.Rounds.Where(x => x.CompetitionId == competitionId).Max(x => x.RoundNumber);
+            return GetStanding(competitionId, roundnumber);
+        }
+
+        [HttpGet("winloss/{competitionId}/{roundnumber}")]
+        public IEnumerable<WinLossLine> GetEloWinLoss(int competitionId, int roundnumber)
         {
             var winLossLines = new List<WinLossLine>();
-            var players = _context.Players;
+            var players = _context.Players.Where(x => !x.Disabled);
 
             foreach (var player in players)
             {
                 // get the win/loss for each player
                 double winLoss = 0;
-                var relevantGames = _context.Games.Where(x => x.CompetitionId == competitionId 
+                var relevantGames = _context.Games.Where(x => x.CompetitionId == competitionId && x.RoundNumber <= roundnumber
                     && (x.WhitePlayerId == player.Id || x.BlackPlayerId == player.Id));
 
                 foreach (var game in relevantGames)
                 {
-                    if(player.Id == game.WhitePlayerId)
+                    if (player.Id == game.WhitePlayerId)
                     {
                         switch (game.Result)
                         {
@@ -84,7 +85,7 @@ namespace ChessCompetitionApi.Controllers
                                 break;
                         }
                     }
-                    else if(player.Id == game.BlackPlayerId)
+                    else if (player.Id == game.BlackPlayerId)
                     {
                         switch (game.Result)
                         {
@@ -106,6 +107,14 @@ namespace ChessCompetitionApi.Controllers
             }
 
             return winLossLines.OrderByDescending(x => x.EloChange);
+        }
+
+        // Expose competition elo change list
+        [HttpGet("winloss/{competitionId}")]
+        public IEnumerable<WinLossLine> GetEloWinLoss(int competitionId)
+        {
+            var roundnumber = _context.Rounds.Where(x => x.CompetitionId == competitionId).Max(x => x.RoundNumber);
+            return GetEloWinLoss(competitionId, roundnumber);
         }
 
         [Authorize(Policy = "ApiUser")]
