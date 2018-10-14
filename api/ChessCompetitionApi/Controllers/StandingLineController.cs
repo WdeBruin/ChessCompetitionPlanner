@@ -21,6 +21,14 @@ namespace ChessCompetitionApi.Controllers
             _context = context;
         }
 
+        // This one is for the app in getting standinglines for internal processing.
+        [Authorize(Policy = "ApiUser")]
+        [HttpGet("standing/{competitionId}/{roundNumber}")]
+        public IEnumerable<StandingLine> GetStandingLines(int competitionId, int roundNumber)
+        {
+            return _context.StandingLines.Where(x => x.CompetitionId == competitionId && x.RoundNumber == roundNumber);
+        }
+
         // Expose competition standing list, specific roundnumber
         [HttpGet("{competitionId}/{roundnumber}")]
         public IEnumerable<Standing> GetStanding(int competitionId, int roundnumber)
