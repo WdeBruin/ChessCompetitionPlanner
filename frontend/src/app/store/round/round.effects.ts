@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Effect, Actions, ofType } from "@ngrx/effects";
 import * as roundActions from "./round.actions";
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { RoundService } from '../../shared/round.service';
 import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { IAppState, Player, playerSelector } from '../store';
 import * as playerActions from '../store/player/player.actions';

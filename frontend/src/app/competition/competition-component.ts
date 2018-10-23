@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import 'rxjs/add/operator/map';
-import { Observable } from 'rxjs/Observable';
+
+import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Round, Player, IAppState, roundSelector, Competition, competitionSelector, playerSelector, RoundStatus, StandingLine, standingLineSelector } from '../store';

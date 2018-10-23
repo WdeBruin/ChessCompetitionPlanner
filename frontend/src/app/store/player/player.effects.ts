@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Effect, Actions } from "@ngrx/effects";
 import * as playerActions from "./player.actions";
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { PlayerService } from '../../shared/player.service';
 import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
