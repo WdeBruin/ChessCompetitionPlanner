@@ -3,6 +3,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -14,9 +17,10 @@ import { AppComponent } from './app.component';
 
 import { IAppState, appReducer, PlayerEffects, CompetitionEffects, RoundEffects, GameEffects, StandingLineEffects } from './store';
 import { PlayerService, CompetitionService, RoundService, GameService, StandingLineService, UserService } from './shared';
-import { DashboardComponent, PlayersComponent, PlayerFormComponent, RoundComponent, CompetitionComponent, StandingComponent, CompetitionSelectComponent, CompetitionFormComponent, ToolbarComponent } from './';
+import { DashboardComponent, PlayersComponent, PlayerFormComponent, CompetitionFormComponent, ToolbarComponent } from './';
 import { LoginComponent } from './login';
 import { TokenInterceptor } from './shared/token.interceptor';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -24,17 +28,20 @@ import { TokenInterceptor } from './shared/token.interceptor';
     DashboardComponent,
     PlayersComponent,
     PlayerFormComponent,
-    RoundComponent,
-    CompetitionComponent,
-    StandingComponent,
-    CompetitionSelectComponent,
-    CompetitionFormComponent,
+    // RoundComponent,
+    // CompetitionComponent,
+    // StandingComponent,
+    // CompetitionSelectComponent,
+    // CompetitionFormComponent,
     ToolbarComponent,
-    LoginComponent
+    // LoginComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    // AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireDatabaseModule,
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
@@ -53,25 +60,25 @@ import { TokenInterceptor } from './shared/token.interceptor';
     EffectsModule.forRoot(
       [
         PlayerEffects,
-        CompetitionEffects,
-        RoundEffects,
-        GameEffects,
-        StandingLineEffects
+        // CompetitionEffects,
+        // RoundEffects,
+        // GameEffects,
+        // StandingLineEffects
       ]
     ),
   ],
   providers: [
     PlayerService,
-    CompetitionService,
-    RoundService,
-    GameService,
-    StandingLineService,
-    UserService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true
-    }
+    // CompetitionService,
+    // RoundService,
+    // GameService,
+    // StandingLineService,
+    // UserService,
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: TokenInterceptor,
+    //   multi: true
+    // }
   ],
   bootstrap: [AppComponent]
 })

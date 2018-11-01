@@ -1,1 +1,1 @@
-export * from './standing.component';
+// export * from './standing.component';

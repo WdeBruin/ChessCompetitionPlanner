@@ -6,20 +6,32 @@ import { Action } from '@ngrx/store';
 import { PlayerService } from '../../shared/player.service';
 import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
+import { AngularFireDatabase } from '@angular/fire/database';
+import { Player } from './player.interface';
+
 
 @Injectable()
 export class PlayerEffects {
-    constructor(private playerService: PlayerService, private actions: Actions) {
+    constructor(private playerService: PlayerService, private actions: Actions, private db: AngularFireDatabase) {
     }
-
+ 
     @Effect()
     public getPlayers$: Observable<Action> = this.actions
         .ofType<playerActions.GetPlayers>(playerActions.GET_PLAYERS)
         .pipe(
-            switchMap(action => this.playerService.getAllPlayers().pipe(
-                map(players => new playerActions.GetPlayersSuccess(players)),
-                catchError(error => this.handleError(error))
-            ))
+            switchMap(action => {
+                var result = this.db.list<Player[]>('players');
+                return result.stateChanges()
+            }),
+            map(action => {
+                return new playerActions.GetPlayersSuccess(action.payload.val())
+            }),
+            catchError(error => this.handleError(error))
+
+            // switchMap(action => this.playerService.getAllPlayers().pipe(
+            //     map(players => new playerActions.GetPlayersSuccess(players)),
+            //     catchError(error => this.handleError(error))
+            // ))
         );
 
     @Effect()

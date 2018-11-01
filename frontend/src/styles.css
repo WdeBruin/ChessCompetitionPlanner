@@ -11,3 +11,11 @@
 .roundButton {
     margin-right: 5px;
 }
+
+.alert {
+    background-color: lightcoral;
+    height: 30px;
+    border: 1px grey;
+    border-radius: 2px;
+    color: white;
+}

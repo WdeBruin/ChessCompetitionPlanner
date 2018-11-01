@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent, PlayersComponent, CompetitionSelectComponent, CompetitionComponent } from './';
+import { DashboardComponent, PlayersComponent } from './';
 import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent },
+  // { path: '', component: LoginComponent },
   { path: 'players', component: PlayersComponent },
-  { path: 'competition', component: CompetitionSelectComponent },
-  { path: 'competition/:id', component: CompetitionComponent }  
+  // { path: 'competition', component: CompetitionSelectComponent },
+  // { path: 'competition/:id', component: CompetitionComponent }  
 ];
 
 @NgModule({
