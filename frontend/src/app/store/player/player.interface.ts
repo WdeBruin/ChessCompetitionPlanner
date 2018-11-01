@@ -1,7 +1,7 @@
 import { Status } from '../../shared';
 
 export interface Player {
-    id: number;
+    key: string;
     firstName: string;
     lastName: string;
     clubElo: number;

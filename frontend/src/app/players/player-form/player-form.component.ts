@@ -8,8 +8,8 @@ import { Player, IAppState } from '../../store';
   templateUrl: './player-form.component.html',
 })
 export class PlayerFormComponent implements OnInit {
-  public model: Player = {
-    id: undefined,
+  public model: Player = {    
+    key: "",
     firstName: "",
     lastName: "",
     clubElo: 100
@@ -23,7 +23,7 @@ export class PlayerFormComponent implements OnInit {
   save() {    
     this.store.dispatch(new playerActions.Create(this.model));  
     this.model = {
-      id: undefined,
+      key: "",
       firstName: "",
       lastName: "",
       clubElo: 100

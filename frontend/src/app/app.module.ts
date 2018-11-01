@@ -16,7 +16,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { IAppState, appReducer, PlayerEffects, CompetitionEffects, RoundEffects, GameEffects, StandingLineEffects } from './store';
-import { PlayerService, CompetitionService, RoundService, GameService, StandingLineService, UserService } from './shared';
+import { CompetitionService, RoundService, GameService, StandingLineService, UserService } from './shared';
 import { DashboardComponent, PlayersComponent, PlayerFormComponent, CompetitionFormComponent, ToolbarComponent } from './';
 import { LoginComponent } from './login';
 import { TokenInterceptor } from './shared/token.interceptor';
@@ -40,8 +40,7 @@ import { environment } from '../environments/environment';
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
-    // AngularFireModule.initializeApp(firebaseConfig),
-    AngularFireDatabaseModule,
+    AngularFireDatabaseModule,    
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
@@ -68,7 +67,6 @@ import { environment } from '../environments/environment';
     ),
   ],
   providers: [
-    PlayerService,
     // CompetitionService,
     // RoundService,
     // GameService,

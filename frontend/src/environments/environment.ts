@@ -6,7 +6,12 @@ export const environment = {
   production: true,
   api: 'http://localhost:5000/api',
   firebase: {
-    
+    apiKey: "AIzaSyDf4_PGKAn9XZ-M7ShYFMedqIiqnYSDuOM",
+    authDomain: "chess-prod-e695e.firebaseapp.com",
+    databaseURL: "https://chess-prod-e695e.firebaseio.com",
+    projectId: "chess-prod-e695e",
+    storageBucket: "chess-prod-e695e.appspot.com",
+    messagingSenderId: "905399664437"
   }
 };
 

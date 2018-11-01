@@ -17,7 +17,7 @@ export class GetPlayers implements Action {
 
 export class GetPlayersSuccess implements Action {
   readonly type = GET_PLAYERS_SUCCESS;
-  constructor(public readonly players: Player[]) {}
+  constructor(public readonly player: Player, public readonly key: string) {}
 }
 
 export class PlayerError implements Action {
@@ -32,36 +32,14 @@ export class Create implements Action {
 
 export class CreateSuccess implements Action {
   readonly type = CREATE_PLAYER_SUCCESS;
-  constructor(public readonly player: Player) { }
+  constructor() { }
 }
 
-export class Update implements Action {
-  readonly type = UPDATE_PLAYER;
-  constructor(public readonly updatedPlayer: Player) { }
-}
 
-export class UpdateSuccess implements Action {
-  readonly type = UPDATE_PLAYER_SUCCESS;
-  constructor(public readonly updatedPlayer: Player) { }
-}
-
-export class Delete implements Action {
-  readonly type = DELETE_PLAYER;
-  constructor(public readonly id: number) { }
-}
-
-export class DeleteSuccess implements Action {
-  readonly type = DELETE_PLAYER_SUCCESS;
-  constructor(public readonly id: number) { }
-}
 
 export type PlayerActions
   = GetPlayers
   | GetPlayersSuccess
   | PlayerError
   | Create
-  | CreateSuccess
-  | Update
-  | UpdateSuccess
-  | Delete
-  | DeleteSuccess;
+  | CreateSuccess;

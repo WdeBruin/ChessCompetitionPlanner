@@ -3,10 +3,10 @@
     <!-- Add form -->
     <player-form></player-form>
 
-    <div *ngIf="this.playersStatus$ | async" class="alert">Error loading players</div>
+    <div *ngIf="(playerState$ | async)?.status == 2" class="alert">Error loading players</div>
 
     <!-- List with players -->
-    <table mat-table [dataSource]="players$ | async">
+    <table mat-table [dataSource]="(playerState$ | async)?.data">
         <ng-container matColumnDef="firstName">
             <th mat-header-cell *matHeaderCellDef>Voornaam</th>
             <td mat-cell *matCellDef="let player">{{player.firstName}}</td>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { IAppState, Player, playerSelector } from '../store';
+import { IAppState, playerSelector, PlayerState } from '../store';
 import * as playerActions from '../store/player/player.actions';
 import { Status } from '../shared';
 import { map } from 'rxjs/operators';
@@ -10,13 +10,11 @@ import { map } from 'rxjs/operators';
     templateUrl: "players-component.html"
 })
 export class PlayersComponent implements OnInit {
-    players$: Observable<Player[]>;
-    playersStatus$: Observable<Status>;
+    playerState$: Observable<PlayerState>;
     public displayedColumns = ["firstName", "lastName", "clubElo"];
 
     constructor(private store: Store<IAppState>) {
-        this.players$ = this.store.select(playerSelector).pipe(map(p => p.data));
-        this.playersStatus$ = this.store.select(playerSelector).pipe(map(p => p.status));
+        this.playerState$ = this.store.select(playerSelector);
      }
 
     ngOnInit(): void {
