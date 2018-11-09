@@ -1,18 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
-import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-
-import { Round, Player, IAppState, roundSelector, Competition,
-    competitionSelector, playerSelector, RoundStatus, StandingLine, 
-    standingLineSelector } from '../store';
-import * as playerActions from '../store/player/player.actions';
+import { map, tap } from 'rxjs/operators';
+import { Competition, competitionSelector, IAppState, Player, playerSelector, Round, roundSelector, RoundStatus, StandingLine, standingLineSelector } from '../store';
 import * as competitionActions from '../store/competition/competition.actions';
+import * as playerActions from '../store/player/player.actions';
 import * as roundActions from '../store/round/round.actions';
 import * as standingLineActions from '../store/standing-line/standing-line.actions';
-import * as gameActions from '../store/game/game.actions';
-import { tap, filter, take, map } from 'rxjs/operators';
+
+
 
 @Component({
     templateUrl: 'competition.component.html',
@@ -69,13 +65,13 @@ export class CompetitionComponent implements OnInit {
     createRound(): void {
         // round create
         const round: Round = {
-            key: undefined,
+            key: '',
             roundNumber: this.rounds.length + 1,
             isSelected: true,
             playersInRoundIds: '',
             roundStatus: RoundStatus.PlayerSelect,
             competitionKey: this.selectedCompetition ? this.selectedCompetition.key : undefined,
-            playerVrijgeloot: undefined
+            playerVrijgeloot: null
         };
         this.store.dispatch(new roundActions.Create(round));
 
@@ -95,7 +91,7 @@ export class CompetitionComponent implements OnInit {
 
             this.players.forEach(player => {
                 const standingLine: StandingLine = {
-                    key: undefined,
+                    key: '',
                     competitionKey: this.selectedRound.competitionKey,
                     roundNumber: this.selectedRound.roundNumber,
                     playerKey: player.key,
@@ -115,7 +111,7 @@ export class CompetitionComponent implements OnInit {
                         const oldStandingLine = standingLines.find(s => s.playerKey === player.key);
 
                         const newStandingLine: StandingLine = {
-                            key: undefined,
+                            key: '',
                             competitionKey: this.selectedRound.competitionKey,
                             roundNumber: this.selectedRound.roundNumber,
                             playerKey: player.key,

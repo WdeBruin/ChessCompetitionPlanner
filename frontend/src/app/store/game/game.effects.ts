@@ -56,6 +56,7 @@ export class GameEffects {
         );
 
     private handleError(error) {
+        console.log(error);
         return of(new gameActions.GameError(error));
     }
 }

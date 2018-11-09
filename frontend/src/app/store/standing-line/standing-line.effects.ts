@@ -31,7 +31,7 @@ export class StandingLineEffects {
     public createStandingLine: Observable<Action> = this.actions
         .ofType<standingLineActions.Create>(standingLineActions.CREATE_STANDING_LINE)
         .pipe(
-            switchMap(action => this.db.list<StandingLine>('standinglines').push(action.standingLine)
+            mergeMap(action => this.db.list<StandingLine>('standingLines').push(action.standingLine)
             .then(() => new standingLineActions.CreateSuccess())),
             catchError(error => this.handleError(error))
         );
@@ -41,7 +41,7 @@ export class StandingLineEffects {
         .ofType<standingLineActions.Update>(standingLineActions.UPDATE_STANDING_LINE)
         .pipe(
             mergeMap(action =>
-                this.db.object<StandingLine>(`standinglines/${action.updatedStandingLine.key}`).set(action.updatedStandingLine)
+                this.db.object<StandingLine>(`standingLines/${action.updatedStandingLine.key}`).set(action.updatedStandingLine)
                 .then(() => new standingLineActions.UpdateSuccess(action.updatedStandingLine))
             ),
             catchError(error => this.handleError(error))
@@ -51,11 +51,12 @@ export class StandingLineEffects {
     public deleteStandingLine: Observable<Action> = this.actions
         .ofType<standingLineActions.Delete>(standingLineActions.DELETE_STANDING_LINE)
         .pipe(
-            mergeMap(action => this.db.object<StandingLine>(`standinglines/${action.key}`).remove()
+            mergeMap(action => this.db.object<StandingLine>(`standingLines/${action.key}`).remove()
                 .then(() => new standingLineActions.DeleteSuccess(action.key)))
         );
 
     private handleError(error) {
+        console.log(error);
         return of(new standingLineActions.StandingLineError(error));
     }
 }

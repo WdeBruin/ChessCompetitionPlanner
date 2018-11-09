@@ -170,7 +170,7 @@ export class RoundComponent implements OnInit {
             console.log(player);
             if (!this.standingLines.find(x => x.playerKey === player.key)) {
                 const standingLine: StandingLine = {
-                    key: undefined,
+                    key: '',
                     competitionKey: this.selectedRound.competitionKey,
                     roundNumber: this.selectedRound.roundNumber,
                     playerKey: player.key,
@@ -271,24 +271,24 @@ export class RoundComponent implements OnInit {
     private makeGame(player1: string, player2: string) {
         // calculate ELO and CP changes and store with game
         const game: Game = {
-            key: undefined,
+            key: '',
             competitionKey: this.competition.key,
             roundNumber: this.selectedRound.roundNumber,
-            whitePlayerKey: undefined,
-            blackPlayerKey: undefined,
-            result: undefined,
-            whiteWinEloChange: undefined,
-            whiteDrawEloChange: undefined,
-            whiteLossEloChange: undefined,
-            blackWinEloChange: undefined,
-            blackDrawEloChange: undefined,
-            blackLossEloChange: undefined,
-            whiteWinCpChange: undefined,
-            whiteDrawCpChange: undefined,
-            whiteLossCpChange: undefined,
-            blackWinCpChange: undefined,
-            blackDrawCpChange: undefined,
-            blackLossCpChange: undefined
+            whitePlayerKey: null,
+            blackPlayerKey: null,
+            result: null,
+            whiteWinEloChange: null,
+            whiteDrawEloChange: null,
+            whiteLossEloChange: null,
+            blackWinEloChange: null,
+            blackDrawEloChange: null,
+            blackLossEloChange: null,
+            whiteWinCpChange: null,
+            whiteDrawCpChange: null,
+            whiteLossCpChange: null,
+            blackWinCpChange: null,
+            blackDrawCpChange: null,
+            blackLossCpChange: null
         };
 
         // Decide white and black

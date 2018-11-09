@@ -48,6 +48,7 @@ export class RoundEffects {
     );
 
     private handleError(error) {
+        console.log(error);
         return of(new roundActions.RoundError(error));
     }
 }
