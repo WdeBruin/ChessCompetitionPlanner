@@ -32,20 +32,20 @@ export class PlayerEffects {
     public addPlayer$: Observable<Action> = this.actions
         .ofType<playerActions.Create>(playerActions.CREATE_PLAYER)
         .pipe(
-            switchMap(action => this.db.list<Player>('players').push(action.player)),
-            map(() => {
-                return new playerActions.CreateSuccess();
-            })
+            switchMap(action => this.db.list<Player>('players').push(action.player)
+            .then(() => new playerActions.CreateSuccess())),            
+            catchError(error => this.handleError(error))
         );
 
     @Effect()
     public updatePlayer$: Observable<Action> = this.actions
         .ofType<playerActions.Update>(playerActions.UPDATE_PLAYER)
-        .pipe(
-            // mergeMap(action => this.playerService.updatePlayer(action.updatedPlayer).pipe(
-            //     map(player => new playerActions.UpdateSuccess(player)),
-            //     catchError(error => this.handleError(error))
-            // ))
+        .pipe(            
+            mergeMap(action => 
+                this.db.object<Player>(`players/${action.updatedPlayer.key}`).set(action.updatedPlayer)
+                .then(() => new playerActions.UpdateSuccess(action.updatedPlayer))                
+            ),            
+            catchError(error => this.handleError(error))            
         );
 
     private handleError(error) {

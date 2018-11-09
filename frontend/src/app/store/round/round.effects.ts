@@ -1,55 +1,50 @@
 import { Injectable } from '@angular/core';
-import { Effect, Actions, ofType } from "@ngrx/effects";
-import * as roundActions from "./round.actions";
-import { Observable } from 'rxjs';
+import { AngularFireDatabase } from '@angular/fire/database';
+import { Actions, Effect } from "@ngrx/effects";
 import { Action } from '@ngrx/store';
-import { RoundService } from '../../shared/round.service';
-import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
+import * as roundActions from "./round.actions";
+import { Round } from './round.interface';
 
 @Injectable()
 export class RoundEffects {
-    constructor(private roundService: RoundService, private actions: Actions) {
+    constructor(private actions: Actions, private db: AngularFireDatabase) {
     }
 
     @Effect()
     public getRoundsForCompetition: Observable<Action> = this.actions
         .ofType<roundActions.Get>(roundActions.GET_ROUNDS)
         .pipe(
-            switchMap(action => this.roundService.getRounds(action.competitionId).pipe(
-                map(rounds => new roundActions.GetSuccess(action.competitionId, rounds)),
-                catchError(error => this.handleError(error))
-            ))
+            switchMap(() => {
+                var result = this.db.list<Round>('rounds');
+                return result.stateChanges();
+            }),
+            map(action => {
+                return new roundActions.GetSuccess(action.payload.val(), action.key);
+            }),
+            catchError(error => this.handleError(error))
         );
 
     @Effect()
     public createRound: Observable<Action> = this.actions
     .ofType<roundActions.Create>(roundActions.CREATE_ROUND)
     .pipe(
-        switchMap(action => this.roundService.addRound(action.round).pipe(
-            map(round => new roundActions.CreateSuccess(round)),
-            catchError(error => this.handleError(error))
-        ))
+        switchMap(action => this.db.list<Round>('rounds').push(action.round)
+        .then(() => new roundActions.CreateSuccess())),            
+        catchError(error => this.handleError(error))
     );
 
     @Effect()
     public updateRound: Observable<Action> = this.actions
     .ofType<roundActions.Update>(roundActions.UPDATE_ROUND)
-    .pipe(
-        mergeMap(action => this.roundService.updateRound(action.updatedRound).pipe(
-            map(round => new roundActions.UpdateSuccess(round)),
-            catchError(error => this.handleError(error))
-        ))
-    );
-
-    @Effect()
-    public deleteRound: Observable<Action> = this.actions
-    .ofType<roundActions.Delete>(roundActions.DELETE_ROUND)
-    .pipe(
-        switchMap(action => this.roundService.deleteRound(action.id).pipe(
-            map(round => new roundActions.DeleteSuccess(round.id)),
-            catchError(error => this.handleError(error))
-        ))
+    .pipe(            
+        mergeMap(action => 
+            this.db.object<Round>(`rounds/${action.updatedRound.key}`).set(action.updatedRound)
+            .then(() => new roundActions.UpdateSuccess(action.updatedRound))                
+        ),            
+        catchError(error => this.handleError(error))            
     );
     
     private handleError(error) {

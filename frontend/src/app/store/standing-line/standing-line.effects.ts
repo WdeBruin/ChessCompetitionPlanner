@@ -1,57 +1,60 @@
 import { Injectable } from '@angular/core';
+import { AngularFireDatabase } from '@angular/fire/database';
+import { Actions, Effect } from "@ngrx/effects";
 import { Action } from '@ngrx/store';
-import { Effect, Actions, ofType } from "@ngrx/effects";
 import { Observable } from 'rxjs';
-import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
-import * as standingLineActions from './standing-line.actions';
-import { StandingLineService } from '../../shared/standing-line.service';
 import { of } from 'rxjs/internal/observable/of';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
+import * as standingLineActions from './standing-line.actions';
+import { StandingLine } from './standing-line.interface';
 
 @Injectable()
 export class StandingLineEffects {
-    constructor(private standingLineService: StandingLineService, private actions: Actions) {
+    constructor(private actions: Actions, private db: AngularFireDatabase) {
     }
 
     @Effect()
     public getStandingLinesForCompetition: Observable<Action> = this.actions
         .ofType<standingLineActions.Get>(standingLineActions.GET_STANDING_LINES)
         .pipe(
-            switchMap(action => this.standingLineService.getStandingLines(action.competitionId, action.roundNumber).pipe(
-                map(standingLines => new standingLineActions.GetSuccess(action.competitionId, action.roundNumber, standingLines)),
-                catchError(error => this.handleError(error))
-            ))
+            switchMap(() => {
+                var result = this.db.list<StandingLine>('standingLines');
+                return result.stateChanges();
+            }),
+            map(action => {              
+                return new standingLineActions.GetSuccess(action.payload.val(), action.key);
+            }),
+            catchError(error => this.handleError(error))
         );
 
     @Effect()
     public createStandingLine: Observable<Action> = this.actions
-    .ofType<standingLineActions.Create>(standingLineActions.CREATE_STANDING_LINE)
-    .pipe(
-        mergeMap(action => this.standingLineService.addStandingLine(action.standingLine).pipe(
-            map(standingLine => new standingLineActions.CreateSuccess(standingLine)),
+        .ofType<standingLineActions.Create>(standingLineActions.CREATE_STANDING_LINE)
+        .pipe(
+            switchMap(action => this.db.list<StandingLine>('standinglines').push(action.standingLine)
+            .then(() => new standingLineActions.CreateSuccess())),            
             catchError(error => this.handleError(error))
-        ))
-    );
+        );
 
     @Effect()
     public updateStandingLine: Observable<Action> = this.actions
-    .ofType<standingLineActions.Update>(standingLineActions.UPDATE_STANDING_LINE)
-    .pipe(
-        mergeMap(action => this.standingLineService.updateStandingLine(action.updatedStandingLine).pipe(
-            map(standingLine => new standingLineActions.UpdateSuccess(standingLine)),
-            catchError(error => this.handleError(error))
-        ))
-    );
+        .ofType<standingLineActions.Update>(standingLineActions.UPDATE_STANDING_LINE)
+        .pipe(            
+            mergeMap(action => 
+                this.db.object<StandingLine>(`standinglines/${action.updatedStandingLine.key}`).set(action.updatedStandingLine)
+                .then(() => new standingLineActions.UpdateSuccess(action.updatedStandingLine))                
+            ),            
+            catchError(error => this.handleError(error))            
+        );        
 
     @Effect()
     public deleteStandingLine: Observable<Action> = this.actions
-    .ofType<standingLineActions.Delete>(standingLineActions.DELETE_STANDING_LINE)
-    .pipe(
-        switchMap(action => this.standingLineService.deleteStandingLine(action.id).pipe(
-            map(standingLine => new standingLineActions.DeleteSuccess(standingLine.id)),
-            catchError(error => this.handleError(error))
-        ))
-    );
-    
+        .ofType<standingLineActions.Delete>(standingLineActions.DELETE_STANDING_LINE)
+        .pipe(
+            mergeMap(action => this.db.object<StandingLine>(`standinglines/${action.key}`).remove()
+                .then(() => new standingLineActions.DeleteSuccess(action.key)))
+        );
+
     private handleError(error) {
         return of(new standingLineActions.StandingLineError(error));
     }

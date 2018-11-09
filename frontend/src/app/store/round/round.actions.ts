@@ -18,12 +18,12 @@ export class RoundError implements Action {
 
 export class Get implements Action {
   readonly type = GET_ROUNDS;
-  constructor(public competitionId: number) { }
+  constructor(public competitionKey: string) { }
 }
 
 export class GetSuccess implements Action {
   readonly type = GET_ROUNDS_SUCCESS;
-  constructor(public competitionId: number, public rounds: Round[]) { }
+  constructor(public readonly round: Round, public readonly key: string) { }
 }
 
 export class Create implements Action {
@@ -33,7 +33,7 @@ export class Create implements Action {
 
 export class CreateSuccess implements Action {
   readonly type = CREATE_ROUND_SUCCESS;
-  constructor(public round: Round) { }
+  constructor() { }
 }
 
 export class Update implements Action {

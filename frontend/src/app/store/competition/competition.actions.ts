@@ -17,7 +17,7 @@ export class Get implements Action {
 
 export class GetSuccess implements Action {
     readonly type = GET_COMPETITIONS_SUCCESS;
-    constructor(public competitions: Competition[]) { }
+    constructor(public readonly competition: Competition, public readonly key: string) { }
 }
 
 export class CompetitionError implements Action {
@@ -32,7 +32,7 @@ export class Create implements Action {
 
 export class CreateSuccess implements Action {
     readonly type = CREATE_COMPETITION_SUCCESS;
-    constructor(public competition: Competition) { }
+    constructor() { }
   }
 
 export class Update implements Action {
@@ -45,16 +45,6 @@ export class UpdateSuccess implements Action {
     constructor(public updatedCompetition: Competition) { }
 }
 
-export class Delete implements Action {
-    readonly type = DELETE_COMPETITION;
-    constructor(public id: number) { }
-}
-
-export class DeleteSuccess implements Action {
-    readonly type = DELETE_COMPETITION_SUCCESS;
-    constructor(public id: number) { }
-}
-
 export type CompetitionActions
     = Get 
     | GetSuccess
@@ -62,6 +52,4 @@ export type CompetitionActions
     | Create
     | CreateSuccess
     | Update
-    | UpdateSuccess
-    | Delete
-    | DeleteSuccess;
+    | UpdateSuccess;

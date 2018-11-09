@@ -1,56 +1,51 @@
 import { Injectable } from '@angular/core';
-import { Effect, Actions, ofType } from "@ngrx/effects";
-import * as competitionActions from "./competition.actions";
-import { Observable } from 'rxjs';
+import { AngularFireDatabase } from '@angular/fire/database';
+import { Actions, Effect } from "@ngrx/effects";
 import { Action } from '@ngrx/store';
-import { CompetitionService } from '../../shared/competition.service';
-import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
+import * as competitionActions from "./competition.actions";
+import { Competition } from './competition.interface';
 
 @Injectable()
 export class CompetitionEffects {
-    constructor(private competitionService: CompetitionService, private actions: Actions) {
+    constructor(private actions: Actions, private db: AngularFireDatabase) {
     }
 
     @Effect()
     public getCompetitions$: Observable<Action> = this.actions
         .ofType<competitionActions.Get>(competitionActions.GET_COMPETITIONS)
         .pipe(
-            switchMap(action => this.competitionService.getAllCompetitions().pipe(
-                map(competitions => new competitionActions.GetSuccess(competitions)),
-                catchError(error => this.handleError(error))
-            ))
-        );
+            switchMap(() => {
+                var result = this.db.list<Competition>('competitions');
+                return result.stateChanges();
+            }),
+            map(action => {
+                return new competitionActions.GetSuccess(action.payload.val(), action.key);
+            }),
+            catchError(error => this.handleError(error))
+        );        
 
     @Effect()
     public addCompetition$: Observable<Action> = this.actions
         .ofType<competitionActions.Create>(competitionActions.CREATE_COMPETITION)
         .pipe(
-            switchMap(action => this.competitionService.addCompetition(action.competition).pipe(
-                map(competition => new competitionActions.CreateSuccess(competition)),
-                catchError(error => this.handleError(error))
-            ))
+            switchMap(action => this.db.list<Competition>('competitions').push(action.competition)
+            .then(() => new competitionActions.CreateSuccess())),            
+            catchError(error => this.handleError(error))
         );
 
     @Effect()
     public updateCompetition$: Observable<Action> = this.actions
         .ofType<competitionActions.Update>(competitionActions.UPDATE_COMPETITION)
-        .pipe(
-            mergeMap(action => this.competitionService.updateCompetition(action.updatedCompetition).pipe(
-                map(competition => new competitionActions.UpdateSuccess(competition)),
-                catchError(error => this.handleError(error))
-            ))
+        .pipe(            
+            mergeMap(action => 
+                this.db.object<Competition>(`competitions/${action.updatedCompetition.key}`).set(action.updatedCompetition)
+                .then(() => new competitionActions.UpdateSuccess(action.updatedCompetition))
+            ),            
+            catchError(error => this.handleError(error))            
         );
-
-    @Effect()
-    public deleteCompetition$: Observable<Action> = this.actions
-        .ofType<competitionActions.Delete>(competitionActions.DELETE_COMPETITION)
-            .pipe(
-                switchMap(action => this.competitionService.deleteCompetition(action.id).pipe(
-                    map(competition => new competitionActions.DeleteSuccess(action.id)),
-                    catchError(error => this.handleError(error))
-                ))
-            );
 
     private handleError(error) {
         return of(new competitionActions.CompetitionError(error));

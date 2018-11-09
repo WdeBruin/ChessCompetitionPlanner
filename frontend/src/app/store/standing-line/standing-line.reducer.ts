@@ -1,7 +1,7 @@
 import { createFeatureSelector } from '@ngrx/store';
-import * as actions from './standing-line.actions';
-import { StandingLineState } from './';
 import { Status } from '../../shared';
+import { StandingLineState } from './';
+import * as actions from './standing-line.actions';
 
 export function StandingLineReducer(
   state: StandingLineState = { data: [], status: undefined },
@@ -20,33 +20,39 @@ export function StandingLineReducer(
         status: Status.Error
       }
     case actions.GET_STANDING_LINES_SUCCESS:
-      return {
-        status: Status.Loaded,
-        data: action.standingLines
-      }
-    case actions.CREATE_STANDING_LINE_SUCCESS:      
-      return {
-        status: Status.Loaded,
-        data: [
-          ...state.data,
-          action.standingLine
-        ]
+      action.standingLine.key = action.key
+
+      if (state.data.find(x => x.key === action.key)) {
+        return {
+          data: state.data.map(standingLine => {
+            if (standingLine.key !== action.key) {
+              return standingLine;
+            }
+            return action.standingLine;
+          }),
+          status: Status.Loaded
+        }
+      } else {
+        return {
+          data: [...state.data, action.standingLine],
+          status: Status.Loaded
+        }
       }
     case actions.UPDATE_STANDING_LINE_SUCCESS:
       return {
         status: Status.Loaded,
         data: state.data.map(standingLine => {
-          if (standingLine.id !== action.updatedStandingLine.id) {
+          if (standingLine.key !== action.updatedStandingLine.key) {
             return standingLine;
           }
           return action.updatedStandingLine;
         })
-      }      
+      }
     case actions.DELETE_STANDING_LINE_SUCCESS:
       return {
         ...state,
-        data: state.data.filter(standingLine => standingLine.id !== action.id)
-      }    
+        data: state.data.filter(standingLine => standingLine.key !== action.key)
+      }
     default:
       return state;
   }

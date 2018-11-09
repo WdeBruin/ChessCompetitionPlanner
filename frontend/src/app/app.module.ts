@@ -16,11 +16,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { IAppState, appReducer, PlayerEffects, CompetitionEffects, RoundEffects, GameEffects, StandingLineEffects } from './store';
-import { CompetitionService, RoundService, GameService, StandingLineService, UserService } from './shared';
 import { DashboardComponent, PlayersComponent, PlayerFormComponent, CompetitionFormComponent, ToolbarComponent, CompetitionSelectComponent, CompetitionComponent, RoundComponent } from './';
 import { LoginComponent } from './login';
 import { TokenInterceptor } from './shared/token.interceptor';
 import { environment } from '../environments/environment';
+import { UserService } from './shared';
 
 @NgModule({
   declarations: [
@@ -59,18 +59,14 @@ import { environment } from '../environments/environment';
       [
         PlayerEffects,
         CompetitionEffects,
-        // RoundEffects,
-        // GameEffects,
-        // StandingLineEffects
+        RoundEffects,
+        GameEffects,
+        StandingLineEffects
       ]
     ),
   ],
   providers: [
-    // CompetitionService,
-    // RoundService,
-    // GameService,
-    // StandingLineService,
-    // UserService,
+    // UserService
     // {
     //   provide: HTTP_INTERCEPTORS,
     //   useClass: TokenInterceptor,

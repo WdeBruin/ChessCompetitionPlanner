@@ -25,7 +25,7 @@ export class GetAll implements Action {
 
 export class GetAllSuccess implements Action {
   readonly type = GET_ALL_GAMES_SUCCESS;
-  constructor(public competitionKey: string, public games: Game[]) { }
+  constructor(public readonly game: Game, public readonly key: string) { }
 }
 
 export class Create implements Action {
@@ -35,7 +35,7 @@ export class Create implements Action {
 
 export class CreateSuccess implements Action {
   readonly type = CREATE_GAME_SUCCESS;
-  constructor(public game: Game) { }
+  constructor() { }
 }
 
 export class Update implements Action {

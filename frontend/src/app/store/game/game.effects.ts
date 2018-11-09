@@ -1,57 +1,60 @@
 import { Injectable } from '@angular/core';
+import { AngularFireDatabase } from '@angular/fire/database';
+import { Actions, Effect } from "@ngrx/effects";
 import { Action } from '@ngrx/store';
-import { Effect, Actions, ofType } from "@ngrx/effects";
 import { Observable } from 'rxjs';
-import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
-import * as gameActions from './game.actions';
-import { GameService } from '../../shared/game.service';
 import { of } from 'rxjs/internal/observable/of';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
+import * as gameActions from './game.actions';
+import { Game } from './game.interface';
 
 @Injectable()
 export class GameEffects {
-    constructor(private gameService: GameService, private actions: Actions) {
+    constructor(private actions: Actions, private db: AngularFireDatabase) {
     }
 
     @Effect()
     public getAllGamesForCompetition: Observable<Action> = this.actions
-    .ofType<gameActions.GetAll>(gameActions.GET_ALL_GAMES)
-    .pipe(
-        switchMap(action => this.gameService.getAllGames(action.competitionKey).pipe(
-            map(games => new gameActions.GetAllSuccess(action.competitionKey, games)),
+        .ofType<gameActions.GetAll>(gameActions.GET_ALL_GAMES)
+        .pipe(
+            switchMap(() => {
+                var result = this.db.list<Game>('games');
+                return result.stateChanges();
+            }),
+            map(action => {
+                return new gameActions.GetAllSuccess(action.payload.val(), action.key);
+            }),
             catchError(error => this.handleError(error))
-        ))
-    );
+        );
 
     @Effect()
     public createGame: Observable<Action> = this.actions
-    .ofType<gameActions.Create>(gameActions.CREATE_GAME)
-    .pipe(
-        mergeMap(action => this.gameService.addGame(action.game).pipe(
-            map(game => new gameActions.CreateSuccess(game)),
+        .ofType<gameActions.Create>(gameActions.CREATE_GAME)
+        .pipe(
+            switchMap(action => this.db.list<Game>('games').push(action.game)
+                .then(() => new gameActions.CreateSuccess())),
             catchError(error => this.handleError(error))
-        ))
-    );
+        );
 
     @Effect()
     public updateGame: Observable<Action> = this.actions
-    .ofType<gameActions.Update>(gameActions.UPDATE_GAME)
-    .pipe(
-        mergeMap(action => this.gameService.updateGame(action.updatedGame).pipe(
-            map(game => new gameActions.UpdateSuccess(game)),
+        .ofType<gameActions.Update>(gameActions.UPDATE_GAME)
+        .pipe(
+            mergeMap(action =>
+                this.db.object<Game>(`games/${action.updatedGame.key}`).set(action.updatedGame)
+                    .then(() => new gameActions.UpdateSuccess(action.updatedGame))
+            ),
             catchError(error => this.handleError(error))
-        ))
-    );
+        );
 
     @Effect()
     public deleteGame: Observable<Action> = this.actions
-    .ofType<gameActions.Delete>(gameActions.DELETE_GAME)
-    .pipe(
-        mergeMap(action => this.gameService.deleteGame(action.id).pipe(
-            map(game => new gameActions.DeleteSuccess(game.key)),
-            catchError(error => this.handleError(error))
-        ))
-    );
-    
+        .ofType<gameActions.Delete>(gameActions.DELETE_GAME)
+        .pipe(
+            mergeMap(action => this.db.object<Game>(`games/${action.key}`).remove()
+                .then(() => new gameActions.DeleteSuccess(action.key)))
+        );
+
     private handleError(error) {
         return of(new gameActions.GameError(error));
     }

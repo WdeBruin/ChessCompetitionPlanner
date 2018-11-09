@@ -1,7 +1,7 @@
 import { createFeatureSelector } from '@ngrx/store';
-import * as actions from './competition.actions';
-import { CompetitionState } from './';
 import { Status } from '../../shared';
+import { CompetitionState } from './';
+import * as actions from './competition.actions';
 
 export function CompetitionReducer(
     state: CompetitionState = { data: [], status: undefined },
@@ -9,7 +9,6 @@ export function CompetitionReducer(
     switch (action.type) {
         case actions.GET_COMPETITIONS:
         case actions.UPDATE_COMPETITION:
-        case actions.DELETE_COMPETITION:
             return {
                 ...state,
                 status: Status.Loading
@@ -20,33 +19,32 @@ export function CompetitionReducer(
                 status: Status.Error
             }
         case actions.GET_COMPETITIONS_SUCCESS:
-            return { 
-                data: action.competitions,
-                status: Status.Loaded
-            }        
-        case actions.CREATE_COMPETITION_SUCCESS:
-            return {
-                status: Status.Loaded,
-                data: [
-                    ...state.data,
-                    action.competition
-                ]
+            action.competition.key = action.key;
+            if (state.data.find(x => x.key === action.key)) {
+                return {
+                    data: state.data.map(competition => {
+                        if (competition.key !== action.key) {
+                            return competition;
+                        }
+                        return action.competition;
+                    }),
+                    status: Status.Loaded
+                }
+            } else {
+                return {
+                    data: [...state.data, action.competition],
+                    status: Status.Loaded
+                }
             }
         case actions.UPDATE_COMPETITION_SUCCESS:
             return {
                 status: Status.Loaded,
                 data: state.data.map(competition => {
-                        if (competition.id !== action.updatedCompetition.id) {
-                          return competition;
-                        }
-                        return action.updatedCompetition;
-                      })
-                
-            }
-        case actions.DELETE_COMPETITION_SUCCESS:
-            return {
-                status: Status.Loaded,
-                data: state.data.filter(competition => competition.id !== action.id)                
+                    if (competition.key !== action.updatedCompetition.key) {
+                        return competition;
+                    }
+                    return action.updatedCompetition;
+                })
             }
         default:
             return state;

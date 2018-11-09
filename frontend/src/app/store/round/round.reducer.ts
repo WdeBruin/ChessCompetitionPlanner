@@ -1,7 +1,7 @@
 import { createFeatureSelector } from '@ngrx/store';
-import * as actions from './round.actions';
-import { RoundState } from './';
 import { Status } from '../../shared';
+import { RoundState } from './';
+import * as actions from './round.actions';
 
 export function RoundReducer(
   state: RoundState = { data: [], status: undefined },
@@ -20,33 +20,35 @@ export function RoundReducer(
         status: Status.Error
       }
     case actions.GET_ROUNDS_SUCCESS:
-      return {
-        status: Status.Loaded,
-        data: action.rounds
-      }
-    case actions.CREATE_ROUND_SUCCESS:      
-      return {
-        status: Status.Loaded,
-        data: [
-          ...state.data,
-          action.round
-        ]
+      action.round.key = action.key
+
+      if (state.data.find(x => x.key === action.key)) {
+        return {
+          data: state.data.map(round => {
+            if (round.key !== action.key) {
+              return round;
+            }
+            return action.round;
+          }),
+          status: Status.Loaded
+        }
+      } else {
+        return {
+          data: [...state.data, action.round],
+          status: Status.Loaded
+        }
       }
     case actions.UPDATE_ROUND_SUCCESS:
       return {
+        ...state,
         status: Status.Loaded,
         data: state.data.map(round => {
-          if ((round.competitionId === action.updatedRound.competitionId && round.roundNumber === action.updatedRound.roundNumber)) {
-            return action.updatedRound;            
+          if (round.key !== action.updatedRound.key) {
+            return round;
           }
-          return round;          
+          return action.updatedRound;
         })
-      }      
-    case actions.DELETE_ROUND_SUCCESS:
-      return {
-        ...state,
-        data: state.data.filter(round => round.id !== action.id)
-      }    
+      }
     default:
       return state;
   }

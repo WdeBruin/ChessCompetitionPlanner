@@ -23,7 +23,7 @@ export class Get implements Action {
 
 export class GetSuccess implements Action {
   readonly type = GET_STANDING_LINES_SUCCESS;
-  constructor(public competitionKey: string, public roundNumber: number, public standingLines: StandingLine[]) { }
+  constructor(public readonly standingLine: StandingLine, public readonly key: string) { }
 }
 
 export class Create implements Action {
@@ -33,7 +33,7 @@ export class Create implements Action {
 
 export class CreateSuccess implements Action {
   readonly type = CREATE_STANDING_LINE_SUCCESS;
-  constructor(public standingLine: StandingLine) { }
+  constructor() { }
 }
 
 export class Update implements Action {

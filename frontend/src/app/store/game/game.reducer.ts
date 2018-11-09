@@ -1,13 +1,13 @@
 import { createFeatureSelector } from '@ngrx/store';
-import * as actions from './game.actions';
-import { GameState } from './';
 import { Status } from '../../shared';
+import { GameState } from './';
+import * as actions from './game.actions';
 
 export function GameReducer(
   state: GameState = { data: [], status: undefined },
   action: actions.GameActions) {
   switch (action.type) {
-    case actions.GET_ALL_GAMES:    
+    case actions.GET_ALL_GAMES:
     case actions.UPDATE_GAME:
     case actions.DELETE_GAME:
       return {
@@ -20,17 +20,23 @@ export function GameReducer(
         status: Status.Error
       }
     case actions.GET_ALL_GAMES_SUCCESS:
-      return {
-        status: Status.Loaded,
-        data: action.games
-      }
-    case actions.CREATE_GAME_SUCCESS:      
-      return {
-        status: Status.Loaded,
-        data: [
-          ...state.data,
-          action.game
-        ]
+      action.game.key = action.key
+
+      if (state.data.find(x => x.key === action.key)) {
+        return {
+          data: state.data.map(game => {
+            if (game.key !== action.key) {
+              return game;
+            }
+            return action.game;
+          }),
+          status: Status.Loaded
+        }
+      } else {
+        return {
+          data: [...state.data, action.game],
+          status: Status.Loaded
+        }
       }
     case actions.UPDATE_GAME_SUCCESS:
       return {
@@ -41,12 +47,12 @@ export function GameReducer(
           }
           return action.updatedGame;
         })
-      }      
+      }
     case actions.DELETE_GAME_SUCCESS:
       return {
         ...state,
-        data: state.data.filter(game => game.key !== action.id)
-      }    
+        data: state.data.filter(game => game.key !== action.key)
+      }
     default:
       return state;
   }
