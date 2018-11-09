@@ -1,5 +1,5 @@
-import { Action } from "@ngrx/store";
-import { Round } from "./round.interface";
+import { Action } from '@ngrx/store';
+import { Round } from './round.interface';
 
 export const ROUND_ERROR = '[Rounds] OOPS';
 export const GET_ROUNDS = '[Rounds] Get';
@@ -59,7 +59,7 @@ export class DeleteSuccess implements Action {
 }
 
 export type RoundActions
-  = 
+  =
   Get
   | GetSuccess
   | Create

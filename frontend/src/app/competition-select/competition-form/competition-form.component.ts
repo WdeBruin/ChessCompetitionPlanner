@@ -16,18 +16,18 @@ export class CompetitionFormComponent implements OnInit {
     roundCount: 0
   };
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
   }
 
-  constructor(private store: Store<IAppState>) { }  
+  constructor(private store: Store<IAppState>) { }
 
-  save() {    
-    this.store.dispatch(new competitionActions.Create(this.model));  
+  save() {
+    this.store.dispatch(new competitionActions.Create(this.model));
     this.model = {
       id: 0,
       isSelected: false,
       name: undefined,
       roundCount: 0
-    }
+    };
   }
 }

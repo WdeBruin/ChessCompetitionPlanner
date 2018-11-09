@@ -23,7 +23,7 @@ export class UserService {
     public isAuthenticated(): boolean {
         // get the token
         const token = this.getToken();
-        // return a boolean reflecting 
+        // return a boolean reflecting
         // whether or not the token is expired
         return token != null;
     }

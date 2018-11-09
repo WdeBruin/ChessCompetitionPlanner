@@ -12,12 +12,12 @@ export function CompetitionReducer(
             return {
                 ...state,
                 status: Status.Loading
-            }
+            };
         case actions.COMPETITION_ERROR:
             return {
                 ...state,
                 status: Status.Error
-            }
+            };
         case actions.GET_COMPETITIONS_SUCCESS:
             action.competition.key = action.key;
             if (state.data.find(x => x.key === action.key)) {
@@ -29,12 +29,12 @@ export function CompetitionReducer(
                         return action.competition;
                     }),
                     status: Status.Loaded
-                }
+                };
             } else {
                 return {
                     data: [...state.data, action.competition],
                     status: Status.Loaded
-                }
+                };
             }
         case actions.UPDATE_COMPETITION_SUCCESS:
             return {
@@ -45,7 +45,7 @@ export function CompetitionReducer(
                     }
                     return action.updatedCompetition;
                 })
-            }
+            };
         default:
             return state;
     }

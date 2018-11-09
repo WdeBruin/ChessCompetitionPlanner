@@ -8,6 +8,6 @@ export interface Player {
 }
 
 export interface PlayerState {
-    data: Player[],
-    status: Status
+    data: Player[];
+    status: Status;
 }

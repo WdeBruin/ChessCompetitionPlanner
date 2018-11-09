@@ -13,14 +13,14 @@ export function GameReducer(
       return {
         ...state,
         status: Status.Loading
-      }
+      };
     case actions.GAME_ERROR:
       return {
         ...state,
         status: Status.Error
-      }
+      };
     case actions.GET_ALL_GAMES_SUCCESS:
-      action.game.key = action.key
+      action.game.key = action.key;
 
       if (state.data.find(x => x.key === action.key)) {
         return {
@@ -31,12 +31,12 @@ export function GameReducer(
             return action.game;
           }),
           status: Status.Loaded
-        }
+        };
       } else {
         return {
           data: [...state.data, action.game],
           status: Status.Loaded
-        }
+        };
       }
     case actions.UPDATE_GAME_SUCCESS:
       return {
@@ -47,12 +47,12 @@ export function GameReducer(
           }
           return action.updatedGame;
         })
-      }
+      };
     case actions.DELETE_GAME_SUCCESS:
       return {
         ...state,
         data: state.data.filter(game => game.key !== action.key)
-      }
+      };
     default:
       return state;
   }

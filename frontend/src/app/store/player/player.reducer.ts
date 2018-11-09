@@ -12,9 +12,9 @@ export function PlayerReducer(
       return {
         ...state,
         status: Status.Error
-      }
+      };
     case actions.GET_PLAYERS_SUCCESS:
-      action.player.key = action.key
+      action.player.key = action.key;
 
       if (state.data.find(x => x.key === action.key)) {
         return {
@@ -25,12 +25,12 @@ export function PlayerReducer(
             return action.player;
           }),
           status: Status.Loaded
-        }
+        };
       } else {
         return {
           data: [...state.data, action.player],
           status: Status.Loaded
-        }
+        };
       }
     case actions.UPDATE_PLAYER_SUCCESS:
       return {
@@ -42,7 +42,7 @@ export function PlayerReducer(
           }
           return action.updatedPlayer;
         })
-      }
+      };
     default:
       return state;
   }

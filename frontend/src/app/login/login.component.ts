@@ -9,27 +9,27 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   public model: Credentials = {
-    username: "",
-    password: ""
+    username: '',
+    password: ''
   };
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
   }
 
-  constructor(private userService: UserService, private router: Router) {       
-  }  
+  constructor(private userService: UserService, private router: Router) {
+  }
 
-  login() {    
+  login() {
     this.userService.login(this.model).subscribe(
         res => {
             localStorage.setItem('auth_token', res.auth_token);
             this.router.navigate(['competition']);
         }
-    )
+    );
   }
 }
 
 export class Credentials {
   public username: string;
-  public password: string
+  public password: string;
 }

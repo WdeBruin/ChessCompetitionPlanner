@@ -7,7 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ToolbarComponent implements OnInit {
   @Input()
-  public name: string; 
+  public name: string;
 
   constructor() { }
 

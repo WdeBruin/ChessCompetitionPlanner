@@ -13,14 +13,14 @@ export function StandingLineReducer(
       return {
         ...state,
         status: Status.Loading
-      }
+      };
     case actions.STANDING_LINE_ERROR:
       return {
         ...state,
         status: Status.Error
-      }
+      };
     case actions.GET_STANDING_LINES_SUCCESS:
-      action.standingLine.key = action.key
+      action.standingLine.key = action.key;
 
       if (state.data.find(x => x.key === action.key)) {
         return {
@@ -31,12 +31,12 @@ export function StandingLineReducer(
             return action.standingLine;
           }),
           status: Status.Loaded
-        }
+        };
       } else {
         return {
           data: [...state.data, action.standingLine],
           status: Status.Loaded
-        }
+        };
       }
     case actions.UPDATE_STANDING_LINE_SUCCESS:
       return {
@@ -47,12 +47,12 @@ export function StandingLineReducer(
           }
           return action.updatedStandingLine;
         })
-      }
+      };
     case actions.DELETE_STANDING_LINE_SUCCESS:
       return {
         ...state,
         data: state.data.filter(standingLine => standingLine.key !== action.key)
-      }
+      };
     default:
       return state;
   }

@@ -1,14 +1,14 @@
-import { Status } from "../../shared";
+import { Status } from '../../shared';
 
 export interface StandingLine {
     key: string;
     competitionKey: string;
     roundNumber: number;
     playerKey: string;
-    competitionPoints: number;    
+    competitionPoints: number;
 }
 
 export interface StandingLineState {
-    status: Status,
-    data: StandingLine[]
+    status: Status;
+    data: StandingLine[];
 }

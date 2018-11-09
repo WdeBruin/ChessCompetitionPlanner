@@ -1,5 +1,5 @@
-import { Action } from "@ngrx/store";
-import { Player } from "./player.interface";
+import { Action } from '@ngrx/store';
+import { Player } from './player.interface';
 
 export const PLAYER_ERROR = '[Player] OOPS';
 export const GET_PLAYERS = '[Players] Get all';
@@ -12,7 +12,7 @@ export const DELETE_PLAYER = '[Players] Delete';
 export const DELETE_PLAYER_SUCCESS = '[Players] Delete -- OK';
 
 export class GetPlayers implements Action {
-  readonly type = GET_PLAYERS;  
+  readonly type = GET_PLAYERS;
 }
 
 export class GetPlayersSuccess implements Action {
@@ -21,12 +21,12 @@ export class GetPlayersSuccess implements Action {
 }
 
 export class PlayerError implements Action {
-  readonly type = PLAYER_ERROR;  
+  readonly type = PLAYER_ERROR;
   constructor(public readonly message: string) {}
 }
 
 export class Create implements Action {
-  readonly type = CREATE_PLAYER;  
+  readonly type = CREATE_PLAYER;
   constructor(public readonly player: Player) { }
 }
 

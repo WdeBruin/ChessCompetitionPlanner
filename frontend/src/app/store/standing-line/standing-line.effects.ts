@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { Actions, Effect } from "@ngrx/effects";
+import { Actions, Effect } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
@@ -18,10 +18,10 @@ export class StandingLineEffects {
         .ofType<standingLineActions.Get>(standingLineActions.GET_STANDING_LINES)
         .pipe(
             switchMap(() => {
-                var result = this.db.list<StandingLine>('standingLines');
+                let result = this.db.list<StandingLine>('standingLines');
                 return result.stateChanges();
             }),
-            map(action => {              
+            map(action => {
                 return new standingLineActions.GetSuccess(action.payload.val(), action.key);
             }),
             catchError(error => this.handleError(error))
@@ -32,20 +32,20 @@ export class StandingLineEffects {
         .ofType<standingLineActions.Create>(standingLineActions.CREATE_STANDING_LINE)
         .pipe(
             switchMap(action => this.db.list<StandingLine>('standinglines').push(action.standingLine)
-            .then(() => new standingLineActions.CreateSuccess())),            
+            .then(() => new standingLineActions.CreateSuccess())),
             catchError(error => this.handleError(error))
         );
 
     @Effect()
     public updateStandingLine: Observable<Action> = this.actions
         .ofType<standingLineActions.Update>(standingLineActions.UPDATE_STANDING_LINE)
-        .pipe(            
-            mergeMap(action => 
+        .pipe(
+            mergeMap(action =>
                 this.db.object<StandingLine>(`standinglines/${action.updatedStandingLine.key}`).set(action.updatedStandingLine)
-                .then(() => new standingLineActions.UpdateSuccess(action.updatedStandingLine))                
-            ),            
-            catchError(error => this.handleError(error))            
-        );        
+                .then(() => new standingLineActions.UpdateSuccess(action.updatedStandingLine))
+            ),
+            catchError(error => this.handleError(error))
+        );
 
     @Effect()
     public deleteStandingLine: Observable<Action> = this.actions

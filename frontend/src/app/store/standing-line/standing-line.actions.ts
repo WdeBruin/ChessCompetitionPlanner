@@ -1,15 +1,15 @@
-import { Action } from "@ngrx/store";
-import { StandingLine } from "./standing-line.interface";
+import { Action } from '@ngrx/store';
+import { StandingLine } from './standing-line.interface';
 
 export const STANDING_LINE_ERROR = '[StandingLines] OOPS';
-export const GET_STANDING_LINES = '[StandingLines] Get'
-export const GET_STANDING_LINES_SUCCESS = '[StandingLines] Get -- OK'
-export const CREATE_STANDING_LINE = '[StandingLines] Create'
-export const CREATE_STANDING_LINE_SUCCESS = '[StandingLines] Create -- OK'
-export const UPDATE_STANDING_LINE = '[StandingLines] Update'
-export const UPDATE_STANDING_LINE_SUCCESS = '[StandingLines] Update -- OK'
-export const DELETE_STANDING_LINE = '[StandingLines] Delete'
-export const DELETE_STANDING_LINE_SUCCESS = '[StandingLines] Delete -- OK'
+export const GET_STANDING_LINES = '[StandingLines] Get';
+export const GET_STANDING_LINES_SUCCESS = '[StandingLines] Get -- OK';
+export const CREATE_STANDING_LINE = '[StandingLines] Create';
+export const CREATE_STANDING_LINE_SUCCESS = '[StandingLines] Create -- OK';
+export const UPDATE_STANDING_LINE = '[StandingLines] Update';
+export const UPDATE_STANDING_LINE_SUCCESS = '[StandingLines] Update -- OK';
+export const DELETE_STANDING_LINE = '[StandingLines] Delete';
+export const DELETE_STANDING_LINE_SUCCESS = '[StandingLines] Delete -- OK';
 
 export class StandingLineError implements Action {
   readonly type = STANDING_LINE_ERROR;
@@ -57,7 +57,7 @@ export class DeleteSuccess implements Action {
 }
 
 export type StandingLineActions
-  = StandingLineError 
+  = StandingLineError
   | Get
   | GetSuccess
   | Create

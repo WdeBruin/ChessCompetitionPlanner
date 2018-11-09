@@ -7,11 +7,11 @@ import { Status } from '../shared';
 import { map } from 'rxjs/operators';
 
 @Component({
-    templateUrl: "players-component.html"
+    templateUrl: 'players-component.html'
 })
 export class PlayersComponent implements OnInit {
     playerState$: Observable<PlayerState>;
-    public displayedColumns = ["firstName", "lastName", "clubElo"];
+    public displayedColumns = ['firstName', 'lastName', 'clubElo'];
 
     constructor(private store: Store<IAppState>) {
         this.playerState$ = this.store.select(playerSelector);

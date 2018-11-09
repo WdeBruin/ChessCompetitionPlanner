@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Effect, Actions } from "@ngrx/effects";
-import * as playerActions from "./player.actions";
+import { Effect, Actions } from '@ngrx/effects';
+import * as playerActions from './player.actions';
 import { Observable } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
@@ -19,7 +19,7 @@ export class PlayerEffects {
         .ofType<playerActions.GetPlayers>(playerActions.GET_PLAYERS)
         .pipe(
             switchMap(() => {
-                var result = this.db.list<Player>('players');
+                let result = this.db.list<Player>('players');
                 return result.stateChanges();
             }),
             map(action => {
@@ -33,19 +33,19 @@ export class PlayerEffects {
         .ofType<playerActions.Create>(playerActions.CREATE_PLAYER)
         .pipe(
             switchMap(action => this.db.list<Player>('players').push(action.player)
-            .then(() => new playerActions.CreateSuccess())),            
+            .then(() => new playerActions.CreateSuccess())),
             catchError(error => this.handleError(error))
         );
 
     @Effect()
     public updatePlayer$: Observable<Action> = this.actions
         .ofType<playerActions.Update>(playerActions.UPDATE_PLAYER)
-        .pipe(            
-            mergeMap(action => 
+        .pipe(
+            mergeMap(action =>
                 this.db.object<Player>(`players/${action.updatedPlayer.key}`).set(action.updatedPlayer)
-                .then(() => new playerActions.UpdateSuccess(action.updatedPlayer))                
-            ),            
-            catchError(error => this.handleError(error))            
+                .then(() => new playerActions.UpdateSuccess(action.updatedPlayer))
+            ),
+            catchError(error => this.handleError(error))
         );
 
     private handleError(error) {

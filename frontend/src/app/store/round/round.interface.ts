@@ -1,5 +1,5 @@
-import { RoundStatus } from "./round-status.enum";
-import { Status } from "../../shared";
+import { RoundStatus } from './round-status.enum';
+import { Status } from '../../shared';
 
 export interface Round {
     key: string;
@@ -12,6 +12,6 @@ export interface Round {
 }
 
 export interface RoundState {
-    data: Round[],
-    status: Status
+    data: Round[];
+    status: Status;
 }

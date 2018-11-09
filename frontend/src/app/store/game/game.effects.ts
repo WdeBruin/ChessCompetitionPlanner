@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { Actions, Effect } from "@ngrx/effects";
+import { Actions, Effect } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
@@ -18,7 +18,7 @@ export class GameEffects {
         .ofType<gameActions.GetAll>(gameActions.GET_ALL_GAMES)
         .pipe(
             switchMap(() => {
-                var result = this.db.list<Game>('games');
+                let result = this.db.list<Game>('games');
                 return result.stateChanges();
             }),
             map(action => {

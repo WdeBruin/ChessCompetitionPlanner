@@ -13,7 +13,7 @@ import * as gameActions from '../store/game/game.actions';
 import { tap, filter, take, map } from 'rxjs/operators';
 
 @Component({
-    templateUrl: "competition-component.html",
+    templateUrl: 'competition-component.html',
     styleUrls: ['competition.component.css']
 })
 export class CompetitionComponent implements OnInit {
@@ -49,7 +49,7 @@ export class CompetitionComponent implements OnInit {
             tap(rounds => {
                 if (rounds) {
                     this.rounds = rounds.filter(r => r.competitionId === this.selectedCompetition.id);
-                    this.selectedRound = this.rounds.find(r => r.isSelected) || this.rounds[rounds.length - 1]; // selected or last one.                        
+                    this.selectedRound = this.rounds.find(r => r.isSelected) || this.rounds[rounds.length - 1]; // selected or last one.
 
                     this.roundsFinished = rounds.filter(r => r.roundStatus === RoundStatus.Generated || r.roundStatus === RoundStatus.PlayerSelect).length === 0;
                 }
@@ -58,7 +58,7 @@ export class CompetitionComponent implements OnInit {
 
         this.store.select(playerSelector).pipe(
             tap(players => {
-                this.players = players.data
+                this.players = players.data;
             })
         ).subscribe();
     }
@@ -69,11 +69,11 @@ export class CompetitionComponent implements OnInit {
             id: undefined,
             roundNumber: this.rounds.length + 1,
             isSelected: true,
-            playersInRoundIds: "",
+            playersInRoundIds: '',
             roundStatus: RoundStatus.PlayerSelect,
             competitionId: this.selectedCompetition ? this.selectedCompetition.id : undefined,
             playerVrijgeloot: undefined
-        }
+        };
         this.store.dispatch(new roundActions.Create(round));
 
         // Give standing line a roundNumber and CompetitionId and delete Standing as a model, clears up things.
@@ -97,7 +97,7 @@ export class CompetitionComponent implements OnInit {
                     roundNumber: this.selectedRound.roundNumber,
                     playerKey: player.key,
                     competitionPoints: player.clubElo,
-                }
+                };
 
                 this.store.dispatch(new standingLineActions.Create(standingLine));
             });
@@ -117,7 +117,7 @@ export class CompetitionComponent implements OnInit {
                             roundNumber: this.selectedRound.roundNumber,
                             playerKey: player.key,
                             competitionPoints: oldStandingLine.competitionPoints
-                        }
+                        };
 
                         this.store.dispatch(new standingLineActions.Create(newStandingLine));
                     });

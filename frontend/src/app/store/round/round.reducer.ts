@@ -13,14 +13,14 @@ export function RoundReducer(
       return {
         ...state,
         status: Status.Loading
-      }
+      };
     case actions.ROUND_ERROR:
       return {
         ...state,
         status: Status.Error
-      }
+      };
     case actions.GET_ROUNDS_SUCCESS:
-      action.round.key = action.key
+      action.round.key = action.key;
 
       if (state.data.find(x => x.key === action.key)) {
         return {
@@ -31,12 +31,12 @@ export function RoundReducer(
             return action.round;
           }),
           status: Status.Loaded
-        }
+        };
       } else {
         return {
           data: [...state.data, action.round],
           status: Status.Loaded
-        }
+        };
       }
     case actions.UPDATE_ROUND_SUCCESS:
       return {
@@ -48,7 +48,7 @@ export function RoundReducer(
           }
           return action.updatedRound;
         })
-      }
+      };
     default:
       return state;
   }

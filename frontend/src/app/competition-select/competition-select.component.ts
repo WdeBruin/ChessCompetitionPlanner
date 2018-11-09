@@ -14,7 +14,7 @@ import { IAppState, competitionSelector, CompetitionState } from '../store';
 })
 export class CompetitionSelectComponent implements OnInit {
   competitions$: Observable<CompetitionState>;
-  addNew: boolean = false;
+  addNew = false;
 
   constructor(private store: Store<IAppState>, private router: Router) {
     this.competitions$ = this.store.select(competitionSelector);
@@ -23,8 +23,8 @@ export class CompetitionSelectComponent implements OnInit {
   ngOnInit() {
     this.store.dispatch(new competitionActions.Get());
   }
-  
+
   navigate(id: number) {
-    this.router.navigate(['competition', id])
+    this.router.navigate(['competition', id]);
   }
 }
