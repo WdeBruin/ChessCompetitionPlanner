@@ -10,7 +10,7 @@ import * as competitionActions from '../../store/competition/competition.actions
 })
 export class CompetitionFormComponent implements OnInit {
   public model: Competition = {
-    id: 0,
+    key: undefined,
     isSelected: false,
     name: undefined,
     roundCount: 0
@@ -24,7 +24,7 @@ export class CompetitionFormComponent implements OnInit {
   save() {
     this.store.dispatch(new competitionActions.Create(this.model));
     this.model = {
-      id: 0,
+      key: undefined,
       isSelected: false,
       name: undefined,
       roundCount: 0
