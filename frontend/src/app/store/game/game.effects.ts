@@ -16,8 +16,8 @@ export class GameEffects {
     public getAllGamesForCompetition: Observable<Action> = this.actions
     .ofType<gameActions.GetAll>(gameActions.GET_ALL_GAMES)
     .pipe(
-        switchMap(action => this.gameService.getAllGames(action.competitionId).pipe(
-            map(games => new gameActions.GetAllSuccess(action.competitionId, games)),
+        switchMap(action => this.gameService.getAllGames(action.competitionKey).pipe(
+            map(games => new gameActions.GetAllSuccess(action.competitionKey, games)),
             catchError(error => this.handleError(error))
         ))
     );
@@ -47,7 +47,7 @@ export class GameEffects {
     .ofType<gameActions.Delete>(gameActions.DELETE_GAME)
     .pipe(
         mergeMap(action => this.gameService.deleteGame(action.id).pipe(
-            map(game => new gameActions.DeleteSuccess(game.id)),
+            map(game => new gameActions.DeleteSuccess(game.key)),
             catchError(error => this.handleError(error))
         ))
     );

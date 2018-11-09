@@ -1,12 +1,12 @@
 import { Status } from "../../shared";
 
 export interface Game {
-    id: number;
+    key: string;
     roundNumber: number;
 
-    competitionId: number;
-    whitePlayerId: number;
-    blackPlayerId: number;
+    competitionKey: string;
+    whitePlayerKey: string;
+    blackPlayerKey: string;
     
     result: number; // 0, 0.5, 1 like in chess
     whiteWinEloChange: number;

@@ -20,12 +20,12 @@ export class GameError implements Action {
 
 export class GetAll implements Action {
   readonly type = GET_ALL_GAMES;
-  constructor(public competitionId: number) { }
+  constructor(public competitionKey: string) { }
 }
 
 export class GetAllSuccess implements Action {
   readonly type = GET_ALL_GAMES_SUCCESS;
-  constructor(public competitionId, public games: Game[]) { }
+  constructor(public competitionKey: string, public games: Game[]) { }
 }
 
 export class Create implements Action {
@@ -50,12 +50,12 @@ export class UpdateSuccess implements Action {
 
 export class Delete implements Action {
   readonly type = DELETE_GAME;
-  constructor(public id: number) { }
+  constructor(public key: string) { }
 }
 
 export class DeleteSuccess implements Action {
   readonly type = DELETE_GAME_SUCCESS;
-  constructor(public id: number) { }
+  constructor(public key: string) { }
 }
 
 export type GameActions

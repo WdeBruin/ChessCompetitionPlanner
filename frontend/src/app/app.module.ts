@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+import { HttpClientModule } from '@angular/common/http'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
@@ -17,7 +17,7 @@ import { AppComponent } from './app.component';
 
 import { IAppState, appReducer, PlayerEffects, CompetitionEffects, RoundEffects, GameEffects, StandingLineEffects } from './store';
 import { CompetitionService, RoundService, GameService, StandingLineService, UserService } from './shared';
-import { DashboardComponent, PlayersComponent, PlayerFormComponent, CompetitionFormComponent, ToolbarComponent } from './';
+import { DashboardComponent, PlayersComponent, PlayerFormComponent, CompetitionFormComponent, ToolbarComponent, CompetitionSelectComponent, CompetitionComponent, RoundComponent } from './';
 import { LoginComponent } from './login';
 import { TokenInterceptor } from './shared/token.interceptor';
 import { environment } from '../environments/environment';
@@ -28,11 +28,10 @@ import { environment } from '../environments/environment';
     DashboardComponent,
     PlayersComponent,
     PlayerFormComponent,
-    // RoundComponent,
-    // CompetitionComponent,
-    // StandingComponent,
-    // CompetitionSelectComponent,
-    // CompetitionFormComponent,
+    RoundComponent,
+    CompetitionComponent,
+    CompetitionSelectComponent,
+    CompetitionFormComponent,
     ToolbarComponent,
     // LoginComponent
   ],
@@ -59,7 +58,7 @@ import { environment } from '../environments/environment';
     EffectsModule.forRoot(
       [
         PlayerEffects,
-        // CompetitionEffects,
+        CompetitionEffects,
         // RoundEffects,
         // GameEffects,
         // StandingLineEffects

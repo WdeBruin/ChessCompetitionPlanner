@@ -1,12 +1,10 @@
 import { Status } from "../../shared";
 
 export interface StandingLine {
-    id: number;
-    competitionId: number;
+    key: string;
+    competitionKey: string;
     roundNumber: number;
-    
-    position: number | undefined;    
-    playerId: number;
+    playerKey: string;
     competitionPoints: number;    
 }
 

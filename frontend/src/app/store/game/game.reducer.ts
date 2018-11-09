@@ -36,7 +36,7 @@ export function GameReducer(
       return {
         status: Status.Loaded,
         data: state.data.map(game => {
-          if (game.id !== action.updatedGame.id) {
+          if (game.key !== action.updatedGame.key) {
             return game;
           }
           return action.updatedGame;
@@ -45,7 +45,7 @@ export function GameReducer(
     case actions.DELETE_GAME_SUCCESS:
       return {
         ...state,
-        data: state.data.filter(game => game.id !== action.id)
+        data: state.data.filter(game => game.key !== action.id)
       }    
     default:
       return state;

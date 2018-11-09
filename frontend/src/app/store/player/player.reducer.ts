@@ -32,6 +32,17 @@ export function PlayerReducer(
           status: Status.Loaded
         }
       }
+    case actions.UPDATE_PLAYER_SUCCESS:
+      return {
+        ...state,
+        status: Status.Loaded,
+        data: state.data.map(player => {
+          if (player.key !== action.updatedPlayer.key) {
+            return player;
+          }
+          return action.updatedPlayer;
+        })
+      }
     default:
       return state;
   }

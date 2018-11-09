@@ -22,7 +22,7 @@ export class GameService
     }
 
     public updateGame(game: Game): Observable<Game> {
-        return this.http.put<Game>(`${this.apiEndpoint}/game/${game.id}`, game);
+        return this.http.put<Game>(`${this.apiEndpoint}/game/${game.key}`, game);
     }
 
     public deleteGame(gameId: number): Observable<Game> {

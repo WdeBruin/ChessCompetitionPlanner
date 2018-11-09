@@ -1,7 +1,7 @@
 import { Status } from '../../shared';
 
 export interface Competition {
-    id: number,
+    key: string,
     name?: string,
     roundCount: number,
     isSelected: boolean    

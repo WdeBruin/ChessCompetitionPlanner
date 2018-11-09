@@ -35,6 +35,15 @@ export class CreateSuccess implements Action {
   constructor() { }
 }
 
+export class Update implements Action {
+  readonly type = UPDATE_PLAYER;
+  constructor(public readonly updatedPlayer: Player) { }
+}
+
+export class UpdateSuccess implements Action {
+  readonly type = UPDATE_PLAYER_SUCCESS;
+  constructor(public readonly updatedPlayer: Player) { }
+}
 
 
 export type PlayerActions
@@ -42,4 +51,6 @@ export type PlayerActions
   | GetPlayersSuccess
   | PlayerError
   | Create
-  | CreateSuccess;
+  | CreateSuccess
+  | Update
+  | UpdateSuccess;
