@@ -1,8 +1,8 @@
 <mat-card *ngIf="selectedRound?.roundStatus == roundStatus.PlayerSelect">
-    <h3>Ronde {{selectedRound.roundNumber}}</h3>
+    <h3>Ronde {{selectedRound?.roundNumber}}</h3>
     <mat-selection-list #playerselect>
         <mat-list-option color="primary" *ngFor="let player of players" (click)="toggle(player.key)"
-            [selected]="isPlayerSelected(player.id)">
+            [selected]="isPlayerSelected(player.key)">
             {{player.firstName}} {{player.lastName}}
         </mat-list-option>
     </mat-selection-list>
@@ -10,7 +10,7 @@
 </mat-card>
 
 <mat-card *ngIf="selectedRound?.roundStatus != roundStatus.PlayerSelect">
-    <span *ngIf="selectedRound.playerVrijgeloot">Vrijgeloot: {{getName(selectedRound?.playerVrijgeloot)}}</span>
+    <span *ngIf="selectedRound?.playerVrijgeloot">Vrijgeloot: {{getName(selectedRound?.playerVrijgeloot)}}</span>
     <table mat-table [dataSource]="currentRound()">
         <ng-container matColumnDef="wit">
             <th mat-header-cell *matHeaderCellDef>Wit</th>

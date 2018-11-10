@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { map, tap } from 'rxjs/operators';
-import { Competition, competitionSelector, IAppState, Player, playerSelector, Round, roundSelector, RoundStatus, StandingLine, standingLineSelector } from '../store';
+import { map, tap, filter, take } from 'rxjs/operators';
+import { Competition, competitionSelector, IAppState, Player, playerSelector, Round, roundSelector, RoundStatus, 
+    StandingLine, standingLineSelector } from '../store';
 import * as competitionActions from '../store/competition/competition.actions';
 import * as playerActions from '../store/player/player.actions';
 import * as roundActions from '../store/round/round.actions';
@@ -48,7 +49,6 @@ export class CompetitionComponent implements OnInit {
                 if (rounds) {
                     this.rounds = rounds.filter(r => r.competitionKey === this.selectedCompetition.key);
                     this.selectedRound = this.rounds.find(r => r.isSelected) || this.rounds[rounds.length - 1]; // selected or last one.
-
                     this.roundsFinished = rounds.filter(
                         r => r.roundStatus === RoundStatus.Generated || r.roundStatus === RoundStatus.PlayerSelect).length === 0;
                 }
@@ -76,24 +76,38 @@ export class CompetitionComponent implements OnInit {
         this.store.dispatch(new roundActions.Create(round));
 
         // Give standing line a roundNumber and CompetitionId and delete Standing as a model, clears up things.
-        this.selectedRound = round;
-        this.fillStandings();
+        this.selectRound(round);
+        this.fillStandings(round.roundNumber);
     }
 
     selectRound(round: Round): void {
         this.selectedRound = round;
+
+        this.rounds.forEach(r => {
+            if (r.key === round.key) {
+                r.isSelected = true;
+                this.store.dispatch(new roundActions.Update(r));
+            } else {
+                if (r.isSelected) {
+                    r.isSelected = false;
+                    this.store.dispatch(new roundActions.Update(r));
+                }
+            }
+        });
+        // update rounds of competition: set everywhere selected to false except selected.
+        // then in round component pipe for the round, and in the result do the rest.
     }
 
-    fillStandings() {
+    fillStandings(roundNumber: number) {
         // if first round
-        if (this.selectedRound.roundNumber == 1) {
+        if (roundNumber === 1) {
             this.players = this.players.sort((a, b) => b.clubElo - a.clubElo);
 
             this.players.forEach(player => {
                 const standingLine: StandingLine = {
                     key: '',
                     competitionKey: this.selectedRound.competitionKey,
-                    roundNumber: this.selectedRound.roundNumber,
+                    roundNumber: roundNumber,
                     playerKey: player.key,
                     competitionPoints: player.clubElo,
                 };
@@ -102,10 +116,12 @@ export class CompetitionComponent implements OnInit {
             });
         } else {
             // else copy standings from last round as our start point
-            this.store.dispatch(new standingLineActions.Get(this.selectedCompetition.key, this.selectedRound.roundNumber - 1));
+            this.store.dispatch(new standingLineActions.Get(this.selectedCompetition.key, roundNumber - 1));
 
             this.store.select(standingLineSelector).pipe(
-                map(s => s.data),
+                map(s => s.data.filter(x => x.competitionKey === this.selectedRound.competitionKey
+                    && x.roundNumber === roundNumber - 1)),
+                take(1),
                 tap(standingLines => {
                     this.players.forEach(player => {
                         const oldStandingLine = standingLines.find(s => s.playerKey === player.key);
@@ -113,7 +129,7 @@ export class CompetitionComponent implements OnInit {
                         const newStandingLine: StandingLine = {
                             key: '',
                             competitionKey: this.selectedRound.competitionKey,
-                            roundNumber: this.selectedRound.roundNumber,
+                            roundNumber: roundNumber,
                             playerKey: player.key,
                             competitionPoints: oldStandingLine.competitionPoints
                         };
