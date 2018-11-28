@@ -1,0 +1,14 @@
+<toolbar [name]="selectedCompetition?.name"></toolbar>
+<div>
+    <span *ngFor="let round of rounds">
+        <button (click)=selectRound(round) mat-raised-button color="primary" class="squareButton">
+            {{round?.roundNumber}}
+        </button>
+    </span>
+    <span>
+        <button (click)="createRound()" [disabled]="!roundsFinished" mat-raised-button color="primary" class="squareButton">
+            +
+        </button>
+    </span>
+</div>
+<round-component *ngIf="selectedRound"></round-component>

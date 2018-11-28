@@ -1,0 +1,9 @@
+<mat-toolbar *ngIf="loggedIn()">
+  <span class="title">{{name}}</span>
+  <span class="example-fill-remaining-space"></span>
+  <span *ngIf="isAdmin()">
+    <button mat-raised-button color="primary" routerLink="/competition">Competitie</button>
+    <button mat-raised-button color="primary" routerLink="/players">Spelers</button>
+  </span>
+  <button mat-raised-button color="primary" (click)="logout()">Uitloggen</button>
+</mat-toolbar>
