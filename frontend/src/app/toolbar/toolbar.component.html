@@ -1,5 +1,5 @@
-<div class="bg-light p-2" *ngIf="loggedIn$ | async">
-  <span *ngIf="isAdmin">
+<div class="bg-light p-2" *ngIf="authService.loggedIn">
+  <span *ngIf="authService.isAdmin">
     <button type="button" class="btn btn-primary" href="#" routerLink="/competition">Competitie</button>
     <button type="button" class="btn btn-primary" href="#" routerLink="/players">Spelers</button>
   </span>
