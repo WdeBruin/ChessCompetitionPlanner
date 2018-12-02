@@ -1,11 +1,12 @@
-    <div class="square" *ngFor="let competition of (competitions$ | async)?.data" (click)="navigate(competition.key)">
-        <div class="content text">
-            <h1>{{competition.name}}</h1>
-            <span>{{competition.roundCount}} rondes</span>
-        </div>
+<div class="card">
+    <h5 class="card-header">Competities</h5>
+    <div class="card-body" *ngFor="let competition of (competitions$ | async)?.data" (click)="navigate(competition.key)">
+        <h5 class="card-title">{{competition.name}}</h5>
+        <button class="btn btn-primary">Open</button>
     </div>
+</div>
 
-    <div class="add">
-        <competition-form *ngIf="addNew"></competition-form>
-        <button mat-raised-button color="primary" (click)="addNew=true">Nieuw</button>
-    </div>
+<div class="add">
+    <competition-form *ngIf="addNew"></competition-form>
+    <button class="btn btn-dark" (click)="addNew=true">Nieuw</button>
+</div>

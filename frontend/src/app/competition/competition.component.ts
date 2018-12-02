@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, tap, filter, take } from 'rxjs/operators';
-import { Competition, competitionSelector, IAppState, Player, playerSelector, Round, roundSelector, RoundStatus, 
-    StandingLine, standingLineSelector } from '../store';
+import {
+    Competition, competitionSelector, IAppState, Player, playerSelector, Round, roundSelector, RoundStatus,
+    StandingLine, standingLineSelector
+} from '../store';
 import * as competitionActions from '../store/competition/competition.actions';
 import * as playerActions from '../store/player/player.actions';
 import * as roundActions from '../store/round/round.actions';
 import * as standingLineActions from '../store/standing-line/standing-line.actions';
+import { AuthService } from '../shared';
 
 
 
@@ -24,9 +27,10 @@ export class CompetitionComponent implements OnInit {
     // things for view
     public roundsFinished: boolean; // only allow new round if rounds are finished
 
-    constructor(private store: Store<IAppState>, private route: ActivatedRoute) { }
+    constructor(private store: Store<IAppState>, private route: ActivatedRoute, private authService: AuthService) { }
 
     ngOnInit(): void {
+        this.authService.loginIfNotLoggedIn();
         this.store.dispatch(new competitionActions.Get());
         this.store.dispatch(new playerActions.GetPlayers());
 
@@ -126,15 +130,17 @@ export class CompetitionComponent implements OnInit {
                     this.players.forEach(player => {
                         const oldStandingLine = standingLines.find(s => s.playerKey === player.key);
 
-                        const newStandingLine: StandingLine = {
-                            key: '',
-                            competitionKey: this.selectedRound.competitionKey,
-                            roundNumber: roundNumber,
-                            playerKey: player.key,
-                            competitionPoints: oldStandingLine.competitionPoints
-                        };
+                        if (oldStandingLine) {
+                            const newStandingLine: StandingLine = {
+                                key: '',
+                                competitionKey: this.selectedRound.competitionKey,
+                                roundNumber: roundNumber,
+                                playerKey: player.key,
+                                competitionPoints: oldStandingLine.competitionPoints
+                            };
 
-                        this.store.dispatch(new standingLineActions.Create(newStandingLine));
+                            this.store.dispatch(new standingLineActions.Create(newStandingLine));
+                        }
                     });
                 })).subscribe();
         }

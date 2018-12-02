@@ -1,11 +1,11 @@
 <div>
     <span *ngFor="let round of rounds">
-        <button (click)=selectRound(round) mat-raised-button color="primary" class="squareButton">
+        <button class="btn mr-1" [ngClass]="{'btn-primary': round.key == selectedRound.key, 'btn-secondary': round.key != selectedRound.key}" (click)="selectRound(round)">
             {{round?.roundNumber}}
         </button>
     </span>
     <span>
-        <button (click)="createRound()" [disabled]="!roundsFinished" mat-raised-button color="primary" class="squareButton">
+        <button class="btn btn-secondary" (click)="createRound()" [disabled]="!roundsFinished">
             +
         </button>
     </span>

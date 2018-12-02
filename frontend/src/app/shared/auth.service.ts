@@ -50,4 +50,10 @@ export class AuthService {
       })
     ).subscribe();
   }
+
+  loginIfNotLoggedIn() {
+    if (!this.loggedIn) {
+      this.signInWithGoogle();
+    }
+  }
 }

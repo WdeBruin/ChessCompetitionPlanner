@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Normal } from 'distributions';
 import { map, tap, filter } from 'rxjs/operators';
-import { Competition, competitionSelector, Game, gameSelector, IAppState, Player, playerSelector,
-    Round, roundSelector, RoundStatus, StandingLine, standingLineSelector } from '../store';
+import {
+    Competition, competitionSelector, Game, gameSelector, IAppState, Player, playerSelector,
+    Round, roundSelector, RoundStatus, StandingLine, standingLineSelector
+} from '../store';
 import * as gameActions from '../store/game/game.actions';
 import * as playerActions from '../store/player/player.actions';
 import * as roundActions from '../store/round/round.actions';
@@ -104,68 +106,70 @@ export class RoundComponent implements OnInit {
     }
 
     processResult(game: Game, result: number) {
-        const whitePlayer = this.players.find(x => x.key === game.whitePlayerKey);
-        const whiteStandingLine = this.standingLines.find(x => x.playerKey === game.whitePlayerKey);
-        const blackPlayer = this.players.find(x => x.key === game.blackPlayerKey);
-        const blackStandingLine = this.standingLines.find(x => x.playerKey === game.blackPlayerKey);
+        if (this.selectedRound.roundStatus !== RoundStatus.Done) {
+            const whitePlayer = this.players.find(x => x.key === game.whitePlayerKey);
+            const whiteStandingLine = this.standingLines.find(x => x.playerKey === game.whitePlayerKey);
+            const blackPlayer = this.players.find(x => x.key === game.blackPlayerKey);
+            const blackStandingLine = this.standingLines.find(x => x.playerKey === game.blackPlayerKey);
 
-        // If result is changed undo the old result.
-        if (game.result !== undefined && game.result !== result) {
-            // Update ELO and CP
-            switch (game.result) {
-                case 1:
-                    whitePlayer.clubElo = whitePlayer.clubElo - game.whiteWinEloChange;
-                    whiteStandingLine.competitionPoints = whiteStandingLine.competitionPoints - game.whiteWinCpChange;
-                    blackPlayer.clubElo = blackPlayer.clubElo - game.blackLossEloChange;
-                    blackStandingLine.competitionPoints = blackStandingLine.competitionPoints - game.blackLossCpChange;
-                    break;
-                case 0.5:
-                    whitePlayer.clubElo = whitePlayer.clubElo - game.whiteDrawEloChange;
-                    whiteStandingLine.competitionPoints = whiteStandingLine.competitionPoints - game.whiteDrawCpChange;
-                    blackPlayer.clubElo = blackPlayer.clubElo - game.blackDrawEloChange;
-                    blackStandingLine.competitionPoints = blackStandingLine.competitionPoints - game.blackDrawCpChange;
-                    break;
-                case 0:
-                    whitePlayer.clubElo = whitePlayer.clubElo - game.whiteLossEloChange;
-                    whiteStandingLine.competitionPoints = whiteStandingLine.competitionPoints - game.whiteLossCpChange;
-                    blackPlayer.clubElo = blackPlayer.clubElo - game.blackWinEloChange;
-                    blackStandingLine.competitionPoints = blackStandingLine.competitionPoints - game.blackWinCpChange;
-                    break;
-            }
-        }
-
-        // now only if result is new or changed, update stuff.
-        if (game.result !== result) {
-            game.result = result;
-
-            // Update ELO and CP
-            switch (game.result) {
-                case 1:
-                    whitePlayer.clubElo = whitePlayer.clubElo + game.whiteWinEloChange;
-                    whiteStandingLine.competitionPoints = whiteStandingLine.competitionPoints + game.whiteWinCpChange;
-                    blackPlayer.clubElo = blackPlayer.clubElo + game.blackLossEloChange;
-                    blackStandingLine.competitionPoints = blackStandingLine.competitionPoints + game.blackLossCpChange;
-                    break;
-                case 0.5:
-                    whitePlayer.clubElo = whitePlayer.clubElo + game.whiteDrawEloChange;
-                    whiteStandingLine.competitionPoints = whiteStandingLine.competitionPoints + game.whiteDrawCpChange;
-                    blackPlayer.clubElo = blackPlayer.clubElo + game.blackDrawEloChange;
-                    blackStandingLine.competitionPoints = blackStandingLine.competitionPoints + game.blackDrawCpChange;
-                    break;
-                case 0:
-                    whitePlayer.clubElo = whitePlayer.clubElo + game.whiteLossEloChange;
-                    whiteStandingLine.competitionPoints = whiteStandingLine.competitionPoints + game.whiteLossCpChange;
-                    blackPlayer.clubElo = blackPlayer.clubElo + game.blackWinEloChange;
-                    blackStandingLine.competitionPoints = blackStandingLine.competitionPoints + game.blackWinCpChange;
-                    break;
+            // If result is changed undo the old result.
+            if (game.result !== undefined && game.result !== result) {
+                // Update ELO and CP
+                switch (game.result) {
+                    case 1:
+                        whitePlayer.clubElo = +whitePlayer.clubElo - +game.whiteWinEloChange;
+                        whiteStandingLine.competitionPoints = +whiteStandingLine.competitionPoints - +game.whiteWinCpChange;
+                        blackPlayer.clubElo = +blackPlayer.clubElo - +game.blackLossEloChange;
+                        blackStandingLine.competitionPoints = +blackStandingLine.competitionPoints - +game.blackLossCpChange;
+                        break;
+                    case 0.5:
+                        whitePlayer.clubElo = +whitePlayer.clubElo - +game.whiteDrawEloChange;
+                        whiteStandingLine.competitionPoints = +whiteStandingLine.competitionPoints - +game.whiteDrawCpChange;
+                        blackPlayer.clubElo = +blackPlayer.clubElo - +game.blackDrawEloChange;
+                        blackStandingLine.competitionPoints = +blackStandingLine.competitionPoints - +game.blackDrawCpChange;
+                        break;
+                    case 0:
+                        whitePlayer.clubElo = +whitePlayer.clubElo - +game.whiteLossEloChange;
+                        whiteStandingLine.competitionPoints = +whiteStandingLine.competitionPoints - +game.whiteLossCpChange;
+                        blackPlayer.clubElo = +blackPlayer.clubElo - +game.blackWinEloChange;
+                        blackStandingLine.competitionPoints = +blackStandingLine.competitionPoints - +game.blackWinCpChange;
+                        break;
+                }
             }
 
-            // Update state for both players, in competition and clubelo
-            this.store.dispatch(new playerActions.Update(whitePlayer));
-            this.store.dispatch(new playerActions.Update(blackPlayer));
-            this.store.dispatch(new standingLineActions.Update(whiteStandingLine));
-            this.store.dispatch(new standingLineActions.Update(blackStandingLine));
-            this.store.dispatch(new gameActions.Update(game));
+            // now only if result is new or changed, update stuff.
+            if (game.result !== result) {
+                game.result = result;
+
+                // Update ELO and CP
+                switch (game.result) {
+                    case 1:
+                        whitePlayer.clubElo = +whitePlayer.clubElo + +game.whiteWinEloChange;
+                        whiteStandingLine.competitionPoints = +whiteStandingLine.competitionPoints + +game.whiteWinCpChange;
+                        blackPlayer.clubElo = +blackPlayer.clubElo + +game.blackLossEloChange;
+                        blackStandingLine.competitionPoints = +blackStandingLine.competitionPoints + +game.blackLossCpChange;
+                        break;
+                    case 0.5:
+                        whitePlayer.clubElo = +whitePlayer.clubElo + +game.whiteDrawEloChange;
+                        whiteStandingLine.competitionPoints = +whiteStandingLine.competitionPoints + +game.whiteDrawCpChange;
+                        blackPlayer.clubElo = +blackPlayer.clubElo + +game.blackDrawEloChange;
+                        blackStandingLine.competitionPoints = +blackStandingLine.competitionPoints + +game.blackDrawCpChange;
+                        break;
+                    case 0:
+                        whitePlayer.clubElo = +whitePlayer.clubElo + +game.whiteLossEloChange;
+                        whiteStandingLine.competitionPoints = +whiteStandingLine.competitionPoints + +game.whiteLossCpChange;
+                        blackPlayer.clubElo = +blackPlayer.clubElo + +game.blackWinEloChange;
+                        blackStandingLine.competitionPoints = +blackStandingLine.competitionPoints + +game.blackWinCpChange;
+                        break;
+                }
+
+                // Update state for both players, in competition and clubelo
+                this.store.dispatch(new playerActions.Update(whitePlayer));
+                this.store.dispatch(new playerActions.Update(blackPlayer));
+                this.store.dispatch(new standingLineActions.Update(whiteStandingLine));
+                this.store.dispatch(new standingLineActions.Update(blackStandingLine));
+                this.store.dispatch(new gameActions.Update(game));
+            }
         }
     }
 
@@ -317,16 +321,16 @@ export class RoundComponent implements OnInit {
         const whitePlayer = this.players.find(p => p.key === game.whitePlayerKey);
         const blackPlayer = this.players.find(p => p.key === game.blackPlayerKey);
         // for white
-        const whiteEloDiff = whitePlayer.clubElo - blackPlayer.clubElo;
-        const whiteZScore = whiteEloDiff / (200 * 10 / 7); // 200 * 10/7 is KNSB implementation of 200 * squareroot 2
+        const whiteEloDiff = +whitePlayer.clubElo - +blackPlayer.clubElo;
+        const whiteZScore = +whiteEloDiff / (200 * 10 / 7); // 200 * 10/7 is KNSB implementation of 200 * squareroot 2
         const whiteWinChance = normal.cdf(whiteZScore);
         game.whiteWinEloChange = k * (1 - whiteWinChance);
         game.whiteDrawEloChange = k * (0.5 - whiteWinChance);
         game.whiteLossEloChange = k * (0 - whiteWinChance);
 
         // for black
-        const blackEloDiff = blackPlayer.clubElo - whitePlayer.clubElo;
-        const blackZScore = blackEloDiff / (200 * 10 / 7); // 200 * 10/7 is KNSB implementation of 200 * squareroot 2
+        const blackEloDiff = +blackPlayer.clubElo - +whitePlayer.clubElo;
+        const blackZScore = +blackEloDiff / (200 * 10 / 7); // 200 * 10/7 is KNSB implementation of 200 * squareroot 2
         const blackWinChance = normal.cdf(blackZScore);
         game.blackWinEloChange = k * (1 - blackWinChance);
         game.blackDrawEloChange = k * (0.5 - blackWinChance);
@@ -373,8 +377,8 @@ export class RoundComponent implements OnInit {
 
     private sortStandingLines(list: StandingLine[]) {
         return list.sort((left, right): number => {
-            if (left.competitionPoints < right.competitionPoints) { return 1; }
-            if (left.competitionPoints > right.competitionPoints) { return -1; }
+            if (+left.competitionPoints < +right.competitionPoints) { return 1; }
+            if (+left.competitionPoints > +right.competitionPoints) { return -1; }
             return 0;
         });
     }
