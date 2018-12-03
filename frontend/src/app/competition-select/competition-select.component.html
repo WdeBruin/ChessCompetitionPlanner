@@ -1,6 +1,6 @@
 <div class="card">
     <h5 class="card-header">Competities</h5>
-    <div class="card-body" *ngFor="let competition of (competitions$ | async)?.data" (click)="navigate(competition.key)">
+    <div class="card-body border" *ngFor="let competition of (competitions$ | async)?.data" (click)="navigate(competition.key)">
         <h5 class="card-title">{{competition.name}}</h5>
         <button class="btn btn-primary">Open</button>
     </div>

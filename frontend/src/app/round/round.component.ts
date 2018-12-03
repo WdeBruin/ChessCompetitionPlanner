@@ -10,6 +10,7 @@ import * as gameActions from '../store/game/game.actions';
 import * as playerActions from '../store/player/player.actions';
 import * as roundActions from '../store/round/round.actions';
 import * as standingLineActions from '../store/standing-line/standing-line.actions';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 
 @Component({
@@ -31,13 +32,21 @@ export class RoundComponent implements OnInit {
 
     // things for view disabling
     allgamesFinished: boolean;
+    addGame: boolean = false;
 
+    // addgame form
+    addGameForm: FormGroup;
 
     public roundStatus = RoundStatus;
     // public displayedColumns = ["wit", "cpWit", "vs", "cpZwart", "zwart", "result"]
     public displayedColumns = ['wit', 'vs', 'zwart', 'result'];
 
-    constructor(private store: Store<IAppState>) { }
+    constructor(private store: Store<IAppState>) { 
+        this.addGameForm = new FormGroup({
+            player1: new FormControl(''),
+            player2: new FormControl('')
+        });
+    }
 
     ngOnInit(): void {
         this.store.select(roundSelector).pipe(
@@ -256,6 +265,15 @@ export class RoundComponent implements OnInit {
         // TODO: Refactor round component, make toggle screen a seperate component and have it use
         // redux for persisting state when navigating away.
         // this.store.dispatch(new roundActions.Update(this.selectedRound));
+    }
+
+    addNewGame() {
+        this.makeGame(this.addGameForm.controls['player1'].value, this.addGameForm.controls['player2'].value)
+        this.addGame = false;
+    }
+
+    notAddedPlayers() {
+        return this.players.filter(player => this.roundplayerKeys.indexOf(player.key) === -1);
     }
 
     private vrijLoting(playersInRound: Player[]): string {

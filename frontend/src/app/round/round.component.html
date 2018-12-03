@@ -1,6 +1,7 @@
 <div *ngIf="selectedRound?.roundStatus == roundStatus.PlayerSelect">
     <mat-selection-list #playerselect>
-        <mat-list-option class="border" color="primary" *ngFor="let player of players" (click)="toggle(player.key)" [selected]="isPlayerSelected(player.key)">
+        <mat-list-option class="border" color="primary" *ngFor="let player of players" (click)="toggle(player.key)"
+            [selected]="isPlayerSelected(player.key)">
             {{player.firstName}} {{player.lastName}}
         </mat-list-option>
     </mat-selection-list>
@@ -20,7 +21,7 @@
                 {{getName(game.whitePlayerKey)}}
             </div>
             <div class="col-2">
-                <span> - </span>
+                <span>{{getResultDisplay(game.result)}}</span>
             </div>
             <div class="col-5">
                 {{getName(game.blackPlayerKey)}}
@@ -28,22 +29,59 @@
         </div>
         <div style="display: flex;">
             <div class="col-4">
-                <button class="btn" [ngClass]="{'btn-primary': game.result == 1, 'btn-secondary': game.result != 1}" (click)="processResult(game, 1)">1-0</button>
+                <button class="btn" [ngClass]="{'btn-primary': game.result == 1, 'btn-secondary': game.result != 1}"
+                    (click)="processResult(game, 1)">1-0</button>
             </div>
             <div class="col-4">
-                <button class="btn" [ngClass]="{'btn-primary': game.result == 0.5, 'btn-secondary': game.result != 0.5}" (click)="processResult(game, 0.5)">0,5</button>
+                <button class="btn" [ngClass]="{'btn-primary': game.result == 0.5, 'btn-secondary': game.result != 0.5}"
+                    (click)="processResult(game, 0.5)">0,5</button>
             </div>
             <div class="col-4">
-                <button class="btn" [ngClass]="{'btn-primary': game.result == 0, 'btn-secondary': game.result != 0}" (click)="processResult(game, 0)">0-1</button>
+                <button class="btn" [ngClass]="{'btn-primary': game.result == 0, 'btn-secondary': game.result != 0}"
+                    (click)="processResult(game, 0)">0-1</button>
             </div>
         </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <button *ngIf="selectedRound?.roundStatus != roundStatus.Done && !addGame" class="btn btn-dark" (click)="addGame=true">Partij
+                Toevoegen</button>
+        </div>
+    </div>
+
+    <div *ngIf="addGame" style="display: flex;">
+        <form [formGroup]="addGameForm">
+            <div class="row form-group">
+                <div class="col-md-12">
+                    <select class="custom-select" formControlName="player1">
+                        <option *ngFor="let player of notAddedPlayers()" [value]="player.key">{{player.firstName}}
+                            {{player.lastName}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12">
+                    <select class="custom-select" formControlName="player2">
+                        <option *ngFor="let player of notAddedPlayers()" [value]="player.key">{{player.firstName}}
+                            {{player.lastName}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12">
+                    <button class="btn btn-dark mr-2" type="submit" (click)="addNewGame()">Add</button>
+                    <button class="btn btn-dark" (click)="addGame=false">Cancel</button>
+                </div>
+            </div>
+        </form>
     </div>
 
     <button class="btn btn-primary" *ngIf="selectedRound?.roundStatus != roundStatus.Done" [disabled]="!allGamesFinished()"
         (click)="finishRound()">Sluit ronde</button>
 
-    <button class="btn btn-primary" *ngIf="selectedRound?.roundStatus != roundStatus.Done" [disabled]="noGamesFinished()"
-        (click)="cancelRound()">!Annuleer!</button>
+    <button class="btn btn-primary" *ngIf="selectedRound?.roundStatus != roundStatus.Done && !noGamesFinished()"
+        [disabled]="noGamesFinished()" (click)="cancelRound()">!Annuleer!</button>
 
     <span *ngIf="selectedRound?.roundStatus == roundStatus.Done">Ronde gesloten</span>
 </div>

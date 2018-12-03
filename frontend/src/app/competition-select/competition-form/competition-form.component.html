@@ -1,16 +1,8 @@
-<form (ngSubmit)="save()" #playerForm="ngForm">
-    <table cellspacing="0">
-        <tr>
-            <td>
-                <mat-form-field>
-                    <input matInput placeholder="Competitienaam" type="text" [(ngModel)]="model.name" name="Naam">
-                </mat-form-field>
-            </td>
-            <td>
-                <button type="submit">
-                    <mat-icon style="color:blue">save</mat-icon>
-                </button>
-            </td>
-        </tr>
-    </table>
+<form class="m-1" (ngSubmit)="save()" #competitionForm="ngForm">
+    <div class="form-group">
+        <input class="form-control" placeholder="Competitienaam" type="text" [(ngModel)]="model.name" name="Naam">
+    </div>
+    <button class="btn btn-dark" type="submit">
+        Save
+    </button>
 </form>
