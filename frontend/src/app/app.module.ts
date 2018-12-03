@@ -12,7 +12,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
-import { MatMenuModule, MatIconModule, MatButtonModule, MatCardModule, MatInputModule, MatListModule, MatTableModule, MatToolbarModule} from '@angular/material';
+import {  MatListModule } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -46,14 +46,7 @@ import { AuthService } from './shared/auth.service';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    MatMenuModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCardModule,
-    MatInputModule,
     MatListModule,
-    MatTableModule,
-    MatToolbarModule,
     StoreModule.forRoot<IAppState>(appReducer),
     StoreDevtoolsModule.instrument({
       maxAge: 25
@@ -70,12 +63,6 @@ import { AuthService } from './shared/auth.service';
   ],
   providers: [
     AuthService
-    // UserService
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: TokenInterceptor,
-    //   multi: true
-    // }
   ],
   bootstrap: [AppComponent]
 })
