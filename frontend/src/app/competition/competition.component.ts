@@ -12,8 +12,6 @@ import * as roundActions from '../store/round/round.actions';
 import * as standingLineActions from '../store/standing-line/standing-line.actions';
 import { AuthService } from '../shared';
 
-
-
 @Component({
     templateUrl: 'competition.component.html',
     styleUrls: ['competition.component.css']
@@ -53,7 +51,7 @@ export class CompetitionComponent implements OnInit {
                 if (rounds) {
                     this.rounds = rounds.filter(r => r.competitionKey === this.selectedCompetition.key);
                     this.selectedRound = this.rounds.find(r => r.isSelected) || this.rounds[rounds.length - 1]; // selected or last one.
-                    this.roundsFinished = rounds.filter(
+                    this.roundsFinished = this.rounds.filter(
                         r => r.roundStatus === RoundStatus.Generated || r.roundStatus === RoundStatus.PlayerSelect).length === 0;
                 }
             })
