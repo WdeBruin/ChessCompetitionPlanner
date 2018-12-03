@@ -1,5 +1,5 @@
-import { Action } from "@ngrx/store";
-import { Player } from "./player.interface";
+import { Action } from '@ngrx/store';
+import { Player } from './player.interface';
 
 export const PLAYER_ERROR = '[Player] OOPS';
 export const GET_PLAYERS = '[Players] Get all';
@@ -12,27 +12,27 @@ export const DELETE_PLAYER = '[Players] Delete';
 export const DELETE_PLAYER_SUCCESS = '[Players] Delete -- OK';
 
 export class GetPlayers implements Action {
-  readonly type = GET_PLAYERS;  
+  readonly type = GET_PLAYERS;
 }
 
 export class GetPlayersSuccess implements Action {
   readonly type = GET_PLAYERS_SUCCESS;
-  constructor(public readonly players: Player[]) {}
+  constructor(public readonly player: Player, public readonly key: string) {}
 }
 
 export class PlayerError implements Action {
-  readonly type = PLAYER_ERROR;  
+  readonly type = PLAYER_ERROR;
   constructor(public readonly message: string) {}
 }
 
 export class Create implements Action {
-  readonly type = CREATE_PLAYER;  
+  readonly type = CREATE_PLAYER;
   constructor(public readonly player: Player) { }
 }
 
 export class CreateSuccess implements Action {
   readonly type = CREATE_PLAYER_SUCCESS;
-  constructor(public readonly player: Player) { }
+  constructor() { }
 }
 
 export class Update implements Action {
@@ -45,15 +45,6 @@ export class UpdateSuccess implements Action {
   constructor(public readonly updatedPlayer: Player) { }
 }
 
-export class Delete implements Action {
-  readonly type = DELETE_PLAYER;
-  constructor(public readonly id: number) { }
-}
-
-export class DeleteSuccess implements Action {
-  readonly type = DELETE_PLAYER_SUCCESS;
-  constructor(public readonly id: number) { }
-}
 
 export type PlayerActions
   = GetPlayers
@@ -62,6 +53,4 @@ export type PlayerActions
   | Create
   | CreateSuccess
   | Update
-  | UpdateSuccess
-  | Delete
-  | DeleteSuccess;
+  | UpdateSuccess;

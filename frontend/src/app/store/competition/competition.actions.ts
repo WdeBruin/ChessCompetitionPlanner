@@ -1,5 +1,5 @@
-import { Action } from "@ngrx/store";
-import { Competition } from "./competition.interface";
+import { Action } from '@ngrx/store';
+import { Competition } from './competition.interface';
 
 export const COMPETITION_ERROR = '[Competitions] OOPS';
 export const GET_COMPETITIONS = '[Competitions] Get all';
@@ -17,11 +17,11 @@ export class Get implements Action {
 
 export class GetSuccess implements Action {
     readonly type = GET_COMPETITIONS_SUCCESS;
-    constructor(public competitions: Competition[]) { }
+    constructor(public readonly competition: Competition, public readonly key: string) { }
 }
 
 export class CompetitionError implements Action {
-    readonly type = COMPETITION_ERROR;  
+    readonly type = COMPETITION_ERROR;
     constructor(public message: string) {}
   }
 
@@ -32,7 +32,7 @@ export class Create implements Action {
 
 export class CreateSuccess implements Action {
     readonly type = CREATE_COMPETITION_SUCCESS;
-    constructor(public competition: Competition) { }
+    constructor() { }
   }
 
 export class Update implements Action {
@@ -45,23 +45,11 @@ export class UpdateSuccess implements Action {
     constructor(public updatedCompetition: Competition) { }
 }
 
-export class Delete implements Action {
-    readonly type = DELETE_COMPETITION;
-    constructor(public id: number) { }
-}
-
-export class DeleteSuccess implements Action {
-    readonly type = DELETE_COMPETITION_SUCCESS;
-    constructor(public id: number) { }
-}
-
 export type CompetitionActions
-    = Get 
+    = Get
     | GetSuccess
     | CompetitionError
     | Create
     | CreateSuccess
     | Update
-    | UpdateSuccess
-    | Delete
-    | DeleteSuccess;
+    | UpdateSuccess;

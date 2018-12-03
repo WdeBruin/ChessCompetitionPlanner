@@ -1,7 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
-/* @import "~@angular/material/prebuilt-themes/pink-bluegrey.css"; */
-/* @import "~@angular/material/prebuilt-themes/deeppurple-amber.css"; */
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~font-awesome/css/font-awesome.css";
 
 .custombutton {
     background:#ff4081;
@@ -10,4 +8,12 @@
 
 .roundButton {
     margin-right: 5px;
+}
+
+.alert {
+    background-color: lightcoral;
+    height: 30px;
+    border: 1px grey;
+    border-radius: 2px;
+    color: white;
 }

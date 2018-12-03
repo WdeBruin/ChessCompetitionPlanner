@@ -10,24 +10,24 @@ import * as competitionActions from '../../store/competition/competition.actions
 })
 export class CompetitionFormComponent implements OnInit {
   public model: Competition = {
-    id: 0,
+    key: '',
     isSelected: false,
     name: undefined,
     roundCount: 0
   };
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
   }
 
-  constructor(private store: Store<IAppState>) { }  
+  constructor(private store: Store<IAppState>) { }
 
-  save() {    
-    this.store.dispatch(new competitionActions.Create(this.model));  
+  save() {
+    this.store.dispatch(new competitionActions.Create(this.model));
     this.model = {
-      id: 0,
+      key: '',
       isSelected: false,
       name: undefined,
       roundCount: 0
-    }
+    };
   }
 }

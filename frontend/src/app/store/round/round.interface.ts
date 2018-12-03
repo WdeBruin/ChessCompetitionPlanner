@@ -1,17 +1,17 @@
-import { RoundStatus } from "./round-status.enum";
-import { Status } from "../../shared";
+import { RoundStatus } from './round-status.enum';
+import { Status } from '../../shared';
 
 export interface Round {
-    id: number;
-    competitionId: number;
+    key: string;
+    competitionKey: string;
     roundNumber: number;
     playersInRoundIds: string;
-    playerVrijgeloot: number;
+    playerVrijgeloot: string;
     isSelected: boolean;
     roundStatus: RoundStatus;
 }
 
 export interface RoundState {
-    data: Round[],
-    status: Status
+    data: Round[];
+    status: Status;
 }

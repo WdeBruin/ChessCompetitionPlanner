@@ -1,13 +1,13 @@
-import { Status } from "../../shared";
+import { Status } from '../../shared';
 
 export interface Game {
-    id: number;
+    key: string;
     roundNumber: number;
 
-    competitionId: number;
-    whitePlayerId: number;
-    blackPlayerId: number;
-    
+    competitionKey: string;
+    whitePlayerKey: string;
+    blackPlayerKey: string;
+
     result: number; // 0, 0.5, 1 like in chess
     whiteWinEloChange: number;
     whiteDrawEloChange: number;
@@ -15,16 +15,16 @@ export interface Game {
     blackWinEloChange: number;
     blackDrawEloChange: number;
     blackLossEloChange: number;
-    
+
     whiteWinCpChange: number;
     whiteDrawCpChange: number;
     whiteLossCpChange: number;
     blackWinCpChange: number;
     blackDrawCpChange: number;
-    blackLossCpChange: number;    
+    blackLossCpChange: number;
 }
 
 export interface GameState {
-    status: Status,
-    data: Game[]
+    status: Status;
+    data: Game[];
 }

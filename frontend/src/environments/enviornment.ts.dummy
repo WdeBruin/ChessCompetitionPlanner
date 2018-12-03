@@ -4,7 +4,14 @@
 
 export const environment = {
   production: true,
-  api: 'http://localhost:5000/api'
+  firebase: {
+    apiKey: "dowe1234",
+    authDomain: "yourauthdomain.com",
+    databaseURL: "https://yourdb.firebaseio.com",
+    projectId: "yourprojid",
+    storageBucket: "",
+    messagingSenderId: "111"
+  }
 };
 
 /*

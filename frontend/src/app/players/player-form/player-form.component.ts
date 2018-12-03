@@ -9,23 +9,23 @@ import { Player, IAppState } from '../../store';
 })
 export class PlayerFormComponent implements OnInit {
   public model: Player = {
-    id: undefined,
-    firstName: "",
-    lastName: "",
+    key: '',
+    firstName: '',
+    lastName: '',
     clubElo: 100
+  };
+
+  ngOnInit(): void {
   }
 
-  ngOnInit(): void {    
-  }
+  constructor(private store: Store<IAppState>) { }
 
-  constructor(private store: Store<IAppState>) { }  
-
-  save() {    
-    this.store.dispatch(new playerActions.Create(this.model));  
+  save() {
+    this.store.dispatch(new playerActions.Create(this.model));
     this.model = {
-      id: undefined,
-      firstName: "",
-      lastName: "",
+      key: '',
+      firstName: '',
+      lastName: '',
       clubElo: 100
     };
   }

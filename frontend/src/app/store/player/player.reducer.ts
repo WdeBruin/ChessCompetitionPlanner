@@ -1,58 +1,48 @@
 import { createFeatureSelector } from '@ngrx/store';
+import { Status } from '../../shared';
 import { PlayerState } from './';
 import * as actions from './player.actions';
-import { Status } from '../../shared';
 
 export function PlayerReducer(
   state: PlayerState = { data: [], status: undefined },
   action: actions.PlayerActions) {
 
   switch (action.type) {
-    case actions.GET_PLAYERS:
-    case actions.UPDATE_PLAYER:
-    case actions.DELETE_PLAYER:
-      return {
-        ...state,
-        status: Status.Loading
-      }
     case actions.PLAYER_ERROR:
       return {
         ...state,
         status: Status.Error
-      }
+      };
     case actions.GET_PLAYERS_SUCCESS:
-      return {
-        data: action.players,
-        status: Status.Loaded
-      }
-    case actions.CREATE_PLAYER_SUCCESS:
-      return {
-        ...state,
-        status: Status.Loaded,
-        data: [
-          ...state.data,
-          action.player
-        ]
+      action.player.key = action.key;
+
+      if (state.data.find(x => x.key === action.key)) {
+        return {
+          data: state.data.map(player => {
+            if (player.key !== action.key) {
+              return player;
+            }
+            return action.player;
+          }),
+          status: Status.Loaded
+        };
+      } else {
+        return {
+          data: [...state.data, action.player],
+          status: Status.Loaded
+        };
       }
     case actions.UPDATE_PLAYER_SUCCESS:
       return {
         ...state,
         status: Status.Loaded,
         data: state.data.map(player => {
-          if (player.id !== action.updatedPlayer.id) {
+          if (player.key !== action.updatedPlayer.key) {
             return player;
           }
           return action.updatedPlayer;
         })
-      }
-    case actions.DELETE_PLAYER_SUCCESS:
-      return {
-        ...state,
-        status: Status.Loaded,
-        data: state.data.filter(player => {
-          player.id !== action.id
-        })
-      }
+      };
     default:
       return state;
   }

@@ -1,8 +1,7 @@
-<mat-toolbar>
-  <span class="title">{{name}}</span>
-  <span class="example-fill-remaining-space"></span>
-  <span>
-    <button mat-raised-button color="primary" routerLink="/competition">Competitie</button>
-    <button mat-raised-button color="primary" routerLink="/players">Spelers</button>
+<div class="bg-light p-2" *ngIf="authService.loggedIn">
+  <span *ngIf="authService.isAdmin">
+    <button type="button" class="btn btn-primary" href="#" routerLink="/competition">Competitie</button>
+    <button type="button" class="btn btn-primary" href="#" routerLink="/players">Spelers</button>
   </span>
-</mat-toolbar>
+  <button type="button" class="btn btn-secondary float-right" href="#" (click)="logout()">Uitloggen</button>
+</div>

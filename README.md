@@ -1,20 +1,24 @@
 # ChessCompetitionPlanner
 This application was built for Schaakclub Dordrecht, to manage the youth competition.
-The idea is that on club evenings we can have a check-in of players, after which the round schedule is generated. Results are immediately processed.
-All should work on a mobile phone.
-It uses Angular 6.0 and ngrx/store. 
-The app is going to store data in a database through a CRUD REST API.
+The idea is that on club evenings we do a check-in of players, after which the round schedule is generated. Results are immediately processed.
+All works on a mobile phone.
+It uses Angular 7 and ngrx/store. 
+The app is using firebase as a backend.
 
-At the moment this is work in progress. Not ready for use. Feel free to use this code.
+See the screens for a feel of the application flow. 
+If you want to use this code or want some assistance to set it up, contact me since I'm interested to know and help.
+
+## Environment setup
+Copy environment.ts.dummy to environment.ts. 
+Go to google firebase console. Make a realtime database and add connection info in environment.ts.
+Now run app. After logging in with your google account, go to your console panel in firebase to set admin permissions for your user.
 
 ## Development server (frontend)
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Build (frontend)
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## API
-The api is an example in .NET Core 2.1. Which allows for very quick scaffolding of CRUD controllers. And generation of database tables with EF. In future we are probably going to run a low hostingcost PHP API.
-
-## DB
-Database is just SQLite file
+## Screenshots from an android phone
+<img src="screenshots/2.jpeg" width="250px" />
+<img src="screenshots/1.jpeg" width="250px" />
+<img src="screenshots/3.jpeg" width="250px" />
+<img src="screenshots/4.jpeg" width="250px" />
+<img src="screenshots/5.jpeg" width="250px" />

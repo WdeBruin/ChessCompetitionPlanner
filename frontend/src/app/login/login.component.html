@@ -1,26 +1,20 @@
-<h1>Welkom jeugdleider</h1>
-<form (ngSubmit)="login()">
-    <table cellspacing="0">
-        <tr>
-            <td>
-                <mat-form-field>
-                    <input matInput placeholder="user" type="text" [(ngModel)]="model.username" name="user">
-                </mat-form-field>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <mat-form-field>
-                    <input matInput placeholder="password" type="password" [(ngModel)]="model.password" name="password">
-                </mat-form-field>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <button type="submit">
-                    Login
-                </button>
-            </td>
-        </tr>
-    </table>
-</form>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <img src="../../assets/images/logo.jpg" />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h2>Competitieplanner</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <div class="btn-group">
+            <a class='btn btn-danger disabled'><i class="fa fa-google-plus" style="width:16px; height:20px"></i></a>
+            <a class='btn btn-danger' href='#' style="width:12em;" (click)="signInWithGoogle()"> Sign in with Google</a>
+        </div>
+    </div>
+</div>

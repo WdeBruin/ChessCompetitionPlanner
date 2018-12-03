@@ -5,7 +5,8 @@ import { Observable } from 'rxjs';
 
 import * as competitionActions from '../store/competition/competition.actions';
 
-import { Competition, IAppState, competitionSelector } from '../store';
+import { IAppState, competitionSelector, CompetitionState } from '../store';
+import { AuthService } from '../shared';
 
 @Component({
   selector: 'competition-select',
@@ -13,18 +14,19 @@ import { Competition, IAppState, competitionSelector } from '../store';
   styleUrls: ['./competition-select.component.css']
 })
 export class CompetitionSelectComponent implements OnInit {
-  competitions$: Observable<Competition[]>;
-  addNew: boolean = false;
+  competitions$: Observable<CompetitionState>;
+  addNew = false;
 
-  constructor(private store: Store<IAppState>, private router: Router) {
-    this.competitions$ = this.store.select(competitionSelector).select(c => c.data);
+  constructor(private store: Store<IAppState>, private router: Router, private authService: AuthService) {
+    this.competitions$ = this.store.select(competitionSelector);
   }
 
   ngOnInit() {
+    this.authService.loginIfNotLoggedIn();
     this.store.dispatch(new competitionActions.Get());
   }
-  
+
   navigate(id: number) {
-    this.router.navigate(['competition', id])
+    this.router.navigate(['competition', id]);
   }
 }
