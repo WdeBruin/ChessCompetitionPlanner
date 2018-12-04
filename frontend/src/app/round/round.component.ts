@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Normal } from 'distributions';
 import { map, tap, filter } from 'rxjs/operators';
@@ -19,6 +19,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
     styleUrls: ['round.component.css']
 })
 export class RoundComponent implements OnInit {
+    @Input()
+    competitionKey: string;
+
     // Things for the logic in this component
     roundplayerKeys: string[] = [];
     competitonRounds: Round[] = [];
@@ -50,7 +53,7 @@ export class RoundComponent implements OnInit {
 
     ngOnInit(): void {
         this.store.select(roundSelector).pipe(
-            map(r => r.data.filter(round => round.isSelected)),
+            map(r => r.data.filter(round => round.isSelected && round.competitionKey === this.competitionKey)),
             filter(activeRounds => activeRounds.length === 1),
             tap(round => {
                 this.selectedRound = round[0];
@@ -189,7 +192,6 @@ export class RoundComponent implements OnInit {
         // Check if all those players have standinglines, if not, we add them. (Like when new player was added between rounds)
         // 14/9/2018 this was bug in round 1 when adding a player while in player select
         playersInRound.forEach(player => {
-            console.log(player);
             if (!this.standingLines.find(x => x.playerKey === player.key)) {
                 const standingLine: StandingLine = {
                     key: '',

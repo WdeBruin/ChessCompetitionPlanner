@@ -26,7 +26,7 @@ export class CompetitionSelectComponent implements OnInit {
     this.store.dispatch(new competitionActions.Get());
   }
 
-  navigate(id: number) {
-    this.router.navigate(['competition', id]);
+  navigate(key: string) {
+    this.router.navigate(['competition', key]);
   }
 }

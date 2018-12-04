@@ -8,7 +8,7 @@ const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'players', component: PlayersComponent },
   { path: 'competition', component: CompetitionSelectComponent },
-  { path: 'competition/:id', component: CompetitionComponent }
+  { path: 'competition/:key', component: CompetitionComponent }
 ];
 
 @NgModule({

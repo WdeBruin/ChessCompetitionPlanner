@@ -33,13 +33,13 @@ export class CompetitionComponent implements OnInit {
         this.store.dispatch(new playerActions.GetPlayers());
 
         this.route.params.subscribe(params => {
-            if (params.id) {
-                this.store.dispatch(new roundActions.Get(params.id));
+            if (params.key) {
+                this.store.dispatch(new roundActions.Get(params.key));
 
                 this.store.select(competitionSelector).pipe(
                     map(s => s.data),
                     tap(competitions => {
-                        this.selectedCompetition = competitions ? competitions.find(c => c.key === params.id) : undefined;
+                        this.selectedCompetition = competitions ? competitions.find(c => c.key === params.key) : undefined;
                     })
                 ).subscribe();
             }
@@ -75,11 +75,11 @@ export class CompetitionComponent implements OnInit {
             competitionKey: this.selectedCompetition ? this.selectedCompetition.key : undefined,
             playerVrijgeloot: null
         };
+        this.selectedCompetition.key = round.competitionKey;
         this.store.dispatch(new roundActions.Create(round));
 
-        // Give standing line a roundNumber and CompetitionId and delete Standing as a model, clears up things.
         this.selectRound(round);
-        this.fillStandings(round.roundNumber);
+        this.fillStandings(round.roundNumber, round.competitionKey);
     }
 
     selectRound(round: Round): void {
@@ -100,7 +100,7 @@ export class CompetitionComponent implements OnInit {
         // then in round component pipe for the round, and in the result do the rest.
     }
 
-    fillStandings(roundNumber: number) {
+    fillStandings(roundNumber: number, competitionKey: string) {
         // if first round
         if (roundNumber === 1) {
             this.players = this.players.sort((a, b) => b.clubElo - a.clubElo);
@@ -108,7 +108,7 @@ export class CompetitionComponent implements OnInit {
             this.players.forEach(player => {
                 const standingLine: StandingLine = {
                     key: '',
-                    competitionKey: this.selectedRound.competitionKey,
+                    competitionKey: competitionKey,
                     roundNumber: roundNumber,
                     playerKey: player.key,
                     competitionPoints: player.clubElo,
@@ -121,7 +121,7 @@ export class CompetitionComponent implements OnInit {
             this.store.dispatch(new standingLineActions.Get(this.selectedCompetition.key, roundNumber - 1));
 
             this.store.select(standingLineSelector).pipe(
-                map(s => s.data.filter(x => x.competitionKey === this.selectedRound.competitionKey
+                map(s => s.data.filter(x => x.competitionKey === competitionKey
                     && x.roundNumber === roundNumber - 1)),
                 take(1),
                 tap(standingLines => {
@@ -131,7 +131,7 @@ export class CompetitionComponent implements OnInit {
                         if (oldStandingLine) {
                             const newStandingLine: StandingLine = {
                                 key: '',
-                                competitionKey: this.selectedRound.competitionKey,
+                                competitionKey: competitionKey,
                                 roundNumber: roundNumber,
                                 playerKey: player.key,
                                 competitionPoints: oldStandingLine.competitionPoints
