@@ -1,0 +1,356 @@
+<html>
+
+<head>
+    <style>
+        table,
+        tr,
+        th {
+            border: 1px solid #ddd;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding-top: 6px;
+            padding-bottom: 6px;
+            text-align: left;
+            background-color: #438CB6;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 4px;
+        }
+
+        th {
+            text-align: left;
+        }
+
+        .button {
+            background-color: #438CB6;
+            border: none;
+            color: white;
+            padding-right: 10px;
+            padding-left: 10px;
+            padding-bottom: 5px;
+            padding-top: 5px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            border-radius: 8px;
+        }
+
+        .button:hover,
+        .actieveRonde {
+            background-color: grey;
+        }
+
+        button:focus {
+            outline: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <span id="roundButtons">
+    </span>
+
+    <h1>Overzicht ronde
+        <span id="roundId"></span>
+    </h1>
+
+    <h2>Partijen</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Witspeler</th>
+                <th>+</th>
+                <th>+/-</th>
+                <th>-</th>
+                <th>tegen</th>
+                <th>Zwartspeler</th>
+                <th>+</th>
+                <th>+/-</th>
+                <th>-</th>
+                <th>Uitslag</th>
+            </tr>
+        </thead>
+        <tbody id="gamesTable">
+        </tbody>
+    </table>
+
+    <h2>Stand</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Pos</th>
+                <th>Naam</th>
+                <th>Punten</th>
+            </tr>
+        </thead>
+        <tbody id="standingTable">
+        </tbody>
+    </table>
+
+    <h2>Winst / Verlies</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Pos</th>
+                <th>Naam</th>
+                <th>Elo +/-</th>
+            </tr>
+        </thead>
+        <tbody id="winlossTable">
+        </tbody>
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
+    <script>
+        /*-----------------------------------------------------------------------------*/
+        // CONFIG & variables
+        var config = {
+            apiKey: "AIzaSyDf4_PGKAn9XZ-M7ShYFMedqIiqnYSDuOM",
+            authDomain: "chess-prod-e695e.firebaseapp.com",
+            databaseURL: "https://chess-prod-e695e.firebaseio.com",
+            projectId: "chess-prod-e695e",
+            storageBucket: "chess-prod-e695e.appspot.com",
+            messagingSenderId: "905399664437"
+        };
+        firebase.initializeApp(config);
+        var database = firebase.database();
+
+        var competitieRef = '-LTHwRkr83qptKnQLv7m';
+        var roundNumbers = [];
+        var allStandings = [];
+        var allPlayers = [];
+        var allGames = [];
+        var allEloChange = [];
+        var selectedRound = -1;
+        /*-----------------------------------------------------------------------------*/
+        /* Data display and format */
+        function mapAndDisplay() {
+            // Add standings
+            var standingsForRound = allStandings
+                .filter(r => r.roundNumber === selectedRound)
+                .sort((x, y) => y.competitionPoints - x.competitionPoints)
+                .map(item => {
+                    return {
+                        round: item.roundNumber,
+                        playerName: getPlayerName(item.playerKey),
+                        competitionPoints: Math.round(item.competitionPoints * 10) / 10
+                    };
+                });
+            standingAddDataToTable(standingsForRound);
+
+            // Add games
+            var gamesForRound = allGames
+                .filter(r => r.roundNumber === selectedRound)
+                .map(item => {
+                    return {
+                        whitePlayerName: getPlayerName(item.whitePlayerKey),
+                        whiteCpWin: Math.round(item.whiteWinCpChange * 10) / 10,
+                        whiteCpDraw: Math.round(item.whiteDrawCpChange * 10) / 10,
+                        whiteCpLoss: Math.round(item.whiteLossCpChange * 10) / 10,
+                        blackPlayerName: getPlayerName(item.blackPlayerKey),
+                        blackCpWin: Math.round(item.blackWinCpChange * 10) / 10,
+                        blackCpDraw: Math.round(item.blackDrawCpChange * 10) / 10,
+                        blackCpLoss: Math.round(item.blackLossCpChange * 10) / 10,
+                        result: item.result == 1 ? '1-0' : item.result == 0 ? '0-1' : '0,5 - 0,5',
+                    };
+                });
+            gamesAddDataToTable(gamesForRound);
+
+            var eloChangeForRound = allEloChange
+                .filter(r => r.roundNumber === selectedRound)
+                .sort((x, y) => y.eloChange - x.eloChange)
+                .map(item => {
+                    return {
+                        playerName: item.playerName,
+                        eloChange: Math.round(item.eloChange * 10) / 10
+                    }
+                });
+            winlossAddDataToTable(eloChangeForRound);
+        }
+        /*-----------------------------------------------------------------------------*/
+        /* Data load */
+        function getData() {
+            database.ref('players').once("value", function (snap) {
+                snap.forEach(function (child) {
+                    var player = child.val();
+                    player.key = child.key;
+                    allPlayers.push(player);
+                });
+            }).then(() => {
+                database.ref('standingLines').once("value", function (snap) {
+                    snap.forEach(function (child) {
+                        if (child.val()['competitionKey'] === competitieRef)
+                            allStandings.push(child.val());
+                    });
+                    addRoundButtons();
+                }).then(() => {
+                    database.ref('games').once("value", function (snap) {
+                        snap.forEach(function (child) {
+                            if (child.val()['competitionKey'] === competitieRef)
+                                allGames.push(child.val());
+                        });
+                    }).then(() => {
+                        calcAllEloChange();
+
+                    }).then(() => {
+                        mapAndDisplay();
+                    });
+                });
+            });
+        }
+
+        /* Calc ELO data */
+        function calcAllEloChange() {
+            allPlayers.forEach((p) => {
+                var eloChange = 0;
+
+                // Go through games ordered by round and add data
+                roundNumbers.forEach((r) => {
+                    var white = allGames.find(g => g.roundNumber === r && g.whitePlayerKey === p.key)
+                    var black = allGames.find(g => g.roundNumber === r && g.blackPlayerKey === p.key)
+
+                    if (white !== undefined) {
+                        eloChange = white.result === 1 ? eloChange + white.whiteWinEloChange : white.result === 0 ? eloChange + white.whiteLossEloChange : eloChange + white.whiteDrawEloChange;
+                    }
+
+                    if (black !== undefined) {
+                        eloChange = black.result === 0 ? eloChange + black.blackWinEloChange : black.result === 1 ? eloChange + black.blackLossEloChange : eloChange + black.blackDrawEloChange;
+                    }
+
+                    var line = {
+                        playerName: getPlayerName(p.key),
+                        eloChange: eloChange,
+                        roundNumber: r
+                    }
+                    allEloChange.push(line);
+                });
+            });
+        }
+
+        /*-----------------------------------------------------------------------------*/
+        /* Helper methods and DOM manipulation functions */
+        function addRoundButtons() {
+            roundNumbers = allStandings.map(item => item.roundNumber).filter((value, index, self) => self.indexOf(value) === index);
+            var buttonList = document.getElementById('roundButtons');
+            var buttonsHtml = '';
+            buttonList.innerHTML = '';
+
+            roundNumbers.forEach((r) => {
+                buttonsHtml += '<button id="' + r + '" class="button" onclick=selectRound(' + r + ')>' + r + '</button>';
+            });
+
+            buttonList.innerHTML = buttonsHtml;
+            if (roundNumbers[roundNumbers.length - 1])
+                selectRound(roundNumbers[roundNumbers.length - 1]);
+        }
+
+        function styleRoundButton(number, oldnumber) {
+            if (oldnumber != -1) {
+                document.getElementById(oldnumber).classList.remove('actieveRonde');
+            }
+            document.getElementById(number).classList.add('actieveRonde');
+        }
+
+        function getPlayerName(key) {
+            var player = this.allPlayers.find(x => x.key === key);
+            return player.firstName + ' ' + player.lastName;
+        }
+
+        function selectRound(number) {
+            styleRoundButton(number, selectedRound);
+            selectedRound = number;
+            mapAndDisplay();
+        }
+
+        var roundId = document.getElementById('roundId');
+        var standingTable = document.getElementById('standingTable');
+
+        var standingAddDataToTable = function (lines) {
+            standingTable.innerHTML = ''; // clear
+            // parse json and set the header            
+            roundId.innerHTML = lines[0].round;
+            selectedRound = lines[0].round;
+            styleRoundButton(lines[0].round, -1);
+
+            // display lines
+            for (var i = 0; i < lines.length; i++) {
+                var row = standingTable.insertRow(i);
+                var pos = row.insertCell(0);
+                var naam = row.insertCell(1);
+                var cp = row.insertCell(2);
+
+                pos.innerHTML = i + 1;
+                naam.innerHTML = lines[i].playerName;
+                cp.innerHTML = lines[i].competitionPoints;
+            }
+        }
+
+        var winLossTable = document.getElementById('winlossTable');
+        var winlossAddDataToTable = function (lines) {
+            winLossTable.innerHTML = ''; // clear
+            // display lines
+            for (var i = 0; i < lines.length; i++) {
+                var row = winLossTable.insertRow(i);
+                var pos = row.insertCell(0);
+                var naam = row.insertCell(1);
+                var elo = row.insertCell(2);
+
+                pos.innerHTML = i + 1;
+                naam.innerHTML = lines[i].playerName;
+                elo.innerHTML = lines[i].eloChange;
+            }
+        }
+
+        var gamesTable = document.getElementById('gamesTable');
+        var gamesAddDataToTable = function (lines) {
+            gamesTable.innerHTML = ''; // clear
+            // display lines
+            for (var i = 0; i < lines.length; i++) {
+                var row = gamesTable.insertRow(i);
+                var whiteName = row.insertCell(0);
+                var whiteCpWin = row.insertCell(1);
+                var whiteCpDraw = row.insertCell(2);
+                var whiteCpLoss = row.insertCell(3);
+                var versus = row.insertCell(4);
+                var blackName = row.insertCell(5);
+                var blackCpWin = row.insertCell(6);
+                var blackCpDraw = row.insertCell(7);
+                var blackCpLoss = row.insertCell(8);
+                var result = row.insertCell(9);
+
+                whiteName.innerHTML = lines[i].whitePlayerName;
+                whiteCpWin.innerHTML = lines[i].whiteCpWin;
+                whiteCpDraw.innerHTML = lines[i].whiteCpDraw;
+                whiteCpLoss.innerHTML = lines[i].whiteCpLoss;
+                versus.innerHTML = ' - ';
+                blackName.innerHTML = lines[i].blackPlayerName;
+                blackCpWin.innerHTML = lines[i].blackCpWin;
+                blackCpDraw.innerHTML = lines[i].blackCpDraw;
+                blackCpLoss.innerHTML = lines[i].blackCpLoss;
+                result.innerHTML = lines[i].result;
+            }
+        }
+
+        function main() {
+            // Get data which then chains the rest.
+            getData();
+        }
+
+        main();
+    </script>
+</body>
+
+</html>
