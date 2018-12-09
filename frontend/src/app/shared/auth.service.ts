@@ -25,8 +25,7 @@ export class AuthService {
       new firebase.auth.GoogleAuthProvider()
     ).then(user => {
       this.updateUser(user);
-      this.router.navigate(['competition']);
-    })
+    });
   }
 
   logout() {
@@ -48,7 +47,7 @@ export class AuthService {
           this.user$.next(userData);
         }
       })
-    ).subscribe();
+    ).subscribe(() => this.router.navigate(['competition']));
   }
 
   loginIfNotLoggedIn() {

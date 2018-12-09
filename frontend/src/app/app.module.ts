@@ -1,27 +1,23 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AngularFireAuthModule } from '@angular/fire/auth'
+import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
-
-import { StoreModule } from '@ngrx/store';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatListModule } from '@angular/material';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-
-import {  MatListModule } from '@angular/material';
-
+import { environment } from '../environments/environment';
+import { CompetitionComponent, CompetitionFormComponent, CompetitionSelectComponent, DashboardComponent, PlayerFormComponent,
+  PlayersComponent, RoundComponent, ToolbarComponent } from './';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
-import { IAppState, appReducer, PlayerEffects, CompetitionEffects, RoundEffects, GameEffects, StandingLineEffects } from './store';
-import { DashboardComponent, PlayersComponent, PlayerFormComponent, CompetitionFormComponent, ToolbarComponent, CompetitionSelectComponent, CompetitionComponent, RoundComponent } from './';
 import { LoginComponent } from './login';
-import { environment } from '../environments/environment';
-import { AuthService } from './shared/auth.service';
+import { AuthGuard, AuthService } from './shared';
+import { appReducer, CompetitionEffects, GameEffects, IAppState, PlayerEffects, RoundEffects, StandingLineEffects } from './store';
 
 @NgModule({
   declarations: [
@@ -62,7 +58,8 @@ import { AuthService } from './shared/auth.service';
     ),
   ],
   providers: [
-    AuthService
+    AuthService,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })
