@@ -1,10 +1,12 @@
 <div *ngIf="selectedRound?.roundStatus == roundStatus.PlayerSelect">
-    <mat-selection-list #playerselect>
-        <mat-list-option class="border" color="primary" *ngFor="let player of players" (click)="toggle(player?.key)"
-            [selected]="isPlayerSelected(player?.key)">
-            {{player?.firstName}} {{player?.lastName}}
-        </mat-list-option>
-    </mat-selection-list>
+    <div style="display: flex;">
+        <mat-selection-list>
+            <mat-list-option class="border" color="primary" *ngFor="let player of players" (click)="toggle(player?.key)"
+                [selected]="isPlayerSelected(player?.key)">
+                {{player?.firstName}} {{player?.lastName}}
+            </mat-list-option>
+        </mat-selection-list>
+    </div>
     <button class="btn btn-primary" (click)="generateGames()">Genereer</button>
 </div>
 
