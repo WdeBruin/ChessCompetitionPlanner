@@ -44,7 +44,7 @@ export class RoundComponent implements OnInit {
     // public displayedColumns = ["wit", "cpWit", "vs", "cpZwart", "zwart", "result"]
     public displayedColumns = ['wit', 'vs', 'zwart', 'result'];
 
-    constructor(private store: Store<IAppState>) { 
+    constructor(private store: Store<IAppState>) {
         this.addGameForm = new FormGroup({
             player1: new FormControl(''),
             player2: new FormControl('')
@@ -188,9 +188,16 @@ export class RoundComponent implements OnInit {
     generateGames(): void {
         // Get array of players that participate
         let playersInRound = this.players.filter(p => this.roundplayerKeys.indexOf(p.key) !== -1);
+        // If necessary, remove one as "vrijgeloot" and save that to the round
+        if (playersInRound.length % 2 === 1) {
+            const vrijgeloot = this.vrijLoting(playersInRound);
+            playersInRound = playersInRound.filter(p => p.key !== vrijgeloot);
+        }
+
+        const playerIds = playersInRound.map(x => x.key);
+        let standingLines = this.standingLines.filter(x => playerIds.indexOf(x.playerKey) !== -1);
 
         // Check if all those players have standinglines, if not, we add them. (Like when new player was added between rounds)
-        // 14/9/2018 this was bug in round 1 when adding a player while in player select
         playersInRound.forEach(player => {
             if (!this.standingLines.find(x => x.playerKey === player.key)) {
                 const standingLine: StandingLine = {
@@ -201,21 +208,12 @@ export class RoundComponent implements OnInit {
                     competitionPoints: player.clubElo,
                 };
 
-                this.standingLines.push(standingLine);
+                standingLines.push(standingLine);
                 this.store.dispatch(new standingLineActions.Create(standingLine));
             }
         });
 
-        // If necessary, remove one as "vrijgeloot" and save that to the round
-        if (playersInRound.length % 2 === 1) {
-            const vrijgeloot = this.vrijLoting(playersInRound);
-            playersInRound = playersInRound.filter(p => p.key !== vrijgeloot);
-        }
-
         // find a match to create game with
-        const playerIds = playersInRound.map(x => x.key);
-
-        let standingLines = this.standingLines.filter(x => playerIds.indexOf(x.playerKey) !== -1);
         standingLines = this.sortStandingLines(standingLines);
 
         while (standingLines.length > 1) {
@@ -275,7 +273,8 @@ export class RoundComponent implements OnInit {
     }
 
     notAddedPlayers() {
-        return this.players.filter(player => this.roundplayerKeys.indexOf(player.key) === -1);
+        return this.players.filter(player => !this.roundGames.find(g => g.whitePlayerKey === player.key
+            || g.blackPlayerKey === player.key));
     }
 
     private vrijLoting(playersInRound: Player[]): string {
