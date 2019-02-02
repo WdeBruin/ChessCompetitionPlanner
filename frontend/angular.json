@@ -44,6 +44,34 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
+            },
+            "dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ],
+              "sourceMap": true,
+              "aot": false
+            },
+            "e2e": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.e2e.ts"
+                },
+                {
+                  "replace": "src/app/shared/auth.guard.ts",
+                  "with": "src/app/shared/auth.guard.e2e.ts"
+                },
+                {
+                  "replace": "src/app/shared/auth.service.ts",
+                  "with": "src/app/shared/auth.service.e2e.ts"
+                }
+              ],
+              "sourceMap": true,
+              "aot": false
             }
           }
         },
@@ -55,6 +83,12 @@
           "configurations": {
             "production": {
               "browserTarget": "ChessCompetitionPlanner:build:production"
+            },
+            "dev": {
+              "browserTarget": "ChessCompetitionPlanner:build:dev"
+            },
+            "e2e": {
+              "browserTarget": "ChessCompetitionPlanner:build:e2e"
             }
           }
         },
@@ -103,7 +137,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ChessCompetitionPlanner:serve"
+            "devServerTarget": "ChessCompetitionPlanner:serve:e2e"
           }
         },
         "lint": {

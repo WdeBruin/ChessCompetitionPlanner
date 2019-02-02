@@ -4,7 +4,7 @@ export class User {
 
     constructor(authData) {
         this.email = authData.user.email;
-        this.roles = { reader: true }
+        this.roles = { reader: true };
     }
 }
 

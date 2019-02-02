@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase/app';
-import { User } from './user.model';
+import { User, Roles } from './user.model';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { take, tap, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -11,8 +11,8 @@ import { environment } from 'src/environments/environment';
 @Injectable()
 export class AuthService {
   public user$: BehaviorSubject<User> = new BehaviorSubject(null);
-  public loggedIn: boolean;
-  public isAdmin: boolean;
+  public loggedIn: boolean = true;
+  public isAdmin: boolean = true;
 
   constructor(private _firebaseAuth: AngularFireAuth, private router: Router, private db: AngularFireDatabase) {
     this.user$.subscribe((user) => {
@@ -22,11 +22,15 @@ export class AuthService {
   }
 
   signInWithGoogle() {
-    return this._firebaseAuth.auth.signInWithPopup(
-      new firebase.auth.GoogleAuthProvider()
-    ).then(user => {
-      this.updateUser(user);
-    });
+    this.user$.next(
+      <User>{
+        email: 'test@test.nl',
+        roles: <Roles>{
+          admin: true,
+          reader: true
+        }
+      });
+    this.router.navigate(['players']);
   }
 
   logout() {
@@ -35,20 +39,6 @@ export class AuthService {
         this.user$.next(null);
         this.router.navigate(['/']);
       });
-  }
-
-  private updateUser(authData) {
-    const userData = new User(authData);
-    const ref = this.db.object<User>(`users/${authData.user.uid}`);
-    ref.valueChanges().pipe(
-      tap(user => {
-        this.user$.next(user);
-        if (user === null) {
-          ref.update(userData);
-          this.user$.next(userData);
-        }
-      })
-    ).subscribe(() => this.router.navigate(['competition']));
   }
 
   loginIfNotLoggedIn() {
