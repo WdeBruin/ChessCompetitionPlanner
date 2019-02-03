@@ -1,14 +1,17 @@
 <form class="m-1" (ngSubmit)="save()" #playerForm="ngForm">
     <div class="form-group">
-        <input class="form-control" placeholder="Voornaam" required type="text" [(ngModel)]="model.firstName" name="firstName">
+        <input class="form-control" placeholder="Voornaam" required type="text" 
+        [(ngModel)]="model.firstName" name="firstName" data-testid="voornaam">
     </div>
     <div class="form-group">
-        <input class="form-control" placeholder="Achternaam" required type="text" [(ngModel)]="model.lastName" name="lastName">
+        <input class="form-control" placeholder="Achternaam" required type="text" 
+        [(ngModel)]="model.lastName" name="lastName" data-testid="achternaam">
     </div>
     <div class="form-group">
-        <input class="form-control" placeholder="Elo" required type="text" [(ngModel)]="model.clubElo" name="clubElo">
+        <input class="form-control" placeholder="Elo" required type="text" 
+        [(ngModel)]="model.clubElo" name="clubElo" data-testid="elo">
     </div>
-    <button class="btn btn-dark" type="submit">
+    <button class="btn btn-dark" type="submit" data-testid="save">
         Save
     </button>
 </form>
