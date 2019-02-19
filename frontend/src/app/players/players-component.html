@@ -5,11 +5,11 @@
 
     <!-- List with players -->    
     <div class="container border p-1" *ngFor="let player of (playerState$ | async)?.data">
-        <div class="row ml-1 mr-1">
-            <div class="col-8">
+        <div class="row ml-1 mr-1" data-testid="rowPlayer">
+            <div class="col-8" data-testid="fieldname">
                     {{player.firstName}} {{player.lastName}}
             </div>
-            <div class="col-2">
+            <div class="col-2" data-testid="fieldelo">
                 {{player.clubElo | number:0}}
             </div>
         </div>
