@@ -49,10 +49,66 @@ describe('Competition administration', () => {
       await helper.pause(page);
     });
 
-    // it('should be able to add a round 1 to a competition, navigate away and do round 2', async () => {
+    it('should be able to run a round in an empty competition', async () => {
+      await helper.startDb(
+        {
+          'players' : {
+            '-id900' : {
+              'clubElo' : 900,
+              'firstName' : 'Hello900',
+              'key' : '-id900',
+              'lastName' : 'World'
+            },
+            '-id800' : {
+              'clubElo' : 800,
+              'firstName' : 'Hello800',
+              'key' : '-id800',
+              'lastName' : 'World'
+            },
+            '-id700' : {
+              'clubElo' : 700,
+              'firstName' : 'Hello700',
+              'key' : '-id700',
+              'lastName' : 'World'
+            },
+            '-id600' : {
+              'clubElo' : 600,
+              'firstName' : 'Hello600',
+              'key' : '-id600',
+              'lastName' : 'World'
+            },
+          },
+          'competitions': {
+            '-compid1': {
+              'isSelected' : false,
+              'key' : '',
+              'name' : 'Hello Competition',
+              'roundCount' : 0
+            }
+          }
+        });
 
-    // });
+        await page.goto('http://localhost:4200/competition');
+        await helper.pause(page);
 
+        // Open competition
+        const selDCompetition = '[data-testid="d_competition"]';
+        page.waitFor(selDCompetition);
+        page.click(selDCompetition);
+        // Click new round
 
+    });
+
+    it('should be able to run a round in an existing competition', async () => {
+
+    });
+
+    it('should be able to run a round, add player during player select', async () => {
+
+    });
+
+    it('should be able to run a round, add extra game with vrijgeloot player', async () => {
+
+    });
   });
 });

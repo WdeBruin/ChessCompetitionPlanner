@@ -1,8 +1,8 @@
 import * as puppeteer from 'puppeteer';
 
 export class Helpers {
-  private pauseInterval = 0;
-  private headlessmode = true;
+  private pauseInterval = 100;
+  private headlessmode = false;
 
   private server;
 
