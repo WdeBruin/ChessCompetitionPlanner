@@ -70,7 +70,7 @@
                   "with": "src/app/shared/auth.service.e2e.ts"
                 }
               ],
-              "sourceMap": true,
+              "sourceMap": false,
               "aot": false
             }
           }

@@ -1,6 +1,6 @@
 <div class="card">
     <h5 class="card-header">Competities</h5>
-    <div class="card-body border" *ngFor="let competition of (competitions$ | async)?.data" (click)="navigate(competition.key)">
+    <div class="card-body border" *ngFor="let competition of (competitions$ | async)?.data" (click)="navigate(competition.key)" data-testid="d_competition">
         <h5 class="card-title">{{competition.name}}</h5>
         <button class="btn btn-primary">Open</button>
     </div>
@@ -8,5 +8,5 @@
 
 <div class="add">
     <competition-form *ngIf="addNew"></competition-form>
-    <button class="btn btn-dark" (click)="addNew=true">Nieuw</button>
+    <button class="btn btn-dark" (click)="addNew=true" data-testid="btn_new">Nieuw</button>
 </div>

@@ -1,8 +1,8 @@
 <form class="m-1" (ngSubmit)="save()" #competitionForm="ngForm">
     <div class="form-group">
-        <input class="form-control" placeholder="Competitienaam" type="text" [(ngModel)]="model.name" name="Naam">
+        <input class="form-control" placeholder="Competitienaam" type="text" [(ngModel)]="model.name" name="Naam" data-testid="in_name">
     </div>
-    <button class="btn btn-dark" type="submit">
+    <button class="btn btn-dark" type="submit" data-testid="btn_save">
         Save
     </button>
 </form>
