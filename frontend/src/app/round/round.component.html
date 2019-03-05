@@ -2,52 +2,52 @@
     <div style="display: flex;">
         <mat-selection-list>
             <mat-list-option class="border" color="primary" *ngFor="let player of players" (click)="toggle(player?.key)"
-                [selected]="isPlayerSelected(player?.key)">
+                [selected]="isPlayerSelected(player?.key)" [attr.data-testid]="player?.key">
                 {{player?.firstName}} {{player?.lastName}}
             </mat-list-option>
         </mat-selection-list>
     </div>
-    <button class="btn btn-primary" (click)="generateGames()">Genereer</button>
+    <button class="btn btn-primary" (click)="generateGames()" attr.data-testid="btn_generate">Genereer</button>
 </div>
 
 <div class="container" *ngIf="selectedRound?.roundStatus != roundStatus.PlayerSelect">
     <div class="row" *ngIf="selectedRound?.playerVrijgeloot">
         <div class="col-12">
-            <p>Vrijgeloot: {{getName(selectedRound?.playerVrijgeloot)}}</p>
+            <p attr.data-testid="d_vrijgeloot">Vrijgeloot: {{getName(selectedRound?.playerVrijgeloot)}}</p>
         </div>
     </div>
 
     <div class="border mt-1 pb-1" *ngFor="let game of currentRound()">
-        <div class="row">
-            <div class="col-5">
+        <div class="row" [attr.data-testid]="game?.key">
+            <div class="col-5" attr.data-testid="d_white">
                 {{getName(game.whitePlayerKey)}}
             </div>
-            <div class="col-2">
+            <div class="col-2" attr.data-testid="d_result">
                 <span>{{getResultDisplay(game.result)}}</span>
             </div>
-            <div class="col-5">
+            <div class="col-5" attr.data-testid="d_black">
                 {{getName(game.blackPlayerKey)}}
             </div>
         </div>
         <div style="display: flex;">
             <div class="col-4">
                 <button class="btn" [ngClass]="{'btn-primary': game.result == 1, 'btn-secondary': game.result != 1}"
-                    (click)="processResult(game, 1)">1-0</button>
+                    (click)="processResult(game, 1)" attr.data-testid="btn_10">1-0</button>
             </div>
             <div class="col-4">
                 <button class="btn" [ngClass]="{'btn-primary': game.result == 0.5, 'btn-secondary': game.result != 0.5}"
-                    (click)="processResult(game, 0.5)">0,5</button>
+                    (click)="processResult(game, 0.5)" attr.data-testid="btn_05">0,5</button>
             </div>
             <div class="col-4">
                 <button class="btn" [ngClass]="{'btn-primary': game.result == 0, 'btn-secondary': game.result != 0}"
-                    (click)="processResult(game, 0)">0-1</button>
+                    (click)="processResult(game, 0)" attr.data-testid="btn_01">0-1</button>
             </div>
         </div>
     </div>
 
     <div class="row">
         <div class="col-12">
-            <button *ngIf="selectedRound?.roundStatus != roundStatus.Done && !addGame" class="btn btn-dark" (click)="addGame=true">Partij
+            <button *ngIf="selectedRound?.roundStatus != roundStatus.Done && !addGame" class="btn btn-dark" (click)="addGame=true" attr.data-testid="btn_addgame">Partij
                 Toevoegen</button>
         </div>
     </div>
@@ -56,7 +56,7 @@
         <form [formGroup]="addGameForm">
             <div class="row form-group">
                 <div class="col-md-12">
-                    <select class="custom-select" formControlName="player1">
+                    <select class="custom-select" formControlName="player1" data-testid="sel_player1">
                         <option *ngFor="let player of notAddedPlayers()" [value]="player.key">{{player.firstName}}
                             {{player.lastName}}</option>
                     </select>
@@ -64,7 +64,7 @@
             </div>
             <div class="row form-group">
                 <div class="col-md-12">
-                    <select class="custom-select" formControlName="player2">
+                    <select class="custom-select" formControlName="player2" data-testid="sel-player2">
                         <option *ngFor="let player of notAddedPlayers()" [value]="player.key">{{player.firstName}}
                             {{player.lastName}}</option>
                     </select>
@@ -72,18 +72,18 @@
             </div>
             <div class="row form-group">
                 <div class="col-md-12">
-                    <button class="btn btn-dark mr-2" type="submit" (click)="addNewGame()">Add</button>
-                    <button class="btn btn-dark" (click)="addGame=false">Cancel</button>
+                    <button class="btn btn-dark mr-2" type="submit" (click)="addNewGame()" data-testid="btn_confirmadd">Add</button>
+                    <button class="btn btn-dark" (click)="addGame=false" data-testid="btn_canceladd">Cancel</button>
                 </div>
             </div>
         </form>
     </div>
 
     <button class="btn btn-primary" *ngIf="selectedRound?.roundStatus != roundStatus.Done" [disabled]="!allGamesFinished()"
-        (click)="finishRound()">Sluit ronde</button>
+        (click)="finishRound()" data-testid="btn_closeround">Sluit ronde</button>
 
     <button class="btn btn-primary" *ngIf="selectedRound?.roundStatus != roundStatus.Done && !noGamesFinished()"
-        [disabled]="noGamesFinished()" (click)="cancelRound()">!Annuleer!</button>
+        [disabled]="noGamesFinished()" (click)="cancelRound()" data-testid="btn_cancelround">!Annuleer!</button>
 
-    <span *ngIf="selectedRound?.roundStatus == roundStatus.Done">Ronde gesloten</span>
+    <span *ngIf="selectedRound?.roundStatus == roundStatus.Done" data-testid="d_roundclosed">Ronde gesloten</span>
 </div>

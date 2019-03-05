@@ -1,8 +1,8 @@
 <div>
     <span *ngFor="let round of rounds">
         <button class="btn mr-1" [ngClass]="{'btn-primary': round?.key == selectedRound?.key, 'btn-secondary': round?.key != selectedRound?.key}"
-        (click)="selectRound(round)" [data-testid]="round?.key">
-            {{round?.roundNumber}}
+        (click)="selectRound(round)" [attr.data-testid]="round?.key">
+          <span>{{round?.roundNumber}}</span>
         </button>
     </span>
     <span>
