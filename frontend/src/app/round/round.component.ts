@@ -15,8 +15,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
     selector: 'round-component',
-    templateUrl: 'round.component.html',
-    styleUrls: ['round.component.css']
+    templateUrl: 'round.component.html'
 })
 export class RoundComponent implements OnInit {
     @Input()

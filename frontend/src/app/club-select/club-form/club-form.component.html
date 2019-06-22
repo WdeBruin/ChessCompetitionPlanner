@@ -1,0 +1,8 @@
+<form class="m-1" (ngSubmit)="save()" #clubForm="ngForm">
+    <div class="form-group">
+        <input class="form-control" placeholder="Clubnaam / Toernooinaam" type="text" [(ngModel)]="model.name" name="Naam" data-testid="in_name">
+    </div>
+    <button class="btn btn-dark" type="submit" data-testid="btn_save">
+        Save
+    </button>
+</form>

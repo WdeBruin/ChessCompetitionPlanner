@@ -1,18 +1,20 @@
-import { Injectable, OnInit } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireDatabase } from '@angular/fire/database';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase/app';
+import { BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { User } from './user.model';
-import { AngularFireDatabase } from '@angular/fire/database';
-import { take, tap, map } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class AuthService {
   public user$: BehaviorSubject<User> = new BehaviorSubject(null);
   public loggedIn: boolean;
   public isAdmin: boolean;
+
+  public navigationButtonsEnabled: boolean;
+  public clubKey: string;
 
   constructor(private _firebaseAuth: AngularFireAuth, private router: Router, private db: AngularFireDatabase) {
     this.user$.subscribe((user) => {
@@ -48,7 +50,7 @@ export class AuthService {
           this.user$.next(userData);
         }
       })
-    ).subscribe(() => this.router.navigate(['competition']));
+    ).subscribe(() => this.router.navigate(['club']));
   }
 
   loginIfNotLoggedIn() {
@@ -56,4 +58,6 @@ export class AuthService {
       this.signInWithGoogle();
     }
   }
+
+
 }

@@ -13,8 +13,7 @@ import * as standingLineActions from '../store/standing-line/standing-line.actio
 import { AuthService } from '../shared';
 
 @Component({
-  templateUrl: 'competition.component.html',
-  styleUrls: ['competition.component.css']
+  templateUrl: 'competition.component.html'
 })
 export class CompetitionComponent implements OnInit {
   public players: Player[];
@@ -33,13 +32,13 @@ export class CompetitionComponent implements OnInit {
     this.store.dispatch(new playerActions.GetPlayers());
 
     this.route.params.subscribe(params => {
-      if (params.key) {
-        this.store.dispatch(new roundActions.Get(params.key));
+      if (params.competitionKey) {
+        this.store.dispatch(new roundActions.Get(params.competitionKey));
 
         this.store.select(competitionSelector).pipe(
           map(s => s.data),
           tap(competitions => {
-            this.selectedCompetition = competitions ? competitions.find(c => c.key === params.key) : undefined;
+            this.selectedCompetition = competitions ? competitions.find(c => c.key === params.competitionKey) : undefined;
           })
         ).subscribe();
       }

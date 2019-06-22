@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router, RoutesRecognized } from '@angular/router';
 import { AuthService } from '../shared';
 
 @Component({
@@ -6,13 +7,40 @@ import { AuthService } from '../shared';
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.css']
 })
-export class ToolbarComponent {
+export class ToolbarComponent implements OnInit {
   @Input()
   public name: string;
 
-  constructor(public authService: AuthService) { }
+  public navigationButtonsEnabled: boolean = true;
+  private clubKey;
+
+  constructor(public authService: AuthService, private router: Router) { }
+
+  ngOnInit() {
+    this.router.events.subscribe(val => {
+      if (val instanceof RoutesRecognized) {
+        const clubKey = val.state.root.firstChild.params['clubKey'];
+
+        if (clubKey) {
+          this.navigationButtonsEnabled = true;
+          this.clubKey = clubKey;
+        } else {
+          this.navigationButtonsEnabled = false;
+          this.clubKey = null;
+        }
+      }
+    });
+  }
 
   logout() {
     this.authService.logout();
+  }
+
+  navigate(location: string) {
+    if (location === 'competition') {
+      this.router.navigate(['club', this.clubKey]);
+    } else {
+      this.router.navigate(['club', this.clubKey, location]);
+    }
   }
 }

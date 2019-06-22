@@ -1,7 +1,7 @@
-<div class="bg-light p-2" *ngIf="authService.loggedIn">
+<div class="bg-light p-2" *ngIf="authService.loggedIn && navigationButtonsEnabled">
   <span *ngIf="authService.isAdmin">
-    <button type="button" class="btn btn-primary" href="#" routerLink="/competition">Competitie</button>
-    <button type="button" class="btn btn-primary" href="#" routerLink="/players">Spelers</button>
+    <button type="button" class="btn btn-primary" href="#" (click)="navigate('competition')">Competitie</button>
+    <button type="button" class="btn btn-primary" href="#" (click)="navigate('players')">Spelers</button>
   </span>
   <button type="button" class="btn btn-secondary float-right" href="#" (click)="logout()">Uitloggen</button>
 </div>

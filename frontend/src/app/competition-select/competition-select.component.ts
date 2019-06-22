@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
@@ -17,7 +17,7 @@ export class CompetitionSelectComponent implements OnInit {
   competitions$: Observable<CompetitionState>;
   addNew = false;
 
-  constructor(private store: Store<IAppState>, private router: Router, private authService: AuthService) {
+  constructor(private store: Store<IAppState>, private router: Router, private route: ActivatedRoute, private authService: AuthService) {
     this.competitions$ = this.store.select(competitionSelector);
   }
 
@@ -27,6 +27,6 @@ export class CompetitionSelectComponent implements OnInit {
   }
 
   navigate(key: string) {
-    this.router.navigate(['competition', key]);
+    this.router.navigate(['competition', key], { relativeTo: this.route });
   }
 }

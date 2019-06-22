@@ -1,3 +1,4 @@
+import { ClubEffects } from './store/club/club.effects';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
@@ -12,7 +13,7 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { CompetitionComponent, CompetitionFormComponent, CompetitionSelectComponent, DashboardComponent, PlayerFormComponent,
-  PlayersComponent, RoundComponent, ToolbarComponent } from './';
+  PlayersComponent, RoundComponent, ToolbarComponent, ClubFormComponent, ClubSelectComponent } from './';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login';
@@ -30,7 +31,9 @@ import { appReducer, CompetitionEffects, GameEffects, IAppState, PlayerEffects, 
     CompetitionSelectComponent,
     CompetitionFormComponent,
     ToolbarComponent,
-    LoginComponent
+    LoginComponent,
+    ClubFormComponent,
+    ClubSelectComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +56,8 @@ import { appReducer, CompetitionEffects, GameEffects, IAppState, PlayerEffects, 
         CompetitionEffects,
         RoundEffects,
         GameEffects,
-        StandingLineEffects
+        StandingLineEffects,
+        ClubEffects
       ]
     ),
   ],
