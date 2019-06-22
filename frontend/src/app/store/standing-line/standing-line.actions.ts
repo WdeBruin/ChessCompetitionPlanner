@@ -28,7 +28,7 @@ export class GetSuccess implements Action {
 
 export class Create implements Action {
   readonly type = CREATE_STANDING_LINE;
-  constructor(public standingLine: StandingLine) { }
+  constructor(public standingLine: StandingLine, public readonly competitionKey: string) { }
 }
 
 export class CreateSuccess implements Action {
@@ -38,7 +38,7 @@ export class CreateSuccess implements Action {
 
 export class Update implements Action {
   readonly type = UPDATE_STANDING_LINE;
-  constructor(public updatedStandingLine: StandingLine) { }
+  constructor(public updatedStandingLine: StandingLine, public readonly competitionKey: string) { }
 }
 
 export class UpdateSuccess implements Action {
@@ -48,7 +48,7 @@ export class UpdateSuccess implements Action {
 
 export class Delete implements Action {
   readonly type = DELETE_STANDING_LINE;
-  constructor(public key: string) { }
+  constructor(public key: string, public readonly competitionKey: string) { }
 }
 
 export class DeleteSuccess implements Action {

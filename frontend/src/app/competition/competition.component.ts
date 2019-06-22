@@ -114,7 +114,7 @@ export class CompetitionComponent implements OnInit {
           competitionPoints: player.clubElo,
         };
 
-        this.store.dispatch(new standingLineActions.Create(standingLine));
+        this.store.dispatch(new standingLineActions.Create(standingLine, competitionKey));
       });
     } else {
       // else copy standings from last round as our start point
@@ -137,7 +137,7 @@ export class CompetitionComponent implements OnInit {
                 competitionPoints: oldStandingLine.competitionPoints
               };
 
-              this.store.dispatch(new standingLineActions.Create(newStandingLine));
+              this.store.dispatch(new standingLineActions.Create(newStandingLine, competitionKey));
             }
           });
         })).subscribe();

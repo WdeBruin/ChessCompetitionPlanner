@@ -178,8 +178,8 @@ export class RoundComponent implements OnInit {
                 // Update state for both players, in competition and clubelo
                 this.store.dispatch(new playerActions.Update(whitePlayer));
                 this.store.dispatch(new playerActions.Update(blackPlayer));
-                this.store.dispatch(new standingLineActions.Update(whiteStandingLine));
-                this.store.dispatch(new standingLineActions.Update(blackStandingLine));
+                this.store.dispatch(new standingLineActions.Update(whiteStandingLine, this.competitionKey));
+                this.store.dispatch(new standingLineActions.Update(blackStandingLine, this.competitionKey));
                 this.store.dispatch(new gameActions.Update(game, this.competitionKey, this.selectedRound.key));
             }
         }
@@ -209,7 +209,7 @@ export class RoundComponent implements OnInit {
                 };
 
                 standingLines.push(standingLine);
-                this.store.dispatch(new standingLineActions.Create(standingLine));
+                this.store.dispatch(new standingLineActions.Create(standingLine, this.competitionKey));
             }
         });
 

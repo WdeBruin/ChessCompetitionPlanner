@@ -16,8 +16,8 @@ export class StandingLineEffects {
   @Effect()
   public getStandingLinesForCompetition: Observable<Action> = this.actions.pipe(
     ofType<standingLineActions.Get>(standingLineActions.GET_STANDING_LINES),
-    switchMap(() => {
-      const result = this.db.list<StandingLine>('standingLines');
+    switchMap(action => {
+      const result = this.db.list<StandingLine>(`competitions/${action.competitionKey}/standingLines`);
       return result.stateChanges();
     }),
     map(action => {
@@ -29,7 +29,7 @@ export class StandingLineEffects {
   @Effect()
   public createStandingLine: Observable<Action> = this.actions.pipe(
     ofType<standingLineActions.Create>(standingLineActions.CREATE_STANDING_LINE),
-    mergeMap(action => this.db.list<StandingLine>('standingLines').push(action.standingLine)
+    mergeMap(action => this.db.list<StandingLine>(`competitions/${action.competitionKey}/standingLines`).push(action.standingLine)
       .then(() => new standingLineActions.CreateSuccess())),
     catchError(error => this.handleError(error))
   );
@@ -38,7 +38,8 @@ export class StandingLineEffects {
   public updateStandingLine: Observable<Action> = this.actions.pipe(
     ofType<standingLineActions.Update>(standingLineActions.UPDATE_STANDING_LINE),
     mergeMap(action =>
-      this.db.object<StandingLine>(`standingLines/${action.updatedStandingLine.key}`).set(action.updatedStandingLine)
+      this.db.object<StandingLine>(`competitions/${action.competitionKey}/standingLines/${action.updatedStandingLine.key}`)
+        .set(action.updatedStandingLine)
         .then(() => new standingLineActions.UpdateSuccess(action.updatedStandingLine))
     ),
     catchError(error => this.handleError(error))
@@ -47,7 +48,7 @@ export class StandingLineEffects {
   @Effect()
   public deleteStandingLine: Observable<Action> = this.actions.pipe(
     ofType<standingLineActions.Delete>(standingLineActions.DELETE_STANDING_LINE),
-    mergeMap(action => this.db.object<StandingLine>(`standingLines/${action.key}`).remove()
+    mergeMap(action => this.db.object<StandingLine>(`competitions/${action.competitionKey}/standingLines/${action.key}`).remove()
       .then(() => new standingLineActions.DeleteSuccess(action.key)))
   );
 
