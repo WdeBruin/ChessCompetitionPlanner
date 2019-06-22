@@ -16,8 +16,8 @@ export class RoundEffects {
   @Effect()
   public getRoundsForCompetition: Observable<Action> = this.actions.pipe(
     ofType<roundActions.Get>(roundActions.GET_ROUNDS),
-    switchMap(() => {
-      const result = this.db.list<Round>('rounds');
+    switchMap(action => {
+      const result = this.db.list<Round>(`competitions/${action.competitionKey}/rounds`);
       return result.stateChanges();
     }),
     map(action => {
@@ -29,7 +29,7 @@ export class RoundEffects {
   @Effect()
   public createRound: Observable<Action> = this.actions.pipe(
     ofType<roundActions.Create>(roundActions.CREATE_ROUND),
-    switchMap(action => this.db.list<Round>('rounds').push(action.round)
+    switchMap(action => this.db.list<Round>(`competitions/${action.competitionKey}/rounds`).push(action.round)
       .then(() => new roundActions.CreateSuccess())),
     catchError(error => this.handleError(error))
   );
@@ -38,7 +38,7 @@ export class RoundEffects {
   public updateRound: Observable<Action> = this.actions.pipe(
     ofType<roundActions.Update>(roundActions.UPDATE_ROUND),
     mergeMap(action =>
-      this.db.object<Round>(`rounds/${action.updatedRound.key}`).set(action.updatedRound)
+      this.db.object<Round>(`competitions/${action.competitionKey}/rounds/${action.updatedRound.key}`).set(action.updatedRound)
         .then(() => new roundActions.UpdateSuccess(action.updatedRound))
     ),
     catchError(error => this.handleError(error))

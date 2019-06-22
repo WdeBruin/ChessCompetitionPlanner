@@ -16,8 +16,8 @@ export class GameEffects {
   @Effect()
   public getAllGamesForCompetition: Observable<Action> = this.actions.pipe(
     ofType<gameActions.GetAll>(gameActions.GET_ALL_GAMES),
-    switchMap(() => {
-      const result = this.db.list<Game>('games');
+    switchMap(action => {
+      const result = this.db.list<Game>(`competitions/${action.competitionKey}/games`);
       return result.stateChanges();
     }),
     map(action => {
@@ -29,8 +29,11 @@ export class GameEffects {
   @Effect()
   public createGame: Observable<Action> = this.actions.pipe(
     ofType<gameActions.Create>(gameActions.CREATE_GAME),
-    switchMap(action => this.db.list<Game>('games').push(action.game)
-      .then(() => new gameActions.CreateSuccess())),
+    switchMap(action => this.db.list<Game>(`competitions/${action.competitionKey}/games`).push(action.game)
+      .then(() => {
+        return new gameActions.CreateSuccess();
+      }
+        )),
     catchError(error => this.handleError(error))
   );
 
@@ -38,7 +41,7 @@ export class GameEffects {
   public updateGame: Observable<Action> = this.actions.pipe(
     ofType<gameActions.Update>(gameActions.UPDATE_GAME),
     mergeMap(action =>
-      this.db.object<Game>(`games/${action.updatedGame.key}`).set(action.updatedGame)
+      this.db.object<Game>(`competitions/${action.competitionKey}/games/${action.updatedGame.key}`).set(action.updatedGame)
         .then(() => new gameActions.UpdateSuccess(action.updatedGame))
     ),
     catchError(error => this.handleError(error))
@@ -47,7 +50,7 @@ export class GameEffects {
   @Effect()
   public deleteGame: Observable<Action> = this.actions.pipe(
     ofType<gameActions.Delete>(gameActions.DELETE_GAME),
-    mergeMap(action => this.db.object<Game>(`games/${action.key}`).remove()
+    mergeMap(action => this.db.object<Game>(`competitions/${action.competitionKey}/games/${action.key}`).remove()
       .then(() => new gameActions.DeleteSuccess(action.key)))
   );
 

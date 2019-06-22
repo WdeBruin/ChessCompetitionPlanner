@@ -28,7 +28,7 @@ export class GetSuccess implements Action {
 
 export class Create implements Action {
   readonly type = CREATE_ROUND;
-  constructor(public round: Round) { }
+  constructor(public round: Round, public readonly competitionKey: string) { }
 }
 
 export class CreateSuccess implements Action {
@@ -39,7 +39,7 @@ export class CreateSuccess implements Action {
 export class Update implements Action {
   readonly type = UPDATE_ROUND;
   constructor(
-    public updatedRound: Round) { }
+    public updatedRound: Round, public readonly competitionKey: string) { }
 }
 
 export class UpdateSuccess implements Action {

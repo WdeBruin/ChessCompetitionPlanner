@@ -76,7 +76,7 @@ export class CompetitionComponent implements OnInit {
       playerVrijgeloot: null
     };
     this.selectedCompetition.key = round.competitionKey;
-    this.store.dispatch(new roundActions.Create(round));
+    this.store.dispatch(new roundActions.Create(round, round.competitionKey));
 
     this.selectRound(round);
     this.fillStandings(round.roundNumber, round.competitionKey);
@@ -88,11 +88,11 @@ export class CompetitionComponent implements OnInit {
     this.rounds.forEach(r => {
       if (r.key === round.key) {
         r.isSelected = true;
-        this.store.dispatch(new roundActions.Update(r));
+        this.store.dispatch(new roundActions.Update(r, round.competitionKey));
       } else {
         if (r.isSelected) {
           r.isSelected = false;
-          this.store.dispatch(new roundActions.Update(r));
+          this.store.dispatch(new roundActions.Update(r, round.competitionKey));
         }
       }
     });
