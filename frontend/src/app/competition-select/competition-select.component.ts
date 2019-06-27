@@ -16,14 +16,19 @@ import { AuthService } from '../shared';
 export class CompetitionSelectComponent implements OnInit {
   competitions$: Observable<CompetitionState>;
   addNew = false;
+  private clubKey: string;
 
   constructor(private store: Store<IAppState>, private router: Router, private route: ActivatedRoute, private authService: AuthService) {
     this.competitions$ = this.store.select(competitionSelector);
+
+    this.route.params.subscribe(params => {
+      this.clubKey = params.clubKey;
+    });
   }
 
   ngOnInit() {
     this.authService.loginIfNotLoggedIn();
-    this.store.dispatch(new competitionActions.Get());
+    this.store.dispatch(new competitionActions.Get(this.clubKey));
   }
 
   navigate(key: string) {

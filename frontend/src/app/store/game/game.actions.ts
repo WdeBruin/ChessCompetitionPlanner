@@ -15,12 +15,12 @@ export const DELETE_GAME_SUCCESS = '[Games] Delete -- OK';
 
 export class GameError implements Action {
   readonly type = GAME_ERROR;
-  constructor(public message: string) { }
+  constructor(public readonly message: string) { }
 }
 
 export class GetAll implements Action {
   readonly type = GET_ALL_GAMES;
-  constructor(public competitionKey: string, public roundKey: string) { }
+  constructor(public readonly clubKey: string, public readonly competitionKey: string, public readonly roundKey: string) { }
 }
 
 export class GetAllSuccess implements Action {
@@ -30,7 +30,8 @@ export class GetAllSuccess implements Action {
 
 export class Create implements Action {
   readonly type = CREATE_GAME;
-  constructor(public game: Game, public competitionKey: string, public roundKey: string) { }
+  constructor(public readonly game: Game, public readonly clubKey: string,
+    public readonly competitionKey: string, public readonly roundKey: string) { }
 }
 
 export class CreateSuccess implements Action {
@@ -40,22 +41,24 @@ export class CreateSuccess implements Action {
 
 export class Update implements Action {
   readonly type = UPDATE_GAME;
-  constructor(public updatedGame: Game, public competitionKey: string, public roundKey: string) { }
+  constructor(public readonly updatedGame: Game, public readonly clubKey: string,
+    public readonly competitionKey: string, public readonly roundKey: string) { }
 }
 
 export class UpdateSuccess implements Action {
   readonly type = UPDATE_GAME_SUCCESS;
-  constructor(public updatedGame: Game) { }
+  constructor(public readonly updatedGame: Game) { }
 }
 
 export class Delete implements Action {
   readonly type = DELETE_GAME;
-  constructor(public key: string, public competitionKey: string, public roundKey: string) { }
+  constructor(public readonly key: string, public readonly clubKey: string,
+    public readonly competitionKey: string, public readonly roundKey: string) { }
 }
 
 export class DeleteSuccess implements Action {
   readonly type = DELETE_GAME_SUCCESS;
-  constructor(public key: string) { }
+  constructor(public readonly key: string) { }
 }
 
 export type GameActions

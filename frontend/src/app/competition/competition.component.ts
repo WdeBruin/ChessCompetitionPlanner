@@ -20,20 +20,25 @@ export class CompetitionComponent implements OnInit {
   public selectedCompetition: Competition | undefined;
   public rounds: Round[];
   public selectedRound: Round;
+  public selectedClubKey: string;
 
   // things for view
   public roundsFinished: boolean; // only allow new round if rounds are finished
 
-  constructor(private store: Store<IAppState>, private route: ActivatedRoute, private authService: AuthService) { }
+  constructor(private store: Store<IAppState>, private route: ActivatedRoute, private authService: AuthService) {
+    this.route.params.subscribe(params => {
+      this.selectedClubKey = params.clubKey;
+    });
+  }
 
   ngOnInit(): void {
     this.authService.loginIfNotLoggedIn();
-    this.store.dispatch(new competitionActions.Get());
+    this.store.dispatch(new competitionActions.Get(this.selectedClubKey));
     this.store.dispatch(new playerActions.GetPlayers());
 
     this.route.params.subscribe(params => {
       if (params.competitionKey) {
-        this.store.dispatch(new roundActions.Get(params.competitionKey));
+        this.store.dispatch(new roundActions.Get(this.selectedClubKey, params.competitionKey));
 
         this.store.select(competitionSelector).pipe(
           map(s => s.data),
@@ -75,7 +80,7 @@ export class CompetitionComponent implements OnInit {
       playerVrijgeloot: null
     };
     this.selectedCompetition.key = round.competitionKey;
-    this.store.dispatch(new roundActions.Create(round, round.competitionKey));
+    this.store.dispatch(new roundActions.Create(round, this.selectedClubKey, round.competitionKey));
 
     this.selectRound(round);
     this.fillStandings(round.roundNumber, round.competitionKey);
@@ -87,11 +92,11 @@ export class CompetitionComponent implements OnInit {
     this.rounds.forEach(r => {
       if (r.key === round.key) {
         r.isSelected = true;
-        this.store.dispatch(new roundActions.Update(r, round.competitionKey));
+        this.store.dispatch(new roundActions.Update(r, this.selectedClubKey, round.competitionKey));
       } else {
         if (r.isSelected) {
           r.isSelected = false;
-          this.store.dispatch(new roundActions.Update(r, round.competitionKey));
+          this.store.dispatch(new roundActions.Update(r, this.selectedClubKey, round.competitionKey));
         }
       }
     });
@@ -113,11 +118,11 @@ export class CompetitionComponent implements OnInit {
           competitionPoints: player.clubElo,
         };
 
-        this.store.dispatch(new standingLineActions.Create(standingLine, competitionKey));
+        this.store.dispatch(new standingLineActions.Create(standingLine, this.selectedClubKey, competitionKey));
       });
     } else {
       // else copy standings from last round as our start point
-      this.store.dispatch(new standingLineActions.Get(this.selectedCompetition.key, roundNumber - 1));
+      this.store.dispatch(new standingLineActions.Get(this.selectedClubKey, this.selectedCompetition.key, roundNumber - 1));
 
       this.store.select(standingLineSelector).pipe(
         map(s => s.data.filter(x => x.competitionKey === competitionKey
@@ -136,7 +141,7 @@ export class CompetitionComponent implements OnInit {
                 competitionPoints: oldStandingLine.competitionPoints
               };
 
-              this.store.dispatch(new standingLineActions.Create(newStandingLine, competitionKey));
+              this.store.dispatch(new standingLineActions.Create(newStandingLine, this.selectedClubKey, competitionKey));
             }
           });
         })).subscribe();

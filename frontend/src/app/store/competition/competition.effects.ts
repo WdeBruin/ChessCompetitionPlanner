@@ -16,8 +16,8 @@ export class CompetitionEffects {
   @Effect()
   public getCompetitions$: Observable<Action> = this.actions.pipe(
     ofType<competitionActions.Get>(competitionActions.GET_COMPETITIONS),
-    switchMap(() => {
-      const result = this.db.list<Competition>('competitions');
+    switchMap(action => {
+      const result = this.db.list<Competition>(`clubs/${action.clubKey}/competitions`);
       return result.stateChanges();
     }),
     map(action => {
@@ -29,7 +29,7 @@ export class CompetitionEffects {
   @Effect()
   public addCompetition$: Observable<Action> = this.actions.pipe(
     ofType<competitionActions.Create>(competitionActions.CREATE_COMPETITION),
-    switchMap(action => this.db.list<Competition>('competitions').push(action.competition)
+    switchMap(action => this.db.list<Competition>(`clubs/${action.clubKey}/competitions`).push(action.competition)
       .then(() => new competitionActions.CreateSuccess())),
     catchError(error => this.handleError(error))
   );
@@ -38,7 +38,7 @@ export class CompetitionEffects {
   public updateCompetition$: Observable<Action> = this.actions.pipe(
     ofType<competitionActions.Update>(competitionActions.UPDATE_COMPETITION),
     mergeMap(action =>
-      this.db.object<Competition>(`competitions/${action.updatedCompetition.key}`).set(action.updatedCompetition)
+      this.db.object<Competition>(`clubs/${action.clubKey}/competitions/${action.updatedCompetition.key}`).set(action.updatedCompetition)
         .then(() => new competitionActions.UpdateSuccess(action.updatedCompetition))
     ),
     catchError(error => this.handleError(error))

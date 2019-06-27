@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 
@@ -15,14 +16,20 @@ export class CompetitionFormComponent implements OnInit {
     name: undefined,
     roundCount: 0
   };
+  private clubKey: string;
+
+  constructor(private store: Store<IAppState>, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      if(params.clubKey) {
+        this.clubKey = params.clubKey;
+      }
+    })
   }
 
-  constructor(private store: Store<IAppState>) { }
-
   save() {
-    this.store.dispatch(new competitionActions.Create(this.model));
+    this.store.dispatch(new competitionActions.Create(this.model, this.clubKey));
     this.model = {
       key: '',
       isSelected: false,

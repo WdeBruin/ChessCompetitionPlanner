@@ -18,7 +18,7 @@ export class StandingLineError implements Action {
 
 export class Get implements Action {
   readonly type = GET_STANDING_LINES;
-  constructor(public competitionKey: string, public roundNumber: number) { }
+  constructor(public readonly clubKey: string, public readonly competitionKey: string, public readonly roundNumber: number) { }
 }
 
 export class GetSuccess implements Action {
@@ -28,7 +28,7 @@ export class GetSuccess implements Action {
 
 export class Create implements Action {
   readonly type = CREATE_STANDING_LINE;
-  constructor(public standingLine: StandingLine, public readonly competitionKey: string) { }
+  constructor(public readonly standingLine: StandingLine, public readonly clubKey: string, public readonly competitionKey: string) { }
 }
 
 export class CreateSuccess implements Action {
@@ -38,22 +38,23 @@ export class CreateSuccess implements Action {
 
 export class Update implements Action {
   readonly type = UPDATE_STANDING_LINE;
-  constructor(public updatedStandingLine: StandingLine, public readonly competitionKey: string) { }
+  constructor(public readonly updatedStandingLine: StandingLine, public readonly clubKey: string,
+    public readonly competitionKey: string) { }
 }
 
 export class UpdateSuccess implements Action {
   readonly type = UPDATE_STANDING_LINE_SUCCESS;
-  constructor(public updatedStandingLine: StandingLine) { }
+  constructor(public readonly updatedStandingLine: StandingLine) { }
 }
 
 export class Delete implements Action {
   readonly type = DELETE_STANDING_LINE;
-  constructor(public key: string, public readonly competitionKey: string) { }
+  constructor(public readonly key: string, public readonly clubKey: string, public readonly competitionKey: string) { }
 }
 
 export class DeleteSuccess implements Action {
   readonly type = DELETE_STANDING_LINE_SUCCESS;
-  constructor(public key: string) { }
+  constructor(public readonly key: string) { }
 }
 
 export type StandingLineActions
