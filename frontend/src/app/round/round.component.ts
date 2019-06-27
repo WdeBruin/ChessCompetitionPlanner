@@ -181,8 +181,8 @@ export class RoundComponent implements OnInit {
                 }
 
                 // Update state for both players, in competition and clubelo
-                this.store.dispatch(new playerActions.Update(whitePlayer));
-                this.store.dispatch(new playerActions.Update(blackPlayer));
+                this.store.dispatch(new playerActions.Update(whitePlayer, this.selectedClubKey));
+                this.store.dispatch(new playerActions.Update(blackPlayer, this.selectedClubKey));
                 this.store.dispatch(new standingLineActions.Update(whiteStandingLine, this.selectedClubKey, this.competitionKey));
                 this.store.dispatch(new standingLineActions.Update(blackStandingLine, this.selectedClubKey, this.competitionKey));
                 this.store.dispatch(new gameActions.Update(game, this.selectedClubKey, this.competitionKey, this.selectedRound.key));

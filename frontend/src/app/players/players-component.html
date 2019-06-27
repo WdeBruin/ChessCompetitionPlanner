@@ -1,9 +1,9 @@
     <!-- Add form -->
-    <player-form></player-form>
+    <player-form [selectedClubKey]="selectedClubKey"></player-form>
 
     <div *ngIf="(playerState$ | async)?.status == 2" class="alert">Error loading players</div>
 
-    <!-- List with players -->    
+    <!-- List with players -->
     <div class="container border p-1" *ngFor="let player of (playerState$ | async)?.data">
         <div class="row ml-1 mr-1" data-testid="rowPlayer">
             <div class="col-8" data-testid="fieldname">
@@ -14,4 +14,3 @@
             </div>
         </div>
     </div>
-    

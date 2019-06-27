@@ -39,8 +39,7 @@ export class StandingLineEffects {
   public updateStandingLine: Observable<Action> = this.actions.pipe(
     ofType<standingLineActions.Update>(standingLineActions.UPDATE_STANDING_LINE),
     mergeMap(action =>
-      this.db.object<StandingLine>(`clubs/${action.clubKey}/competitions/${action.competitionKey}
-        /standingLines/${action.updatedStandingLine.key}`)
+      this.db.object<StandingLine>(`clubs/${action.clubKey}/competitions/${action.competitionKey}/standingLines/${action.updatedStandingLine.key}`)
         .set(action.updatedStandingLine)
         .then(() => new standingLineActions.UpdateSuccess(action.updatedStandingLine))
     ),
