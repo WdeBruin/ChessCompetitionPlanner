@@ -18,7 +18,7 @@ export class PlayerEffects {
   public getPlayers$: Observable<Action> = this.actions.pipe(
     ofType<playerActions.GetPlayers>(playerActions.GET_PLAYERS),
     switchMap(action => {
-      const result = this.db.list<Player>(`${action.clubkey}/players`);
+      const result = this.db.list<Player>(`clubs/${action.clubkey}/players`);
       return result.stateChanges();
     }),
     map(action => {
@@ -30,7 +30,7 @@ export class PlayerEffects {
   @Effect()
   public addPlayer$: Observable<Action> = this.actions.pipe(
     ofType<playerActions.Create>(playerActions.CREATE_PLAYER),
-    switchMap(action => this.db.list<Player>(`${action.clubkey}/players`).push(action.player)
+    switchMap(action => this.db.list<Player>(`clubs/${action.clubkey}/players`).push(action.player)
       .then(() => new playerActions.CreateSuccess())),
     catchError(error => this.handleError(error))
   );
@@ -39,7 +39,7 @@ export class PlayerEffects {
   public updatePlayer$: Observable<Action> = this.actions.pipe(
     ofType<playerActions.Update>(playerActions.UPDATE_PLAYER),
     mergeMap(action =>
-      this.db.object<Player>(`${action.clubkey}/players/${action.updatedPlayer.key}`).set(action.updatedPlayer)
+      this.db.object<Player>(`clubs/${action.clubkey}/players/${action.updatedPlayer.key}`).set(action.updatedPlayer)
         .then(() => new playerActions.UpdateSuccess(action.updatedPlayer))
     ),
     catchError(error => this.handleError(error))
