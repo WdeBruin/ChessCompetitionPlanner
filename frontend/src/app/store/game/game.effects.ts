@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase } from '@angular/fire/database';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -10,18 +10,19 @@ import { Game } from './game.interface';
 
 @Injectable()
 export class GameEffects {
-  constructor(private actions: Actions, private db: AngularFireDatabase) {
+  constructor(private actions: Actions, private db: AngularFirestore) {
   }
 
   @Effect()
   public getAllGamesForCompetition: Observable<Action> = this.actions.pipe(
     ofType<gameActions.GetAll>(gameActions.GET_ALL_GAMES),
     switchMap(action => {
-      const result = this.db.list<Game>(`clubs/${action.clubKey}/competitions/${action.competitionKey}/games`);
-      return result.stateChanges();
+      const result = this.db.collection<Game>(`clubs/${action.clubKey}/competitions/${action.competitionKey}/games`);
+      return result.snapshotChanges();
     }),
+    mergeMap(actions => actions),
     map(action => {
-      return new gameActions.GetAllSuccess(action.payload.val(), action.key);
+      return new gameActions.GetAllSuccess(action.payload.doc.data(), action.payload.doc.id);
     }),
     catchError(error => this.handleError(error))
   );
@@ -29,7 +30,7 @@ export class GameEffects {
   @Effect()
   public createGame: Observable<Action> = this.actions.pipe(
     ofType<gameActions.Create>(gameActions.CREATE_GAME),
-    switchMap(action => this.db.list<Game>(`clubs/${action.clubKey}/competitions/${action.competitionKey}/games`).push(action.game)
+    switchMap(action => this.db.collection<Game>(`clubs/${action.clubKey}/competitions/${action.competitionKey}/games`).add(action.game)
       .then(() => {
         return new gameActions.CreateSuccess();
       }
@@ -41,7 +42,7 @@ export class GameEffects {
   public updateGame: Observable<Action> = this.actions.pipe(
     ofType<gameActions.Update>(gameActions.UPDATE_GAME),
     mergeMap(action =>
-      this.db.object<Game>(`clubs/${action.clubKey}/competitions/${action.competitionKey}/games/${action.updatedGame.key}`)
+      this.db.doc<Game>(`clubs/${action.clubKey}/competitions/${action.competitionKey}/games/${action.updatedGame.key}`)
         .set(action.updatedGame)
         .then(() => new gameActions.UpdateSuccess(action.updatedGame))
     ),
@@ -51,7 +52,7 @@ export class GameEffects {
   @Effect()
   public deleteGame: Observable<Action> = this.actions.pipe(
     ofType<gameActions.Delete>(gameActions.DELETE_GAME),
-    mergeMap(action => this.db.object<Game>(`clubs/${action.clubKey}/competitions/${action.competitionKey}/games/${action.key}`).remove()
+    mergeMap(action => this.db.collection<Game>(`clubs/${action.clubKey}/competitions/${action.competitionKey}/games`).doc(`${action.key}`).delete()
       .then(() => new gameActions.DeleteSuccess(action.key)))
   );
 

@@ -3,7 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
-import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatListModule } from '@angular/material/list';
 import { BrowserModule } from '@angular/platform-browser';
@@ -19,6 +19,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login';
 import { AuthGuard, AuthService } from './shared';
 import { appReducer, CompetitionEffects, GameEffects, IAppState, PlayerEffects, RoundEffects, StandingLineEffects } from './store';
+import { UserEffects } from './store/user/user.effects';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,7 @@ import { appReducer, CompetitionEffects, GameEffects, IAppState, PlayerEffects, 
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireDatabaseModule,
+    AngularFirestoreModule,
     AngularFireAuthModule,
     BrowserAnimationsModule,
     FormsModule,
@@ -57,7 +58,8 @@ import { appReducer, CompetitionEffects, GameEffects, IAppState, PlayerEffects, 
         RoundEffects,
         GameEffects,
         StandingLineEffects,
-        ClubEffects
+        ClubEffects,
+        UserEffects
       ]
     ),
   ],

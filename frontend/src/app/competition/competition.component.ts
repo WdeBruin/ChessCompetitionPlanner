@@ -32,7 +32,6 @@ export class CompetitionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authService.loginIfNotLoggedIn();
     this.store.dispatch(new competitionActions.Get(this.selectedClubKey));
     this.store.dispatch(new playerActions.GetPlayers(this.selectedClubKey));
 

@@ -5,24 +5,25 @@ import { Observable } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { map, catchError, switchMap, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
-import { AngularFireDatabase } from '@angular/fire/database';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Player } from './player.interface';
 
 
 @Injectable()
 export class PlayerEffects {
-  constructor(private actions: Actions, private db: AngularFireDatabase) {
+  constructor(private actions: Actions, private db: AngularFirestore) {
   }
 
   @Effect()
   public getPlayers$: Observable<Action> = this.actions.pipe(
     ofType<playerActions.GetPlayers>(playerActions.GET_PLAYERS),
     switchMap(action => {
-      const result = this.db.list<Player>(`clubs/${action.clubkey}/players`);
-      return result.stateChanges();
+      const result = this.db.collection<Player>(`clubs/${action.clubkey}/players`);
+      return result.snapshotChanges();
     }),
+    mergeMap(actions => actions),
     map(action => {
-      return new playerActions.GetPlayersSuccess(action.payload.val(), action.key);
+      return new playerActions.GetPlayersSuccess(action.payload.doc.data(), action.payload.doc.id);
     }),
     catchError(error => this.handleError(error))
   );
@@ -30,7 +31,7 @@ export class PlayerEffects {
   @Effect()
   public addPlayer$: Observable<Action> = this.actions.pipe(
     ofType<playerActions.Create>(playerActions.CREATE_PLAYER),
-    switchMap(action => this.db.list<Player>(`clubs/${action.clubkey}/players`).push(action.player)
+    switchMap(action => this.db.collection<Player>(`clubs/${action.clubkey}/players`).add(action.player)
       .then(() => new playerActions.CreateSuccess())),
     catchError(error => this.handleError(error))
   );
@@ -39,7 +40,7 @@ export class PlayerEffects {
   public updatePlayer$: Observable<Action> = this.actions.pipe(
     ofType<playerActions.Update>(playerActions.UPDATE_PLAYER),
     mergeMap(action =>
-      this.db.object<Player>(`clubs/${action.clubkey}/players/${action.updatedPlayer.key}`).set(action.updatedPlayer)
+      this.db.doc<Player>(`clubs/${action.clubkey}/players/${action.updatedPlayer.key}`).set(action.updatedPlayer)
         .then(() => new playerActions.UpdateSuccess(action.updatedPlayer))
     ),
     catchError(error => this.handleError(error))

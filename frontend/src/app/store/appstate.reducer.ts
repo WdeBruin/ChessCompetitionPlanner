@@ -6,6 +6,7 @@ import { RoundReducer } from './round';
 import { StandingLineReducer } from './standing-line';
 import { GameReducer } from './game';
 import { ClubReducer } from './club';
+import { UserReducer } from './user';
 
 export const appReducer: ActionReducerMap<IAppState> = {
     player: PlayerReducer,
@@ -13,5 +14,6 @@ export const appReducer: ActionReducerMap<IAppState> = {
     round: RoundReducer,
     standingLine: StandingLineReducer,
     game: GameReducer,
-    club: ClubReducer
+    club: ClubReducer,
+    user: UserReducer
 };

@@ -4,7 +4,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase/app';
 import { User, Roles } from './user.model';
-import { AngularFireDatabase } from '@angular/fire/database';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { take, tap, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
@@ -14,7 +14,7 @@ export class AuthService {
   public loggedIn: boolean = true;
   public isAdmin: boolean = true;
 
-  constructor(private _firebaseAuth: AngularFireAuth, private router: Router, private db: AngularFireDatabase) {
+  constructor(private _firebaseAuth: AngularFireAuth, private router: Router, private db: AngularFirestore) {
     this.user$.subscribe((user) => {
       this.isAdmin = true;
       this.loggedIn = true;

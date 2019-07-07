@@ -27,7 +27,6 @@ export class CompetitionSelectComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.loginIfNotLoggedIn();
     this.store.dispatch(new competitionActions.Get(this.clubKey));
   }
 

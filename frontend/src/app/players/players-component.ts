@@ -24,7 +24,6 @@ export class PlayersComponent implements OnInit {
      }
 
     ngOnInit(): void {
-        this.authService.loginIfNotLoggedIn();
         this.store.dispatch(new playerActions.GetPlayers(this.selectedClubKey));
     }
 }

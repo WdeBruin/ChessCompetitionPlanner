@@ -22,7 +22,6 @@ export class ClubSelectComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.loginIfNotLoggedIn();
     this.store.dispatch(new clubActions.Get());
   }
 
