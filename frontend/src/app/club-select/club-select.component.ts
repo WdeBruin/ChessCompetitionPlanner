@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -17,7 +17,7 @@ export class ClubSelectComponent implements OnInit {
   clubs$: Observable<ClubState>;
   addNew = false;
 
-  constructor(private store: Store<IAppState>, private router: Router, private authService: AuthService) {
+  constructor(private store: Store<IAppState>, private router: Router, private authService: AuthService, private zone: NgZone) {
     this.clubs$ = this.store.select(clubSelector);
   }
 
@@ -30,6 +30,6 @@ export class ClubSelectComponent implements OnInit {
   }
 
   navigateNew() {
-    this.router.navigate(['club', 'new']);
+    this.zone.run(() => this.router.navigate(['club', 'new']));
   }
 }

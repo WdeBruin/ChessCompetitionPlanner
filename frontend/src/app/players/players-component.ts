@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators';
 export class PlayersComponent implements OnInit {
     playerState$: Observable<PlayerState>;
     public displayedColumns = ['firstName', 'lastName', 'clubElo'];
-    private selectedClubKey: string;
+    public selectedClubKey: string;
 
     constructor(private store: Store<IAppState>, private authService: AuthService, private route: ActivatedRoute) {
         this.playerState$ = this.store.select(playerSelector);
