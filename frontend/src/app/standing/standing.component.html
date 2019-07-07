@@ -1,0 +1,19 @@
+<div class="container mt-5">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Naam</th>
+                <th scope="col">Competitiepunten</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let line of (standingLines$ | async); let i = index">
+            <th scope="row">{{i + 1}}</th>
+            <td>{{getName(line.playerKey)}}</td>
+            <td>{{line.competitionPoints | number}}</td>
+          </tr>
+        </tbody>
+    </table>
+
+</div>

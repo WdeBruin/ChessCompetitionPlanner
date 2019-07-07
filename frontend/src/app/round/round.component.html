@@ -87,3 +87,5 @@
 
     <span *ngIf="selectedRound?.roundStatus == roundStatus.Done" data-testid="d_roundclosed">Ronde gesloten</span>
 </div>
+
+<standing-component [competitionKey]="competitionKey" [roundNumber]="selectedRound.roundNumber"></standing-component>
