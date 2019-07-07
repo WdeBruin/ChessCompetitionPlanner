@@ -13,6 +13,7 @@ export const DELETE_COMPETITION_SUCCESS = '[Competitions] Delete -- OK';
 
 export class Get implements Action {
     readonly type = GET_COMPETITIONS;
+    constructor(public readonly clubKey: string) { }
 }
 
 export class GetSuccess implements Action {
@@ -27,7 +28,7 @@ export class CompetitionError implements Action {
 
 export class Create implements Action {
     readonly type = CREATE_COMPETITION;
-    constructor(public competition: Competition) { }
+    constructor(public competition: Competition, public readonly clubKey: string) { }
 }
 
 export class CreateSuccess implements Action {
@@ -37,7 +38,7 @@ export class CreateSuccess implements Action {
 
 export class Update implements Action {
     readonly type = UPDATE_COMPETITION;
-    constructor(public updatedCompetition: Competition) { }
+    constructor(public updatedCompetition: Competition, public readonly clubKey: string) { }
 }
 
 export class UpdateSuccess implements Action {

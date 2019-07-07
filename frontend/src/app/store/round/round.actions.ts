@@ -13,12 +13,12 @@ export const DELETE_ROUND_SUCCESS = '[Rounds] Delete -- OK';
 
 export class RoundError implements Action {
   readonly type = ROUND_ERROR;
-  constructor(public message: string) { }
+  constructor(public readonly message: string) { }
 }
 
 export class Get implements Action {
   readonly type = GET_ROUNDS;
-  constructor(public competitionKey: string) { }
+  constructor(public readonly clubKey: string, public competitionKey: string) { }
 }
 
 export class GetSuccess implements Action {
@@ -28,7 +28,7 @@ export class GetSuccess implements Action {
 
 export class Create implements Action {
   readonly type = CREATE_ROUND;
-  constructor(public round: Round) { }
+  constructor(public readonly round: Round, public readonly clubKey: string, public readonly competitionKey: string) { }
 }
 
 export class CreateSuccess implements Action {
@@ -39,23 +39,23 @@ export class CreateSuccess implements Action {
 export class Update implements Action {
   readonly type = UPDATE_ROUND;
   constructor(
-    public updatedRound: Round) { }
+    public readonly updatedRound: Round, public readonly clubKey: string, public readonly competitionKey: string) { }
 }
 
 export class UpdateSuccess implements Action {
   readonly type = UPDATE_ROUND_SUCCESS;
   constructor(
-    public updatedRound: Round) { }
+    public readonly updatedRound: Round) { }
 }
 
 export class Delete implements Action {
   readonly type = DELETE_ROUND;
-  constructor(public id: number) { }
+  constructor(public readonly clubKey: string, public readonly id: number) { }
 }
 
 export class DeleteSuccess implements Action {
   readonly type = DELETE_ROUND_SUCCESS;
-  constructor(public id: number) { }
+  constructor(public readonly id: number) { }
 }
 
 export type RoundActions

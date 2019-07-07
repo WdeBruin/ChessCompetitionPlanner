@@ -13,6 +13,7 @@ export const DELETE_PLAYER_SUCCESS = '[Players] Delete -- OK';
 
 export class GetPlayers implements Action {
   readonly type = GET_PLAYERS;
+  constructor(public readonly clubkey: string) {}
 }
 
 export class GetPlayersSuccess implements Action {
@@ -27,7 +28,7 @@ export class PlayerError implements Action {
 
 export class Create implements Action {
   readonly type = CREATE_PLAYER;
-  constructor(public readonly player: Player) { }
+  constructor(public readonly player: Player, public readonly clubkey: string) { }
 }
 
 export class CreateSuccess implements Action {
@@ -37,7 +38,7 @@ export class CreateSuccess implements Action {
 
 export class Update implements Action {
   readonly type = UPDATE_PLAYER;
-  constructor(public readonly updatedPlayer: Player) { }
+  constructor(public readonly updatedPlayer: Player, public readonly clubkey: string) { }
 }
 
 export class UpdateSuccess implements Action {

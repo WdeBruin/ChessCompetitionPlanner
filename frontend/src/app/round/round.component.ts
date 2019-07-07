@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, Input } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Normal } from 'distributions';
@@ -15,12 +16,14 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
     selector: 'round-component',
-    templateUrl: 'round.component.html',
-    styleUrls: ['round.component.css']
+    templateUrl: 'round.component.html'
 })
 export class RoundComponent implements OnInit {
     @Input()
     competitionKey: string;
+
+    @Input()
+    selectedClubKey: string;
 
     // Things for the logic in this component
     roundplayerKeys: string[] = [];
@@ -57,8 +60,10 @@ export class RoundComponent implements OnInit {
             filter(activeRounds => activeRounds.length === 1),
             tap(round => {
                 this.selectedRound = round[0];
-                this.store.dispatch(new standingLineActions.Get(this.selectedRound.competitionKey, this.selectedRound.roundNumber));
-                this.store.dispatch(new gameActions.GetAll(this.selectedRound.competitionKey));
+                this.store.dispatch(
+                  new standingLineActions.Get(this.selectedClubKey, this.selectedRound.competitionKey, this.selectedRound.roundNumber));
+                this.store.dispatch(
+                  new gameActions.GetAll(this.selectedClubKey, this.selectedRound.competitionKey, this.selectedRound.key));
 
                 this.store.select(playerSelector).pipe(
                     map(p => p.data),
@@ -176,11 +181,11 @@ export class RoundComponent implements OnInit {
                 }
 
                 // Update state for both players, in competition and clubelo
-                this.store.dispatch(new playerActions.Update(whitePlayer));
-                this.store.dispatch(new playerActions.Update(blackPlayer));
-                this.store.dispatch(new standingLineActions.Update(whiteStandingLine));
-                this.store.dispatch(new standingLineActions.Update(blackStandingLine));
-                this.store.dispatch(new gameActions.Update(game));
+                this.store.dispatch(new playerActions.Update(whitePlayer, this.selectedClubKey));
+                this.store.dispatch(new playerActions.Update(blackPlayer, this.selectedClubKey));
+                this.store.dispatch(new standingLineActions.Update(whiteStandingLine, this.selectedClubKey, this.competitionKey));
+                this.store.dispatch(new standingLineActions.Update(blackStandingLine, this.selectedClubKey, this.competitionKey));
+                this.store.dispatch(new gameActions.Update(game, this.selectedClubKey, this.competitionKey, this.selectedRound.key));
             }
         }
     }
@@ -209,7 +214,7 @@ export class RoundComponent implements OnInit {
                 };
 
                 standingLines.push(standingLine);
-                this.store.dispatch(new standingLineActions.Create(standingLine));
+                this.store.dispatch(new standingLineActions.Create(standingLine, this.selectedClubKey, this.competitionKey));
             }
         });
 
@@ -247,7 +252,7 @@ export class RoundComponent implements OnInit {
 
         // update state of round to generated
         this.selectedRound.roundStatus = this.roundStatus.Generated;
-        this.store.dispatch(new roundActions.Update(this.selectedRound));
+        this.store.dispatch(new roundActions.Update(this.selectedRound, this.selectedClubKey, this.competitionKey));
     }
 
     toggle(playerKey: string) {
@@ -295,7 +300,7 @@ export class RoundComponent implements OnInit {
 
         const vrijgeloot = lootbaar[Math.floor(Math.random() * lootbaar.length)];
         this.selectedRound.playerVrijgeloot = vrijgeloot;
-        this.store.dispatch(new roundActions.Update(this.selectedRound));
+        this.store.dispatch(new roundActions.Update(this.selectedRound, this.selectedClubKey, this.competitionKey));
 
         return vrijgeloot;
     }
@@ -379,7 +384,7 @@ export class RoundComponent implements OnInit {
             : game.blackDrawEloChange * 2 < drawMin ? drawMin : game.blackDrawEloChange * 2;
 
         // create game
-        this.store.dispatch(new gameActions.Create(game));
+        this.store.dispatch(new gameActions.Create(game, this.selectedClubKey, this.competitionKey, this.selectedRound.key));
     }
 
     private countOccurences(arr: string[], keyToSearch: string): number {
@@ -416,7 +421,7 @@ export class RoundComponent implements OnInit {
 
     public finishRound() {
         this.selectedRound.roundStatus = RoundStatus.Done;
-        this.store.dispatch(new roundActions.Update(this.selectedRound));
+        this.store.dispatch(new roundActions.Update(this.selectedRound, this.selectedClubKey, this.competitionKey));
     }
 
     public currentRound(): Game[] {
@@ -444,11 +449,11 @@ export class RoundComponent implements OnInit {
 
     public cancelRound(): void {
         this.roundGames.forEach((game) => {
-            this.store.dispatch(new gameActions.Delete(game.key));
+            this.store.dispatch(new gameActions.Delete(game.key, this.selectedClubKey, this.competitionKey, this.selectedRound.key));
         });
 
         this.selectedRound.roundStatus = RoundStatus.PlayerSelect;
         this.selectedRound.playerVrijgeloot = null;
-        this.store.dispatch(new roundActions.Update(this.selectedRound));
+        this.store.dispatch(new roundActions.Update(this.selectedRound, this.selectedClubKey, this.competitionKey));
     }
 }

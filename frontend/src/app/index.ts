@@ -5,3 +5,5 @@ export * from './players';
 export * from './round';
 export * from './toolbar';
 export * from './login';
+export * from './club-select';
+export * from './standing';

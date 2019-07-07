@@ -3,6 +3,8 @@ import { CompetitionState } from './competition';
 import { RoundState } from './round';
 import { StandingLineState } from './standing-line';
 import { GameState } from './game';
+import { ClubState } from './club';
+import { UserState } from './user';
 
 export interface IAppState {
     player: PlayerState;
@@ -10,4 +12,6 @@ export interface IAppState {
     round: RoundState;
     standingLine: StandingLineState;
     game: GameState;
+    club: ClubState;
+    user: UserState;
 }

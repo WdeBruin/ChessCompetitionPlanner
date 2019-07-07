@@ -1,25 +1,25 @@
 import { createFeatureSelector } from '@ngrx/store';
 import { Status } from '../../shared';
 import { RoundState } from './';
-import * as actions from './round.actions';
+import * as roundActions from './round.actions';
 
 export function RoundReducer(
   state: RoundState = { data: [], status: undefined },
-  action: actions.RoundActions) {
+  action: roundActions.RoundActions) {
   switch (action.type) {
-    case actions.GET_ROUNDS:
-    case actions.UPDATE_ROUND:
-    case actions.DELETE_ROUND:
+    case roundActions.GET_ROUNDS:
+    case roundActions.UPDATE_ROUND:
+    case roundActions.DELETE_ROUND:
       return {
         ...state,
         status: Status.Loading
       };
-    case actions.ROUND_ERROR:
+    case roundActions.ROUND_ERROR:
       return {
         ...state,
         status: Status.Error
       };
-    case actions.GET_ROUNDS_SUCCESS:
+    case roundActions.GET_ROUNDS_SUCCESS:
       action.round.key = action.key;
 
       if (state.data.find(x => x.key === action.key)) {
@@ -38,7 +38,7 @@ export function RoundReducer(
           status: Status.Loaded
         };
       }
-    case actions.UPDATE_ROUND_SUCCESS:
+    case roundActions.UPDATE_ROUND_SUCCESS:
       return {
         ...state,
         status: Status.Loaded,

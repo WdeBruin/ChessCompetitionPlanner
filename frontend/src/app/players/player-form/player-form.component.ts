@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as playerActions from '../../store/player/player.actions';
 import { Player, IAppState } from '../../store';
@@ -8,6 +8,9 @@ import { Player, IAppState } from '../../store';
   templateUrl: './player-form.component.html',
 })
 export class PlayerFormComponent implements OnInit {
+  @Input()
+  selectedClubKey: string;
+
   public model: Player = {
     key: '',
     firstName: '',
@@ -21,7 +24,7 @@ export class PlayerFormComponent implements OnInit {
   constructor(private store: Store<IAppState>) { }
 
   save() {
-    this.store.dispatch(new playerActions.Create(this.model));
+    this.store.dispatch(new playerActions.Create(this.model, this.selectedClubKey));
     this.model = {
       key: '',
       firstName: '',

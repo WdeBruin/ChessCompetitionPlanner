@@ -1,59 +1,40 @@
-import { Injectable, OnInit } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import * as firebase from 'firebase/app';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { IAppState } from '../store';
+import { userSelector } from '../store/user';
+import * as userActions from '../store/user/user.actions';
 import { User } from './user.model';
-import { AngularFireDatabase } from '@angular/fire/database';
-import { take, tap, map } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class AuthService {
-  public user$: BehaviorSubject<User> = new BehaviorSubject(null);
-  public loggedIn: boolean;
-  public isAdmin: boolean;
+  private user$: Observable<User>;
 
-  constructor(private _firebaseAuth: AngularFireAuth, private router: Router, private db: AngularFireDatabase) {
-    this.user$.subscribe((user) => {
-      this.isAdmin = user !== null && user.roles !== null && user.roles.admin === true;
-      this.loggedIn = user !== null && user !== undefined;
-    });
+  constructor(private _firebaseAuth: AngularFireAuth, private store: Store<IAppState>, private router: Router) {
+    this.user$ = this.store.select(userSelector).pipe(map(val => val.data));
   }
 
   signInWithGoogle() {
     return this._firebaseAuth.auth.signInWithPopup(
       new firebase.auth.GoogleAuthProvider()
-    ).then(user => {
-      this.updateUser(user);
+    ).then((userCredential: firebase.auth.UserCredential) => {
+      this.store.dispatch(new userActions.Login(userCredential.user));
+      this.router.navigate(['club']);
     });
   }
 
   logout() {
     this._firebaseAuth.auth.signOut()
       .then(() => {
-        this.user$.next(null);
         this.router.navigate(['/']);
       });
   }
 
-  private updateUser(authData) {
-    const userData = new User(authData);
-    const ref = this.db.object<User>(`users/${authData.user.uid}`);
-    ref.valueChanges().pipe(
-      tap(user => {
-        this.user$.next(user);
-        if (user === null) {
-          ref.update(userData);
-          this.user$.next(userData);
-        }
-      })
-    ).subscribe(() => this.router.navigate(['competition']));
-  }
-
-  loginIfNotLoggedIn() {
-    if (!this.loggedIn) {
-      this.signInWithGoogle();
-    }
+  isLoggedIn() {
+    return this.user$;
   }
 }
