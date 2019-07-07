@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 
 import { Club, IAppState } from '../../store';
 import * as clubActions from '../../store/club/club.actions';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'club-form',
@@ -17,7 +18,7 @@ export class ClubFormComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  constructor(private store: Store<IAppState>) { }
+  constructor(private store: Store<IAppState>, private router: Router) { }
 
   save() {
     this.store.dispatch(new clubActions.Create(this.model));
@@ -25,5 +26,7 @@ export class ClubFormComponent implements OnInit {
       key: '',
       name: undefined,
     };
+
+    this.router.navigate(['club']);
   }
 }

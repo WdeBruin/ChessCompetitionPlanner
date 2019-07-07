@@ -36,6 +36,10 @@ export class ToolbarComponent implements OnInit {
     this.authService.logout();
   }
 
+  isLoggedIn() {
+    return this.authService.isLoggedIn();
+  }
+
   navigate(location: string) {
     if (location === 'competition') {
       this.router.navigate(['club', this.clubKey]);

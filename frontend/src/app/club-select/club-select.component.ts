@@ -28,4 +28,8 @@ export class ClubSelectComponent implements OnInit {
   navigate(key: string) {
     this.router.navigate(['club', key]);
   }
+
+  navigateNew() {
+    this.router.navigate(['club', 'new']);
+  }
 }

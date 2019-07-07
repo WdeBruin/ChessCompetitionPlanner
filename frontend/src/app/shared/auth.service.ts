@@ -1,20 +1,21 @@
-import { User } from './user.model';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as firebase from 'firebase/app';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { IAppState } from '../store';
-import * as userActions from '../store/user/user.actions';
 import { userSelector } from '../store/user';
-import { tap } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import * as userActions from '../store/user/user.actions';
+import { User } from './user.model';
 
 @Injectable()
 export class AuthService {
-  private user: User;
+  private user$: Observable<User>;
 
   constructor(private _firebaseAuth: AngularFireAuth, private store: Store<IAppState>, private router: Router) {
-    this.store.select(userSelector).pipe(tap(val => this.user = val.data));
+    this.user$ = this.store.select(userSelector).pipe(map(val => val.data));
   }
 
   signInWithGoogle() {
@@ -33,13 +34,7 @@ export class AuthService {
       });
   }
 
-  loginIfNotLoggedIn() {
-    if (!this.user) {
-      this.signInWithGoogle();
-    }
-  }
-
   isLoggedIn() {
-    return true;
+    return this.user$;
   }
 }
