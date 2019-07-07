@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -14,7 +14,7 @@ import { User } from './user.model';
 export class AuthService {
   private user$: Observable<User>;
 
-  constructor(private _firebaseAuth: AngularFireAuth, private store: Store<IAppState>, private router: Router) {
+  constructor(private _firebaseAuth: AngularFireAuth, private store: Store<IAppState>, private router: Router, private zone: NgZone) {
     this.user$ = this.store.select(userSelector).pipe(map(val => val.data));
   }
 
@@ -23,7 +23,7 @@ export class AuthService {
       new firebase.auth.GoogleAuthProvider()
     ).then((userCredential: firebase.auth.UserCredential) => {
       this.store.dispatch(new userActions.Login(userCredential.user));
-      this.router.navigate(['club']);
+      this.zone.run(() => this.router.navigate(['club']));
     });
   }
 
