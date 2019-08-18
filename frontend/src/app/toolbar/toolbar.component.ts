@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
 import { AuthService } from '../shared';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'toolbar',
@@ -13,6 +14,8 @@ export class ToolbarComponent implements OnInit {
 
   public navigationButtonsEnabled: boolean = true;
   private clubKey;
+
+  faLeft = faArrowLeft;
 
   constructor(public authService: AuthService, private router: Router) { }
 
@@ -43,6 +46,8 @@ export class ToolbarComponent implements OnInit {
   navigate(location: string) {
     if (location === 'competition') {
       this.router.navigate(['club', this.clubKey]);
+    } else if (location === 'club') {
+      this.router.navigate(['club']);
     } else {
       this.router.navigate(['club', this.clubKey, location]);
     }

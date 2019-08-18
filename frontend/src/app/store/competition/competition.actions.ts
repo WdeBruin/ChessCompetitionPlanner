@@ -10,6 +10,7 @@ export const UPDATE_COMPETITION = '[Competitions] Update';
 export const UPDATE_COMPETITION_SUCCESS = '[Competitions] Update -- OK';
 export const DELETE_COMPETITION = '[Competitions] Delete';
 export const DELETE_COMPETITION_SUCCESS = '[Competitions] Delete -- OK';
+export const RESET = '[Competitions] Reset';
 
 export class Get implements Action {
     readonly type = GET_COMPETITIONS;
@@ -46,6 +47,11 @@ export class UpdateSuccess implements Action {
     constructor(public updatedCompetition: Competition) { }
 }
 
+export class Reset implements Action {
+  readonly type = RESET;
+  constructor() { }
+}
+
 export type CompetitionActions
     = Get
     | GetSuccess
@@ -53,4 +59,5 @@ export type CompetitionActions
     | Create
     | CreateSuccess
     | Update
-    | UpdateSuccess;
+    | UpdateSuccess
+    | Reset;

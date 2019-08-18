@@ -20,6 +20,7 @@ import { AuthGuard, AuthService } from './shared';
 import { appReducer, CompetitionEffects, GameEffects, IAppState, PlayerEffects, RoundEffects, StandingLineEffects } from './store';
 import { ClubEffects } from './store/club/club.effects';
 import { UserEffects } from './store/user/user.effects';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { UserEffects } from './store/user/user.effects';
     AngularFirestoreModule,
     AngularFireAuthModule,
     BrowserAnimationsModule,
+    FontAwesomeModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

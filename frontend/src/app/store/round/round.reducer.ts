@@ -3,8 +3,10 @@ import { Status } from '../../shared';
 import { RoundState } from './';
 import * as roundActions from './round.actions';
 
+const defaultState = { data: [], status: undefined };
+
 export function RoundReducer(
-  state: RoundState = { data: [], status: undefined },
+  state: RoundState = defaultState,
   action: roundActions.RoundActions) {
   switch (action.type) {
     case roundActions.GET_ROUNDS:
@@ -49,6 +51,8 @@ export function RoundReducer(
           return action.updatedRound;
         })
       };
+    case roundActions.RESET:
+      return defaultState;
     default:
       return state;
   }

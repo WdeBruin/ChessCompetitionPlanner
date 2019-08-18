@@ -3,8 +3,10 @@ import { Status } from '../../shared';
 import { PlayerState } from './';
 import * as actions from './player.actions';
 
+const defaultState = { data: [], status: undefined };
+
 export function PlayerReducer(
-  state: PlayerState = { data: [], status: undefined },
+  state: PlayerState = defaultState,
   action: actions.PlayerActions) {
 
   switch (action.type) {
@@ -43,6 +45,8 @@ export function PlayerReducer(
           return action.updatedPlayer;
         })
       };
+    case actions.RESET:
+      return defaultState;
     default:
       return state;
   }

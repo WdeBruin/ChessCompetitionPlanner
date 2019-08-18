@@ -10,6 +10,7 @@ export const UPDATE_STANDING_LINE = '[StandingLines] Update';
 export const UPDATE_STANDING_LINE_SUCCESS = '[StandingLines] Update -- OK';
 export const DELETE_STANDING_LINE = '[StandingLines] Delete';
 export const DELETE_STANDING_LINE_SUCCESS = '[StandingLines] Delete -- OK';
+export const RESET = '[StandingLines] Reset';
 
 export class StandingLineError implements Action {
   readonly type = STANDING_LINE_ERROR;
@@ -57,6 +58,11 @@ export class DeleteSuccess implements Action {
   constructor(public readonly key: string) { }
 }
 
+export class Reset implements Action {
+  readonly type = RESET;
+  constructor() { }
+}
+
 export type StandingLineActions
   = StandingLineError
   | Get
@@ -66,4 +72,5 @@ export type StandingLineActions
   | Update
   | UpdateSuccess
   | Delete
-  | DeleteSuccess;
+  | DeleteSuccess
+  | Reset;

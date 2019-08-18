@@ -3,8 +3,10 @@ import { Status } from '../../shared';
 import { GameState } from './';
 import * as actions from './game.actions';
 
+const defaultState = { data: [], status: undefined };
+
 export function GameReducer(
-  state: GameState = { data: [], status: undefined },
+  state: GameState = defaultState,
   action: actions.GameActions) {
   switch (action.type) {
     case actions.GET_ALL_GAMES:
@@ -53,6 +55,8 @@ export function GameReducer(
         ...state,
         data: state.data.filter(game => game.key !== action.key)
       };
+    case actions.RESET:
+      return defaultState;
     default:
       return state;
   }

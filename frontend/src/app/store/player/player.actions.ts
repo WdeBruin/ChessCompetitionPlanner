@@ -10,6 +10,7 @@ export const UPDATE_PLAYER = '[Players] Update';
 export const UPDATE_PLAYER_SUCCESS = '[Players] Update -- OK';
 export const DELETE_PLAYER = '[Players] Delete';
 export const DELETE_PLAYER_SUCCESS = '[Players] Delete -- OK';
+export const RESET = '[Players] Reset';
 
 export class GetPlayers implements Action {
   readonly type = GET_PLAYERS;
@@ -46,6 +47,10 @@ export class UpdateSuccess implements Action {
   constructor(public readonly updatedPlayer: Player) { }
 }
 
+export class Reset implements Action {
+  readonly type = RESET;
+  constructor() { }
+}
 
 export type PlayerActions
   = GetPlayers
@@ -54,4 +59,5 @@ export type PlayerActions
   | Create
   | CreateSuccess
   | Update
-  | UpdateSuccess;
+  | UpdateSuccess
+  | Reset;

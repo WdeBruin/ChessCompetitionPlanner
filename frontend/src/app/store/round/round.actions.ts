@@ -10,6 +10,7 @@ export const UPDATE_ROUND = '[Rounds] Update';
 export const UPDATE_ROUND_SUCCESS = '[Rounds] Update -- OK';
 export const DELETE_ROUND = '[Rounds] Delete';
 export const DELETE_ROUND_SUCCESS = '[Rounds] Delete -- OK';
+export const RESET = '[Rounds] Reset';
 
 export class RoundError implements Action {
   readonly type = ROUND_ERROR;
@@ -58,6 +59,11 @@ export class DeleteSuccess implements Action {
   constructor(public readonly id: number) { }
 }
 
+export class Reset implements Action {
+  readonly type = RESET;
+  constructor() { }
+}
+
 export type RoundActions
   =
   Get
@@ -68,4 +74,5 @@ export type RoundActions
   | UpdateSuccess
   | Delete
   | DeleteSuccess
-  | RoundError;
+  | RoundError
+  | Reset;

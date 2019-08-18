@@ -12,6 +12,7 @@ export const UPDATE_GAME = '[Games] Update';
 export const UPDATE_GAME_SUCCESS = '[Games] Update -- OK';
 export const DELETE_GAME = '[Games] Delete';
 export const DELETE_GAME_SUCCESS = '[Games] Delete -- OK';
+export const RESET = '[Games] Reset';
 
 export class GameError implements Action {
   readonly type = GAME_ERROR;
@@ -61,6 +62,11 @@ export class DeleteSuccess implements Action {
   constructor(public readonly key: string) { }
 }
 
+export class Reset implements Action {
+  readonly type = RESET;
+  constructor() { }
+}
+
 export type GameActions
   = GameError
   | GetAll
@@ -70,4 +76,5 @@ export type GameActions
   | Update
   | UpdateSuccess
   | Delete
-  | DeleteSuccess;
+  | DeleteSuccess
+  | Reset;

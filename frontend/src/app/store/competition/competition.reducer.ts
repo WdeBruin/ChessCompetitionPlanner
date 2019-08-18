@@ -3,8 +3,10 @@ import { createFeatureSelector } from '@ngrx/store';
 import { Status } from '../../shared';
 import * as competitionActions from './competition.actions';
 
+const defaultState = { data: [] as Competition[], status: undefined }
+
 export function CompetitionReducer(
-  state: CompetitionState = { data: [] as Competition[], status: undefined },
+  state: CompetitionState = defaultState,
   action: competitionActions.CompetitionActions): CompetitionState {
   switch (action.type) {
     case competitionActions.GET_COMPETITIONS:
@@ -46,6 +48,8 @@ export function CompetitionReducer(
           return action.updatedCompetition;
         })
       };
+    case competitionActions.RESET:
+      return defaultState;
     default:
       return state;
   }

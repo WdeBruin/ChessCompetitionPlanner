@@ -3,8 +3,10 @@ import { Status } from '../../shared';
 import { StandingLineState } from './';
 import * as actions from './standing-line.actions';
 
+const defaultState = { data: [], status: undefined };
+
 export function StandingLineReducer(
-  state: StandingLineState = { data: [], status: undefined },
+  state: StandingLineState = defaultState,
   action: actions.StandingLineActions) {
   switch (action.type) {
     case actions.GET_STANDING_LINES:
@@ -53,6 +55,8 @@ export function StandingLineReducer(
         ...state,
         data: state.data.filter(standingLine => standingLine.key !== action.key)
       };
+    case actions.RESET:
+      return defaultState;
     default:
       return state;
   }

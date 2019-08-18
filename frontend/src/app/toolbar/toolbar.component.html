@@ -1,5 +1,6 @@
 <div class="bg-light p-2" *ngIf="navigationButtonsEnabled">
   <span>
+    <button class="btn btn-primary" (click)="navigate('club')"><fa-icon [icon]="faLeft"></fa-icon></button>
     <button type="button" class="btn btn-primary" href="#" (click)="navigate('competition')">Competitie</button>
     <button type="button" class="btn btn-primary" href="#" (click)="navigate('players')">Spelers</button>
   </span>

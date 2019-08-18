@@ -1,6 +1,6 @@
 <div class="card">
     <h5 class="card-header">Clubs & Toernooien</h5>
-    <div class="card-body border" *ngFor="let club of (clubs$ | async)?.data" (click)="navigate(club.key)" data-testid="d_club">
+    <div class="card-body border" *ngFor="let club of filterMyClubs((clubs$ | async)?.data)" (click)="navigate(club.key)" data-testid="d_club">
         <h5 class="card-title">{{club.name}}</h5>
         <button class="btn btn-primary">Open</button>
     </div>
