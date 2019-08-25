@@ -114,7 +114,11 @@ export class CompetitionComponent implements OnInit {
           competitionKey: competitionKey,
           roundNumber: roundNumber,
           playerKey: player.key,
-          competitionPoints: player.clubElo,
+          points: 0,
+          gamesPlayed: 0,
+          percentage: 0,
+          wp: 0,
+          sb: 0
         };
 
         this.store.dispatch(new standingLineActions.Create(standingLine, this.selectedClubKey, competitionKey));
@@ -137,7 +141,11 @@ export class CompetitionComponent implements OnInit {
                 competitionKey: competitionKey,
                 roundNumber: roundNumber,
                 playerKey: player.key,
-                competitionPoints: oldStandingLine.competitionPoints
+                points: oldStandingLine.points,
+                gamesPlayed: oldStandingLine.gamesPlayed,
+                percentage: oldStandingLine.percentage,
+                wp: oldStandingLine.wp,
+                sb: oldStandingLine.sb
               };
 
               this.store.dispatch(new standingLineActions.Create(newStandingLine, this.selectedClubKey, competitionKey));

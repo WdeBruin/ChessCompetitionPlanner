@@ -5,7 +5,12 @@ export interface StandingLine {
     competitionKey: string;
     roundNumber: number;
     playerKey: string;
-    competitionPoints: number;
+
+    points: number;
+    gamesPlayed: number;
+    percentage: number;
+    wp: number;
+    sb: number;
 }
 
 export interface StandingLineState {

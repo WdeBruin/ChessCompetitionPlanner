@@ -15,13 +15,6 @@ export interface Game {
     blackWinEloChange: number;
     blackDrawEloChange: number;
     blackLossEloChange: number;
-
-    whiteWinCpChange: number;
-    whiteDrawCpChange: number;
-    whiteLossCpChange: number;
-    blackWinCpChange: number;
-    blackDrawCpChange: number;
-    blackLossCpChange: number;
 }
 
 export interface GameState {

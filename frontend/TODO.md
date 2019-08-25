@@ -12,7 +12,7 @@ Auth
 
 Features
 - Add a standing mode different then competitionpoints, with WP, SB, points, percentages and custom sorting. 
-- Add an option for round robin when creating competition
 - Have a standings app to read standings externally
-- Add back arrows everywhere
 - Have remove features for: players, competitions, clubs
+- Add back arrows everywhere
+- Add an option for round robin when creating competition

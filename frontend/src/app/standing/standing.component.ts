@@ -26,7 +26,7 @@ export class StandingComponent implements OnInit {
   ngOnInit(): void {
     this.standingLines$ = this.store.select(standingLineSelector).pipe(
       map(r => r.data.filter(standingline => standingline.competitionKey === this.competitionKey
-        && standingline.roundNumber === this.roundNumber).sort((a, b) => b.competitionPoints - a.competitionPoints))
+        && standingline.roundNumber === this.roundNumber).sort((a, b) => b.percentage - a.percentage))
     );
 
     this.store.select(playerSelector).pipe(
