@@ -53,6 +53,7 @@ export class CompetitionComponent implements OnInit {
       tap(rounds => {
         if (rounds) {
           this.rounds = rounds.filter(r => r.competitionKey === this.selectedCompetition.key);
+          this.rounds = rounds.sort((a, b) => a.roundNumber - b.roundNumber);
           this.selectedRound = this.rounds.find(r => r.isSelected) || this.rounds[rounds.length - 1]; // selected or last one.
           this.roundsFinished = this.rounds.filter(
             r => r.roundStatus === RoundStatus.Generated || r.roundStatus === RoundStatus.PlayerSelect).length === 0;

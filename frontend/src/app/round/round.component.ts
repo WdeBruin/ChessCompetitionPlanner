@@ -371,10 +371,18 @@ export class RoundComponent implements OnInit {
 
     // After stand is processed.
     // calculate WP: total points of all opponents player played.
-      // calculate SB: total points of all opponents player played and has won. (50% of it when draw)
-      // const whiteGamesWhite = this.competitionGames.find(x => x.whitePlayerKey === whitePlayer.key);
-      // const whiteGamesBlack = this.competitionGames.find(x => x.whitePlayerKey === whitePlayer.key);
-      // whiteGamesWhite.
+    // calculate SB: Not yet. What if you play someone twice? Difficult to determine whether it counts then..
+    this.standingLines.forEach((line) => {
+      const whiteGames = this.competitionGames.filter(x => x.whitePlayerKey === line.playerKey);
+      const blackGames = this.competitionGames.filter(x => x.blackPlayerKey === line.playerKey);
+
+      const opponents: string[] = whiteGames.map(game => game.blackPlayerKey).concat(blackGames.map(game => game.whitePlayerKey));
+      opponents.forEach(opponent => {
+        const opponentStandingLine = this.standingLines.find(x => x.playerKey === opponent);
+        line.wp += opponentStandingLine.points;
+      });
+      this.store.dispatch(new standingLineActions.Update(line, this.selectedClubKey, this.competitionKey));
+    });
 
     this.store.dispatch(new roundActions.Update(this.selectedRound, this.selectedClubKey, this.competitionKey));
   }
