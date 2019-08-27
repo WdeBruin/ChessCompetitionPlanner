@@ -8,6 +8,9 @@ export interface StandingLine {
 
     points: number;
     gamesPlayed: number;
+    win: number;
+    draw: number;
+    loss: number;
     percentage: number;
     wp: number;
     sb: number;

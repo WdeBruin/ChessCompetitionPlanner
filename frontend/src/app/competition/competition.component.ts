@@ -117,6 +117,9 @@ export class CompetitionComponent implements OnInit {
           playerKey: player.key,
           points: 0,
           gamesPlayed: 0,
+          win: 0,
+          draw: 0,
+          loss: 0,
           percentage: 0,
           wp: 0,
           sb: 0
@@ -144,6 +147,9 @@ export class CompetitionComponent implements OnInit {
                 playerKey: player.key,
                 points: oldStandingLine.points,
                 gamesPlayed: oldStandingLine.gamesPlayed,
+                win: oldStandingLine.win,
+                draw: oldStandingLine.draw,
+                loss: oldStandingLine.loss,
                 percentage: oldStandingLine.percentage,
                 wp: oldStandingLine.wp,
                 sb: oldStandingLine.sb

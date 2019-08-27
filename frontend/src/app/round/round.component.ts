@@ -145,6 +145,9 @@ export class RoundComponent implements OnInit {
           playerKey: player.key,
           points: 0,
           gamesPlayed: 0,
+          win: 0,
+          draw: 0,
+          loss: 0,
           percentage: 0,
           wp: 0,
           sb: 0
@@ -345,17 +348,23 @@ export class RoundComponent implements OnInit {
           whitePlayer.clubElo = +whitePlayer.clubElo + +game.whiteWinEloChange;
           blackPlayer.clubElo = +blackPlayer.clubElo + +game.blackLossEloChange;
           whiteStandingLine.points += 1;
+          whiteStandingLine.win += 1;
+          blackStandingLine.loss += 1;
           break;
         case 0.5:
           whitePlayer.clubElo = +whitePlayer.clubElo + +game.whiteDrawEloChange;
           blackPlayer.clubElo = +blackPlayer.clubElo + +game.blackDrawEloChange;
           whiteStandingLine.points += 0.5;
           blackStandingLine.points += 0.5;
+          whiteStandingLine.draw += 1;
+          blackStandingLine.draw += 1;
           break;
         case 0:
           whitePlayer.clubElo = +whitePlayer.clubElo + +game.whiteLossEloChange;
           blackPlayer.clubElo = +blackPlayer.clubElo + +game.blackWinEloChange;
           blackStandingLine.points += 1;
+          whiteStandingLine.loss += 1;
+          blackStandingLine.win += 1;
           break;
       }
 
