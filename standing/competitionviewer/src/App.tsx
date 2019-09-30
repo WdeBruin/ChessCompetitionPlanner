@@ -1,26 +1,43 @@
-import React from 'react';
+import React, { Component, Fragment } from 'react';
 import './App.css';
-import logo from './logo.svg';
+import db from './firebase';
+import { Player } from './Models';
+import Ranking from './Ranking';
 
-const App: React.FC = () => {
-  return (
-    <div className='App'>
-      <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className='App-link'
-          href='https://reactjs.org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface Props {
+  competitionKey: string;
+  clubKey: string;
+}
+
+let playerList: Player[] = [];
+
+class App extends Component<Props> {
+  private data: any;
+
+  private standingLines: any[] = [];
+
+  public componentDidMount() {
+    const playersRef = db.collection(`clubs/${this.props.clubKey}/players`);
+
+    playersRef.get()
+      .then((players) => {
+        players.forEach((doc) => {
+          playerList.push(doc.data() as Player);
+        });
+      });
+  }
+
+  public render() {
+    return (
+      <Fragment>
+        <h1>{this.props.competitionKey}</h1>
+        <h1>{this.props.clubKey}</h1>
+
+        <Ranking players={playerList} />
+
+      </Fragment>
+    );
+  }
 }
 
 export default App;
