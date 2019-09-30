@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import './App.css';
 import Ranking from './components/Ranking';
 import RoundSelect from './components/RoundSelect';
 import db from './firebase';

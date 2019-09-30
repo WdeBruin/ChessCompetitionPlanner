@@ -14,5 +14,7 @@ class RoundSelect extends Component<Props> {
 
 export default RoundSelect;
 
-const listRoundNumbers = (numbers: number[]) => numbers.map((digit: number) =>
-    <li key={digit}>{digit}</li>)
+const listRoundNumbers = (numbers: number[]) => numbers.map((digit: number) => <p key={digit}>{digit}</p>);
+    // <button class='button'>{digit}</button>)
+
+// <button id="' + r + '" class="button" onclick=selectRound(' + r + ')>' + r + '</button>
