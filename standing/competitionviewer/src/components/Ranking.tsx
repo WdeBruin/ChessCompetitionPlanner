@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react';
-import { Player } from './Models';
+import React, { Component } from 'react';
+import { Player } from '../Models';
 
 interface Props {
     players: Player[];
