@@ -79,12 +79,13 @@ class App extends Component<Props, State> {
     // tslint:disable-next-line: max-line-length
     if (selectedRound) {
       const standingsRef = db.collection(`clubs/${this.props.clubKey}/competitions/${this.props.competitionKey}/standingLines`).where('roundNumber', '==', selectedRound);
-      const tempStandingLineList: StandingLine[] = [];
+      let tempStandingLineList: StandingLine[] = [];
       standingsRef.get()
         .then((standingLines) => {
           standingLines.forEach((doc) => {
             tempStandingLineList.push(doc.data() as StandingLine);
           });
+          tempStandingLineList = tempStandingLineList.filter((x) => x.gamesPlayed > 0);
           tempStandingLineList.sort((a, b) => b.percentage - a.percentage);
           this.setState({ ...this.state, standingLineList: tempStandingLineList });
         });
