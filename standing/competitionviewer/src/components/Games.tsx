@@ -52,7 +52,7 @@ class Games extends Component<Props> {
                         <StyledTd>{Math.round(g.whiteWinEloChange * 10) / 10}</StyledTd>
                         <StyledTd>{Math.round(g.whiteDrawEloChange * 10) / 10}</StyledTd>
                         <StyledTd>{Math.round(g.whiteLossEloChange * 10) / 10}</StyledTd>
-                        <StyledTd />
+                        <StyledTd>-</StyledTd>
                         <StyledTd>{this.getName(g.blackPlayerKey)}</StyledTd>
                         <StyledTd>{Math.round(g.blackWinEloChange * 10) / 10}</StyledTd>
                         <StyledTd>{Math.round(g.blackDrawEloChange * 10) / 10}</StyledTd>
