@@ -77,17 +77,20 @@ class App extends Component<Props, State> {
 
   private handleRoundSelect(selectedRound: number) {
     // tslint:disable-next-line: max-line-length
-    const standingsRef = db.collection(`clubs/${this.props.clubKey}/competitions/${this.props.competitionKey}/standingLines`).where('roundNumber', '==', selectedRound);
-    const tempStandingLineList: StandingLine[] = [];
-    standingsRef.get()
-      .then((standingLines) => {
-        standingLines.forEach((doc) => {
-          tempStandingLineList.push(doc.data() as StandingLine);
+    if (selectedRound) {
+      const standingsRef = db.collection(`clubs/${this.props.clubKey}/competitions/${this.props.competitionKey}/standingLines`).where('roundNumber', '==', selectedRound);
+      const tempStandingLineList: StandingLine[] = [];
+      standingsRef.get()
+        .then((standingLines) => {
+          standingLines.forEach((doc) => {
+            tempStandingLineList.push(doc.data() as StandingLine);
+          });
+          tempStandingLineList.sort((a, b) => b.percentage - a.percentage);
+          this.setState({ ...this.state, standingLineList: tempStandingLineList });
         });
-        tempStandingLineList.sort((a, b) => b.percentage - a.percentage);
-        this.setState({ ...this.state, standingLineList: tempStandingLineList });
-      });
+    }
   }
+
 }
 
 export default App;

@@ -44,17 +44,18 @@ class Ranking extends Component<Props> {
         return (
             this.props.standingLines.map((sl, i) => {
                 return (
-                    <StyledTr key={i}>
-                        <StyledTh scope='row'>{i + 1}</StyledTh>
-                        <StyledTd>{this.getName(sl.playerKey)}</StyledTd>
-                        <StyledTd>{sl.gamesPlayed}</StyledTd>
-                        <StyledTd>{sl.points}</StyledTd>
-                        <StyledTd>{sl.win}</StyledTd>
-                        <StyledTd>{sl.draw}</StyledTd>
-                        <StyledTd>{sl.loss}</StyledTd>
-                        <StyledTd>{Math.round(sl.percentage)}</StyledTd>
-                        <StyledTd>{sl.wp}</StyledTd>
-                    </StyledTr>
+                    sl.gamesPlayed > 0 && (
+                        <StyledTr key={i}>
+                            <StyledTh scope='row'>{i + 1}</StyledTh>
+                            <StyledTd>{this.getName(sl.playerKey)}</StyledTd>
+                            <StyledTd>{sl.gamesPlayed}</StyledTd>
+                            <StyledTd>{sl.points}</StyledTd>
+                            <StyledTd>{sl.win}</StyledTd>
+                            <StyledTd>{sl.draw}</StyledTd>
+                            <StyledTd>{sl.loss}</StyledTd>
+                            <StyledTd>{Math.round(sl.percentage)}</StyledTd>
+                            <StyledTd>{sl.wp}</StyledTd>
+                        </StyledTr>)
                 );
             })
         );
