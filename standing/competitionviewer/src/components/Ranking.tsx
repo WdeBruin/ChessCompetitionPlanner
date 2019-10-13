@@ -61,7 +61,7 @@ class Ranking extends Component<Props> {
     }
 
     private getName(playerKey: string) {
-        const player = this.props.players.find(p => p.key === playerKey);
+        const player = this.props.players.find((p) => p.key === playerKey);
         return player && `${player.firstName} ${player.lastName}`;
     }
 }
@@ -71,6 +71,7 @@ export default Ranking;
 const StyledTable = styled.table`
     border: 1px solid #ddd;
     border-collapse: collapse;
+    margin-bottom: 20px;
 `;
 
 const StyledTh = styled.th`

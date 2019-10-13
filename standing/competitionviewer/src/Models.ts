@@ -20,3 +20,20 @@ export interface StandingLine {
     wp: number;
     sb: number;
 }
+
+export interface Game {
+    key: string;
+    roundNumber: number;
+
+    competitionKey: string;
+    whitePlayerKey: string;
+    blackPlayerKey: string;
+
+    result: number; // 0, 0.5, 1 like in chess
+    whiteWinEloChange: number;
+    whiteDrawEloChange: number;
+    whiteLossEloChange: number;
+    blackWinEloChange: number;
+    blackDrawEloChange: number;
+    blackLossEloChange: number;
+}

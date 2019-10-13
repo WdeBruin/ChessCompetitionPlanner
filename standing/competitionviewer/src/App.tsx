@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
+import Games from './components/Games';
 import Ranking from './components/Ranking';
 import RoundSelect from './components/RoundSelect';
 import db from './firebase';
-import { Player, StandingLine } from './Models';
+import { Game, Player, StandingLine } from './Models';
 
 /*
 Task of App is getting the data and passing it to the other components.
@@ -11,11 +12,15 @@ Task of App is getting the data and passing it to the other components.
 interface Props {
   competitionKey: string;
   clubKey: string;
+  showGames: boolean;
+  showStanding: boolean;
+  showWinLoss: boolean;
 }
 
 interface State {
   playerList: Player[];
   standingLineList: StandingLine[];
+  gamesList: Game[];
   roundNumbers: number[];
   selectedRound: number;
 }
@@ -51,8 +56,8 @@ class App extends Component<Props, State> {
     return (
       <Fragment>
         {this.renderRoundSelect()}
-        {this.renderStanding()}
-
+        {this.props.showStanding && this.renderStanding()}
+        {this.props.showGames && this.renderGames()}
       </Fragment>
     );
   }
@@ -70,14 +75,20 @@ class App extends Component<Props, State> {
   }
 
   private renderStanding() {
-    if (this.state && this.state.playerList) {
+    if (this.state && this.state.playerList && this.state.standingLineList) {
       return (<Ranking players={this.state.playerList} standingLines={this.state.standingLineList} />);
     }
   }
 
+  private renderGames() {
+    if (this.state && this.state.playerList && this.state.gamesList) {
+      return (<Games players={this.state.playerList} games={this.state.gamesList} />)
+    }
+  }
+
   private handleRoundSelect(selectedRound: number) {
-    // tslint:disable-next-line: max-line-length
     if (selectedRound) {
+      // tslint:disable-next-line: max-line-length
       const standingsRef = db.collection(`clubs/${this.props.clubKey}/competitions/${this.props.competitionKey}/standingLines`).where('roundNumber', '==', selectedRound);
       let tempStandingLineList: StandingLine[] = [];
       standingsRef.get()
@@ -89,9 +100,20 @@ class App extends Component<Props, State> {
           tempStandingLineList.sort((a, b) => b.percentage - a.percentage);
           this.setState({ ...this.state, standingLineList: tempStandingLineList });
         });
+
+      // tslint:disable-next-line: max-line-length
+      const gamesRef = db.collection(`clubs/${this.props.clubKey}/competitions/${this.props.competitionKey}/games`).where('roundNumber', '==', selectedRound);
+      let tempGamesList: Game[] = [];
+      gamesRef.get()
+        .then((games) => {
+          games.forEach((doc) => {
+            tempGamesList.push(doc.data() as Game);
+          });
+          this.setState({ ...this.state, gamesList: tempGamesList });
+        });
+
     }
   }
-
 }
 
 export default App;
