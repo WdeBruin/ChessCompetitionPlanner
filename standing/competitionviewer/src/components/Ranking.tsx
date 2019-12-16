@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import styled from 'styled-components';
 import { Player, StandingLine } from '../Models';
+import { StyledTable, StyledTd, StyledTh, StyledTr } from './Styled';
 
 interface Props {
     players: Player[];
@@ -67,34 +67,3 @@ class Ranking extends Component<Props> {
 }
 
 export default Ranking;
-
-const StyledTable = styled.table`
-    border: 1px solid #ddd;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-`;
-
-const StyledTh = styled.th`
-    border: 1px solid #ddd;
-    border-collapse: collapse;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    padding: 4px;
-    text-align: left;
-    background-color: #a9a9a9;
-    color: black;
-`;
-
-const StyledTr = styled.tr`
-    border: 1px solid #ddd;
-    border-collapse: collapse;
-
-    &:nth-child(even) {
-        background-color: #f2f2f2;
-    }
-`;
-
-const StyledTd = styled.td`
-    border: 1px solid #ddd;
-    padding: 4px;
-`;

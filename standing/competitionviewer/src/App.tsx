@@ -4,6 +4,7 @@ import Ranking from './components/Ranking';
 import RoundSelect from './components/RoundSelect';
 import db from './firebase';
 import { Game, Player, StandingLine } from './Models';
+import WinLossRanking from './components/WinLossRanking';
 
 /*
 Task of App is getting the data and passing it to the other components.
@@ -58,6 +59,7 @@ class App extends Component<Props, State> {
         {this.renderRoundSelect()}
         {this.props.showStanding && this.renderStanding()}
         {this.props.showGames && this.renderGames()}
+        <WinLossRanking competitionKey={this.props.competitionKey} clubKey={this.props.clubKey} />
       </Fragment>
     );
   }

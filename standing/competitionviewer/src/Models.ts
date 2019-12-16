@@ -37,3 +37,8 @@ export interface Game {
     blackDrawEloChange: number;
     blackLossEloChange: number;
 }
+
+export interface WinLossStandingLine {
+    playerName: string;
+    delta: number;
+}
