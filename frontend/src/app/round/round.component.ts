@@ -382,6 +382,7 @@ export class RoundComponent implements OnInit {
     // calculate WP: total points of all opponents player played.
     // calculate SB: Not yet. What if you play someone twice? Difficult to determine whether it counts then..
     this.standingLines.forEach((line) => {
+      line.wp = 0;
       const whiteGames = this.competitionGames.filter(x => x.whitePlayerKey === line.playerKey);
       const blackGames = this.competitionGames.filter(x => x.blackPlayerKey === line.playerKey);
 
