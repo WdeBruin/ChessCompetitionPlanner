@@ -99,7 +99,8 @@ class App extends Component<Props, State> {
             tempStandingLineList.push(doc.data() as StandingLine);
           });
           tempStandingLineList = tempStandingLineList.filter((x) => x.gamesPlayed > 0);
-          tempStandingLineList.sort((a, b) => b.percentage - a.percentage);
+          // tslint:disable-next-line: max-line-length
+          tempStandingLineList.sort((a, b) => b.percentage === a.percentage ? b.wp - a.wp : b.percentage - a.percentage);
           this.setState({ ...this.state, standingLineList: tempStandingLineList });
         });
 
