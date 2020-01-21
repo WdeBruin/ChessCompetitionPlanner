@@ -95,18 +95,18 @@ export class RoundComponent implements OnInit {
               map(p => p.data),
               tap(players => {
                 players
-                  ? (this.players = players.sort(function(a, b) {
-                      const nameA = a.firstName.toUpperCase(); // ignore upper and lowercase
-                      const nameB = b.firstName.toUpperCase(); // ignore upper and lowercase
-                      if (nameA < nameB) {
-                        return -1;
-                      }
-                      if (nameA > nameB) {
-                        return 1;
-                      }
-                      // names must be equal
-                      return 0;
-                    }))
+                  ? (this.players = players.sort(function (a, b) {
+                    const nameA = a.firstName.toUpperCase(); // ignore upper and lowercase
+                    const nameB = b.firstName.toUpperCase(); // ignore upper and lowercase
+                    if (nameA < nameB) {
+                      return -1;
+                    }
+                    if (nameA > nameB) {
+                      return 1;
+                    }
+                    // names must be equal
+                    return 0;
+                  }))
                   : (this.players = []);
               })
             )
@@ -519,10 +519,10 @@ export class RoundComponent implements OnInit {
     return result === 1
       ? '1-0'
       : result === 0.5
-      ? '0,5-0,5'
-      : result === 0
-      ? '0-1'
-      : '-';
+        ? '0,5-0,5'
+        : result === 0
+          ? '0-1'
+          : '-';
   }
 
   public finishRound() {
@@ -614,7 +614,9 @@ export class RoundComponent implements OnInit {
         const opponentStandingLine = this.standingLines.find(
           x => x.playerKey === opponent
         );
-        line.wp += opponentStandingLine.points;
+        if (opponentStandingLine !== undefined) {
+          line.wp += opponentStandingLine.points;
+        }
       });
       this.store.dispatch(
         new standingLineActions.Update(
