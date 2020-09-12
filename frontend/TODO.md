@@ -14,6 +14,7 @@ Auth
 
 Features
 - Angular upgrade
+- Make it a PWA, ask question to add to desktop
 - Restyle
 - Have remove features for: players, competitions, clubs
 - Add an option for round robin when creating competition
