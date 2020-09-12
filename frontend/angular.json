@@ -171,5 +171,8 @@
       }
     }
   },
-  "defaultProject": "ChessCompetitionPlanner"
+  "defaultProject": "ChessCompetitionPlanner",
+  "cli": {
+    "analytics": "7448aca1-9c7a-4a8a-81d3-5927baed8ab5"
+  }
 }
